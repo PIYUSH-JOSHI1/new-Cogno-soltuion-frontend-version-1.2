@@ -1,0 +1,1616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Reports - Cogno Solution</title>
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #eff6ff;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --bg: #f5f7fa;
+            --card: #ffffff;
+            --text: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+        }
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --primary-light: #1e3a5f;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+        
+        .topbar {
+            background: var(--card);
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .topbar-left a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .topbar h1 {
+            font-size: 1.25rem;
+            color: var(--text);
+        }
+        
+        .content {
+            padding: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Quick Stats */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat-card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        
+        .stat-card .number {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+        
+        .stat-card .label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        .stat-card.primary { border-left: 4px solid #3b82f6; }
+        .stat-card.success { border-left: 4px solid #10b981; }
+        .stat-card.warning { border-left: 4px solid #f59e0b; }
+        
+        /* Report Templates */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        
+        .section-header h2 {
+            font-size: 1.1rem;
+            color: var(--text);
+        }
+        
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .template-card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .template-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+        }
+        
+        .template-icon {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary-light, #eff6ff);
+            color: var(--primary);
+            border-radius: 12px;
+            font-size: 1.25rem;
+        }
+        
+        .template-card h3 {
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .template-card p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        /* Filters */
+        .filters-bar {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+            border: 1px solid var(--border);
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 0.65rem 1rem 0.65rem 2.5rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: var(--card);
+            color: var(--text);
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+        
+        .filter-select {
+            padding: 0.65rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            min-width: 150px;
+            background: var(--card);
+            color: var(--text);
+        }
+        
+        /* Reports Table */
+        .reports-table-container {
+            background: var(--card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+        
+        .reports-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .reports-table th,
+        .reports-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+        }
+        
+        .reports-table th {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-weight: 600;
+            background: var(--primary-light, #f9fafb);
+        }
+        
+        .reports-table tr:hover {
+            background: var(--primary-light, #f9fafb);
+        }
+        
+        .report-title-cell {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .report-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
+        
+        .report-title h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.15rem;
+        }
+        
+        .report-title p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        .patient-cell {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .patient-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        .status-badge.completed { background: #dcfce7; color: #16a34a; }
+        .status-badge.draft { background: #fef3c7; color: #d97706; }
+        .status-badge.pending { background: var(--primary-light); color: #2563eb; }
+        
+        .action-btns {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary { background: #3b82f6; color: white; }
+        .btn-outline { background: var(--card); border: 1px solid var(--border); color: var(--text); }
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            justify-content: center;
+            background: var(--border);
+            color: var(--text-muted);
+        }
+        
+        .btn-icon:hover { background: var(--border); }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        
+        .modal-overlay.show { display: flex; }
+        
+        .modal-content {
+            background: var(--card);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 550px;
+            max-height: 90vh;
+            overflow-y: auto;
+            color: var(--text);
+        }
+        
+        .modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .modal-header h2 { font-size: 1.1rem; margin: 0; }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+        
+        .modal-body { padding: 1.5rem; }
+        
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background: var(--card);
+            color: var(--text);
+            background: var(--card);
+            color: var(--text);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+        
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 0.5rem 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .bottom-nav .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.4rem 1rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 0.65rem;
+            border-radius: 8px;
+            text-decoration: none;
+        }
+        
+        .bottom-nav .nav-btn i {
+            font-size: 1.1rem;
+            margin-bottom: 0.2rem;
+        }
+        
+        .bottom-nav .nav-btn:hover { background: var(--primary-light); }
+        .bottom-nav .nav-btn.active { color: var(--primary); background: var(--primary-light, #eff6ff); }
+        .bottom-nav .nav-btn.primary {
+            background: #3b82f6;
+            color: white;
+            padding: 0.5rem 1.25rem;
+        }
+
+
+        @media (max-width: 768px) {
+            .reports-table th:nth-child(3),
+            .reports-table td:nth-child(3),
+            .reports-table th:nth-child(4),
+            .reports-table td:nth-child(4) {
+                display: none;
+            }
+        }
+    
+        
+        
+
+        /* ── Topbar & Profile Dropdown (shared across all doctor pages) ── */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 80px;
+            transition: background 0.3s, color 0.3s;
+        }
+        .topbar { background: var(--card); padding: 0.75rem 1rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1100; height: 64px; }
+        .topbar-left { display: flex; align-items: center; gap: 0.75rem; }
+        .topbar-logo { width: 36px; height: 36px; background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1rem; flex-shrink: 0; }
+        .topbar-title { font-size: 1.1rem; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .topbar-right { display: flex; align-items: center; gap: 0.5rem; }
+        .topbar-btn { position: relative; width: 40px; height: 40px; border-radius: 10px; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: all 0.2s; color: var(--text-muted); }
+        .topbar-btn:hover { background: var(--border); color: var(--text); }
+        .topbar-btn .badge { position: absolute; top: 6px; right: 6px; min-width: 18px; height: 18px; background: var(--danger); color: white; border-radius: 50%; font-size: 0.65rem; font-weight: 600; display: flex; align-items: center; justify-content: center; padding: 0 4px; }
+
+        /* Profile Dropdown */
+        .profile-dropdown { position: relative; }
+        .profile-btn { display: flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0.6rem; border-radius: 10px; border: none; background: transparent; cursor: pointer; transition: all 0.2s; color: var(--text); }
+        .profile-btn:hover { background: var(--border); }
+        .profile-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-dark) 0%, var(--accent) 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.85rem; overflow: hidden; flex-shrink: 0; }
+        .profile-info { text-align: left; }
+        .profile-info .name { font-size: 0.85rem; font-weight: 600; color: var(--text); line-height: 1.2; margin: 0; }
+        .profile-info .role { font-size: 0.7rem; color: var(--text-muted); margin: 0; }
+        .profile-chevron { font-size: 0.75rem; color: var(--text-muted); transition: transform 0.2s; }
+        .profile-dropdown.open .profile-chevron { transform: rotate(180deg); }
+        .profile-menu { position: absolute; top: calc(100% + 8px); right: 0; background: var(--card); border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0,0,0,0.15); min-width: 240px; padding: 0.5rem; display: none !important; z-index: 2000; }
+        .profile-menu.show { display: block !important; animation: slideDown 0.2s ease; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .profile-menu-header { padding: 0.75rem; border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+        .profile-menu-header .name { font-weight: 600; font-size: 0.95rem; color: var(--text); }
+        .profile-menu-header .email { font-size: 0.75rem; color: var(--primary); }
+        .profile-menu-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.7rem 0.75rem; border-radius: 8px; cursor: pointer; text-decoration: none; font-size: 0.85rem; transition: background 0.2s; border: none; background: transparent; width: 100%; color: var(--text); }
+        .profile-menu-item:hover { background: var(--border); }
+        .profile-menu-item i { width: 20px; color: var(--text-muted); }
+        .profile-menu-item.danger { color: var(--danger); }
+        .profile-menu-item.danger i { color: var(--danger); }
+        .theme-toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 0.7rem 0.75rem; border-radius: 8px; cursor: pointer; }
+        .theme-toggle-row:hover { background: var(--border); }
+        .theme-toggle-left { display: flex; align-items: center; gap: 0.75rem; font-size: 0.85rem; color: var(--text); }
+        .theme-toggle-left i { width: 20px; color: var(--text-muted); }
+        .theme-switch { position: relative; width: 44px; height: 24px; }
+        .theme-switch input { opacity: 0; width: 0; height: 0; }
+        .theme-slider { position: absolute; cursor: pointer; inset: 0; background: var(--border); transition: 0.3s; border-radius: 24px; }
+        .theme-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background: var(--card); transition: 0.3s; border-radius: 50%; }
+        input:checked + .theme-slider { background: var(--primary); }
+        input:checked + .theme-slider:before { transform: translateX(20px); }
+        .menu-divider { height: 1px; background: var(--border); margin: 0.5rem 0; }
+        .dropdown-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 900; display: none; }
+        .dropdown-overlay.show { display: block; }
+
+        /* Notifications Panel */
+        .notifications-panel { position: absolute; top: calc(100% + 8px); right: 0; background: var(--card); border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0,0,0,0.15); width: 300px; max-height: 400px; overflow: hidden; display: none !important; z-index: 2000; }
+        .notifications-panel.show { display: block !important; animation: slideDown 0.2s ease; }
+        .notifications-header { padding: 1rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .notifications-header h4 { font-size: 0.95rem; font-weight: 600; margin: 0; color: var(--text); }
+        .notifications-header button { font-size: 0.75rem; color: var(--primary); background: none; border: none; cursor: pointer; }
+        .notifications-empty { padding: 2rem; text-align: center; color: var(--text-muted); }
+        .notifications-list { max-height: 320px; overflow-y: auto; }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 0.5rem 0.75rem;
+            display: flex;
+            justify-content: space-around;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.06);
+        }
+        
+        
+        
+        
+
+        /* Responsive topbar */
+        @media (max-width: 600px) {
+            .topbar { padding: 0.5rem 0.75rem; height: 56px; gap: 0.5rem; }
+            .topbar-right { gap: 2px; }
+            .topbar-btn { width: 34px; height: 34px; font-size: 1rem; }
+            .profile-info { display: none; }
+            .topbar-title { font-size: 0.95rem; }
+            .notifications-panel { position: fixed; top: 60px; right: 10px; left: 10px; width: auto; max-width: none; }
+            .profile-menu { position: fixed; top: 60px; right: 10px; left: 10px; width: auto; max-width: none; }
+        }
+
+                /* ── Reports page – responsive ── */
+        .content { padding: 1rem; max-width: 1200px; margin: 0 auto; }
+        @media (min-width: 768px) { .content { padding: 1.5rem; } }
+
+        /* Dark-mode modal + form */
+        .modal-content { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+        .modal-header { border-bottom: 1px solid var(--border); }
+        .modal-footer { border-top: 1px solid var(--border); }
+        .form-group label { color: var(--text); }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            background: var(--card);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        .modal-close { color: var(--text-muted); }
+        .btn-outline { background: var(--card); border: 1px solid var(--border); color: var(--text); }
+
+        /* Table row hover */
+        .reports-table tr:last-child td { border-bottom: none; }
+        .reports-table tbody tr:hover { background: var(--border); }
+        .report-icon { background: var(--primary-light); }
+
+        @media (max-width: 768px) {
+            .reports-table th:nth-child(3),
+            .reports-table td:nth-child(3),
+            .reports-table th:nth-child(4),
+            .reports-table td:nth-child(4) { display: none; }
+        }
+        @media (max-width: 600px) {
+            .stats-row { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+            .stat-card { padding: 0.85rem 0.5rem; }
+            .stat-card .number { font-size: 1.35rem; }
+            .templates-grid { grid-template-columns: repeat(2, 1fr); }
+            .section-header { flex-wrap: wrap; gap: 0.5rem; }
+            .filters-bar { flex-direction: column; align-items: stretch; }
+            .search-box { min-width: unset; }
+            .filter-select { width: 100%; }
+        }
+
+                /* ── Bottom Nav – dashboard style ── */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 0.35rem 0.5rem;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 -2px 16px rgba(0,0,0,0.10);
+        }
+        .nav-btn, .bottom-nav .nav-btn, .bottom-nav a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0.45rem 0.65rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 0.62rem;
+            font-weight: 500;
+            border-radius: 10px;
+            text-decoration: none;
+            min-width: 0;
+            flex: 1;
+            max-width: 80px;
+            transition: all 0.18s;
+            font-family: 'Inter', sans-serif;
+            line-height: 1;
+            gap: 0.2rem;
+        }
+        .nav-btn i, .bottom-nav .nav-btn i, .bottom-nav a i {
+            font-size: 1.2rem;
+            display: block;
+        }
+        .nav-btn:hover, .bottom-nav .nav-btn:hover, .bottom-nav a:hover {
+            background: var(--border);
+            color: var(--text);
+        }
+        .nav-btn.active, .bottom-nav .nav-btn.active, .bottom-nav a.active {
+            color: var(--primary);
+            background: var(--primary-light);
+            border-radius: 10px;
+        }
+
+        
+        /* ── Language button – always visible in topbar ── */
+        #lang-btn { display: flex !important; }
+        #lang-menu { z-index: 2000 !important; }
+        /* On very small screens, hide text labels in topbar to save space */
+        @media (max-width: 400px) {
+            .topbar-title { display: none; }
+        }
+
+    
+                /*  Responsive bottom nav for small screens  */
+        @media (max-width: 480px) {
+            .nav-btn, .bottom-nav .nav-btn, .bottom-nav a {
+                font-size: 0.55rem;
+                padding: 0.35rem 0.2rem;
+                gap: 0.15rem;
+            }
+            .nav-btn i, .bottom-nav .nav-btn i, .bottom-nav a i {
+                font-size: 1.05rem;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="dropdown-overlay" id="dropdown-overlay" onclick="closeAllDropdowns()"></div>
+
+        <!-- Dropdown Overlay -->
+
+    
+    <!-- Topbar -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <div class="topbar-logo">C</div>
+            <span class="topbar-title">Reports</span>
+        </div>
+        <div class="topbar-right">
+                        <div style="position:relative;">
+                <button class="topbar-btn" id="lang-btn" onclick="toggleLangMenu()" title="Language">
+                    <i class="fa-solid fa-globe"></i>
+                </button>
+                <div id="lang-menu" style="display:none !important; position:absolute; top:calc(100% + 8px); right:0; background:var(--card, #1e293b); border:1px solid var(--border, #334155); border-radius:12px; box-shadow:0 10px 32px rgba(0,0,0,0.18); min-width:160px; padding:0.4rem; z-index:1200;">
+                    <button onclick="setLang('en')" style="display:flex;align-items:center;gap:0.6rem;width:100%;padding:0.6rem 0.75rem;border:none;background:none;border-radius:8px;cursor:pointer;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;" onmouseover="this.style.background='var(--border)'" onmouseout="this.style.background='none'">🇬🇧 English</button>
+                    <button onclick="setLang('hi')" style="display:flex;align-items:center;gap:0.6rem;width:100%;padding:0.6rem 0.75rem;border:none;background:none;border-radius:8px;cursor:pointer;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;" onmouseover="this.style.background='var(--border)'" onmouseout="this.style.background='none'">🇮🇳 हिन्दी</button>
+                    <button onclick="setLang('mr')" style="display:flex;align-items:center;gap:0.6rem;width:100%;padding:0.6rem 0.75rem;border:none;background:none;border-radius:8px;cursor:pointer;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;" onmouseover="this.style.background='var(--border)'" onmouseout="this.style.background='none'">🇮🇳 मराठी</button>
+                </div>
+            </div>
+            <div style="position:relative;">
+                <button class="topbar-btn" id="notifications-btn" onclick="toggleNotifications()">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="badge" id="notifications-badge" style="display:none;">0</span>
+                </button>
+                <div class="notifications-panel" id="notifications-panel">
+                    <div class="notifications-header">
+                        <h4>Notifications</h4>
+                        <button onclick="markAllRead()">Mark all read</button>
+                    </div>
+                    <!-- Notification Tabs -->
+                    <div style="display:flex; border-bottom: 1px solid var(--border, #e2e8f0); padding: 0;">
+                        <button class="notif-tab active" data-tab="all" onclick="switchNotifTab('all')" style="flex:1; padding: 0.6rem; border:none; background:none; cursor:pointer; font-size: 0.8rem; font-weight: 600; color: var(--primary, #3b82f6); border-bottom: 2px solid var(--primary, #3b82f6); font-family: 'Inter', sans-serif;">
+                            <i class="fa-solid fa-bell"></i> All
+                        </button>
+                        <button class="notif-tab" data-tab="messages" onclick="switchNotifTab('messages')" style="flex:1; padding: 0.6rem; border:none; background:none; cursor:pointer; font-size: 0.8rem; font-weight: 500; color: var(--text-muted, #64748b); border-bottom: 2px solid transparent; font-family: 'Inter', sans-serif;">
+                            <i class="fa-solid fa-message"></i> Messages
+                        </button>
+                        <button class="notif-tab" data-tab="email" onclick="switchNotifTab('email')" style="flex:1; padding: 0.6rem; border:none; background:none; cursor:pointer; font-size: 0.8rem; font-weight: 500; color: var(--text-muted, #64748b); border-bottom: 2px solid transparent; font-family: 'Inter', sans-serif;">
+                            <i class="fa-solid fa-envelope"></i> Email
+                        </button>
+                    </div>
+                    <!-- All Notifications -->
+                    <div class="notifications-list notif-content" id="notifications-list" data-tab="all">
+                        <div style="padding: 12px; border-bottom: 1px solid var(--border, #e2e8f0); display: flex; gap: 10px; align-items:flex-start; cursor:pointer;" onmouseover="this.style.background='var(--primary-light, #eff6ff)'" onmouseout="this.style.background='transparent'">
+                            <div style="width: 36px; height: 36px; border-radius: 50%; background: #eff6ff; color: #3b82f6; display: flex; align-items:center; justify-content:center; flex-shrink: 0;"><i class="fa-solid fa-file-lines"></i></div>
+                            <div>
+                                <div style="font-size: 0.85rem; font-weight: 600; color: var(--text, #1e293b); margin-bottom: 2px;">Reports Ready</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted, #64748b); line-height: 1.3;">View and create patient reports below.</div>
+                                <div style="font-size: 0.65rem; color: #3b82f6; margin-top: 4px;">Just now</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Message Notifications -->
+                    <div class="notifications-list notif-content" id="notif-messages" data-tab="messages" style="display:none; max-height: 320px; overflow-y: auto;">
+                        <div id="msg-notif-list">
+                            <div style="padding: 2rem; text-align: center; color: var(--text-muted, #64748b);">
+                                <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; opacity: 0.5; margin-bottom: 0.5rem; display:block;"></i>
+                                <p style="font-size: 0.85rem;">Loading messages...</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Email Notifications -->
+                    <div class="notifications-list notif-content" id="notif-email" data-tab="email" style="display:none; max-height: 320px; overflow-y: auto;">
+                        <div style="padding: 2rem; text-align: center; color: var(--text-muted, #64748b);">
+                            <i class="fa-solid fa-envelope" style="font-size: 1.5rem; opacity: 0.3; margin-bottom: 0.5rem; display:block;"></i>
+                            <p style="font-size: 0.85rem;">No email notifications</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="profile-dropdown" id="profile-dropdown">
+                <button class="profile-btn" onclick="toggleProfileMenu()">
+                    <div class="profile-avatar" id="profile-avatar">D</div>
+                    <div class="profile-info">
+                        <div class="name" id="profile-name">Doctor</div>
+                        <div class="role">Specialist</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-down profile-chevron"></i>
+                </button>
+                <div class="profile-menu" id="profile-menu">
+                    <div class="profile-menu-header">
+                        <div class="name" id="menu-name">Doctor</div>
+                        <div class="email" id="menu-email">doctor@example.com</div>
+                    </div>
+                    <a href="profile.html" class="profile-menu-item"><i class="fa-solid fa-user"></i><span>View Profile</span></a>
+                    <a href="settings.html" class="profile-menu-item"><i class="fa-solid fa-gear"></i><span>Settings</span></a>
+                    <div class="theme-toggle-row">
+                        <div class="theme-toggle-left"><i class="fa-solid fa-moon"></i><span>Dark Mode</span></div>
+                        <label class="theme-switch"><input type="checkbox" id="theme-toggle" onchange="toggleTheme()"><span class="theme-slider"></span></label>
+                    </div>
+                    <div class="menu-divider"></div>
+                    <button class="profile-menu-item danger" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i><span>Sign Out</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <!-- Stats Row -->
+        <div class="stats-row">
+            <div class="stat-card primary">
+                <div class="number" id="total-reports">0</div>
+                <div class="label">Total Reports</div>
+            </div>
+            <div class="stat-card success">
+                <div class="number" id="completed-reports">0</div>
+                <div class="label">Completed</div>
+            </div>
+            <div class="stat-card warning">
+                <div class="number" id="drafts-count">0</div>
+                <div class="label">Drafts</div>
+            </div>
+        </div>
+
+        <!-- Report Templates -->
+        <div class="section-header">
+            <h2><i class="fa-solid fa-file-lines"></i> Create New Report</h2>
+        </div>
+        <div class="templates-grid">
+            <div class="template-card" onclick="openReportModal('assessment')">
+                <div class="template-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+                <h3>Initial Assessment</h3>
+                <p>For new patients</p>
+            </div>
+            <div class="template-card" onclick="openReportModal('progress')">
+                <div class="template-icon"><i class="fa-solid fa-chart-line"></i></div>
+                <h3>Progress Report</h3>
+                <p>Weekly/monthly updates</p>
+            </div>
+            <div class="template-card" onclick="openReportModal('evaluation')">
+                <div class="template-icon"><i class="fa-solid fa-star"></i></div>
+                <h3>Monthly Evaluation</h3>
+                <p>Detailed review</p>
+            </div>
+            <div class="template-card" onclick="openReportModal('discharge')">
+                <div class="template-icon"><i class="fa-solid fa-flag-checkered"></i></div>
+                <h3>Discharge Summary</h3>
+                <p>Final summary</p>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="section-header">
+            <h2>Recent Reports</h2>
+            <button class="btn btn-primary" onclick="openReportModal('progress')">
+                <i class="fa-solid fa-plus"></i> New Report
+            </button>
+        </div>
+        <div class="filters-bar">
+            <div class="search-box">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" id="search-input" placeholder="Search reports...">
+            </div>
+            <select class="filter-select" id="filter-type">
+                <option value="">All Types</option>
+                <option value="assessment">Assessment</option>
+                <option value="progress">Progress</option>
+                <option value="evaluation">Evaluation</option>
+                <option value="discharge">Discharge</option>
+            </select>
+            <select class="filter-select" id="filter-status">
+                <option value="">All Status</option>
+                <option value="completed">Completed</option>
+                <option value="draft">Draft</option>
+            </select>
+        </div>
+
+        <!-- Reports Table -->
+        <div class="reports-table-container">
+            <table class="reports-table">
+                <thead>
+                    <tr>
+                        <th>Report</th>
+                        <th>Patient</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="reports-body">
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <i class="fa-solid fa-spinner fa-spin"></i>
+                                <p>Loading reports...</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Create Report Modal -->
+    <div class="modal-overlay" id="report-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-file-medical"></i> Create Report</h2>
+                <button class="modal-close" onclick="closeReportModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Patient *</label>
+                        <select id="report-patient">
+                            <option value="">Select patient...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Report Type *</label>
+                        <select id="report-type">
+                            <option value="assessment">Initial Assessment</option>
+                            <option value="progress">Progress Report</option>
+                            <option value="evaluation">Monthly Evaluation</option>
+                            <option value="discharge">Discharge Summary</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Report Title *</label>
+                    <input type="text" id="report-title" placeholder="Enter report title">
+                </div>
+                <div class="form-group">
+                    <label>Summary</label>
+                    <textarea id="report-summary" rows="3" placeholder="Brief summary..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Findings & Observations</label>
+                    <textarea id="report-findings" rows="4" placeholder="Detail your findings..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Recommendations</label>
+                    <textarea id="report-recommendations" rows="3" placeholder="Your recommendations..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeReportModal()">Cancel</button>
+                <button class="btn btn-outline" onclick="saveDraft()">Save Draft</button>
+                <button class="btn btn-primary" onclick="saveReport()">
+                    <i class="fa-solid fa-check"></i> Complete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-btn">
+            <i class="fa-solid fa-house"></i>
+            Home
+        </a>
+        <a href="patients.html" class="nav-btn">
+            <i class="fa-solid fa-user-group"></i>
+            Patients
+        </a>
+        <a href="schedule.html" class="nav-btn">
+            <i class="fa-solid fa-calendar"></i>
+            Schedule
+        </a>
+        <a href="consultations.html" class="nav-btn">
+            <i class="fa-solid fa-video"></i>
+            Consult
+        </a>
+        <a href="messages.html" class="nav-btn">
+            <i class="fa-solid fa-message"></i>
+            Messages
+        </a>
+        <a href="reports.html" class="nav-btn active">
+            <i class="fa-solid fa-chart-bar"></i>
+            Reports
+        </a>
+        <a href="profile.html" class="nav-btn">
+            <i class="fa-solid fa-user"></i>
+            Profile
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/i18n.js"></script>
+    
+    <script>
+
+        // === SHARED DOCTOR HEADER JS ===
+        function initTheme() {
+            const saved = localStorage.getItem('cogno_theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', saved);
+            const toggle = document.getElementById('theme-toggle');
+            if (toggle) toggle.checked = saved === 'dark';
+        }
+        function toggleTheme() {
+            const isDark = document.getElementById('theme-toggle').checked;
+            const theme = isDark ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('cogno_theme', theme);
+        }
+        function closeAllDropdowns() {
+            document.getElementById('profile-menu')?.classList.remove('show');
+            document.getElementById('notifications-panel')?.classList.remove('show');
+            document.getElementById('profile-dropdown')?.classList.remove('open');
+            document.getElementById('dropdown-overlay')?.classList.remove('show');
+        }
+        function toggleProfileMenu() {
+            const menu = document.getElementById('profile-menu');
+            const dropdown = document.getElementById('profile-dropdown');
+            const overlay = document.getElementById('dropdown-overlay');
+            document.getElementById('notifications-panel')?.classList.remove('show');
+            if (menu.classList.contains('show')) { closeAllDropdowns(); }
+            else { menu.classList.add('show'); dropdown.classList.add('open'); overlay.classList.add('show'); }
+        }
+        function toggleNotifications() {
+            const panel = document.getElementById('notifications-panel');
+            const overlay = document.getElementById('dropdown-overlay');
+            document.getElementById('profile-menu')?.classList.remove('show');
+            document.getElementById('profile-dropdown')?.classList.remove('open');
+            if (panel.classList.contains('show')) { closeAllDropdowns(); }
+            else { panel.classList.add('show'); overlay.classList.add('show'); }
+        }
+        function markAllRead() {
+            const badge = document.getElementById('notifications-badge');
+            if (badge) { badge.style.display = 'none'; badge.textContent = '0'; }
+        }
+        async function logout() {
+            try { await CognoSupabase.signOut(); } catch(e) {}
+            window.location.href = '../auth/login.html';
+        }
+        async function loadDoctorHeader() {
+            try {
+                const { data: { user } } = await CognoSupabase.client.auth.getUser();
+                if (!user) return;
+                const { data: profile } = await CognoSupabase.client
+                    .from('profiles').select('full_name, avatar_url').eq('id', user.id).single();
+                if (profile) {
+                    const name = profile.full_name || user.email.split('@')[0];
+                    const initial = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
+                    const nameEl = document.getElementById('profile-name');
+                    const menuNameEl = document.getElementById('menu-name');
+                    const menuEmailEl = document.getElementById('menu-email');
+                    if (nameEl) nameEl.textContent = name;
+                    if (menuNameEl) menuNameEl.textContent = name;
+                    if (menuEmailEl) menuEmailEl.textContent = user.email;
+                    const avatarEl = document.getElementById('profile-avatar');
+                    const cachedAvatar = (() => { try { return localStorage.getItem('cogno_avatar_cache_' + user.id); } catch(e) { return null; } })();
+                    const avatarUrl = profile.avatar_url || cachedAvatar;
+                    if (avatarEl && avatarUrl) {
+                        avatarEl.innerHTML = `<img src="${avatarUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.textContent='${initial}'">`;
+                    } else if (avatarEl) {
+                        avatarEl.textContent = initial;
+                    }
+                    const { count } = await CognoSupabase.client.from('notifications')
+                        .select('*', { count: 'exact', head: true }).eq('user_id', user.id).eq('is_read', false).catch(() => ({ count: 0 }));
+                    if (count > 0) {
+                        const badge = document.getElementById('notifications-badge');
+                        if (badge) { badge.textContent = count; badge.style.display = 'flex'; }
+                    }
+                }
+            } catch(e) { console.warn('Header load error:', e); }
+        }
+
+        (function() {
+            const savedTheme = localStorage.getItem('cogno_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            const toggle = document.getElementById('theme-toggle');
+            if (toggle) toggle.checked = savedTheme === 'dark';
+        })();
+        
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const newTheme = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('cogno_theme', newTheme);
+        }
+        
+        function closeAllDropdowns() {
+            document.getElementById('profile-menu')?.classList.remove('show');
+            document.getElementById('notifications-panel')?.classList.remove('show');
+            document.getElementById('profile-dropdown')?.classList.remove('open');
+            document.getElementById('dropdown-overlay')?.classList.remove('show');
+        }
+        function toggleNotifications() {
+            const panel = document.getElementById('notifications-panel');
+            const overlay = document.getElementById('dropdown-overlay');
+            document.getElementById('profile-menu')?.classList.remove('show');
+            document.getElementById('profile-dropdown')?.classList.remove('open');
+            if (panel.classList.contains('show')) { closeAllDropdowns(); }
+            else { panel.classList.add('show'); overlay.classList.add('show'); loadMessageNotifications(); }
+        }
+        function markAllRead() {
+            const badge = document.getElementById('notifications-badge');
+            if (badge) { badge.style.display = 'none'; badge.textContent = '0'; }
+        }
+        function switchNotifTab(tabName) {
+            document.querySelectorAll('.notif-tab').forEach(btn => {
+                if (btn.dataset.tab === tabName) {
+                    btn.style.fontWeight = '600';
+                    btn.style.color = 'var(--primary, #3b82f6)';
+                    btn.style.borderBottom = '2px solid var(--primary, #3b82f6)';
+                } else {
+                    btn.style.fontWeight = '500';
+                    btn.style.color = 'var(--text-muted, #64748b)';
+                    btn.style.borderBottom = '2px solid transparent';
+                }
+            });
+            document.querySelectorAll('.notif-content').forEach(content => {
+                content.style.display = content.dataset.tab === tabName ? 'block' : 'none';
+            });
+            if (tabName === 'messages') loadMessageNotifications();
+        }
+        async function loadMessageNotifications() {
+            const container = document.getElementById('msg-notif-list');
+            if (!container) return;
+            try {
+                const { data: { user } } = await CognoSupabase.client.auth.getUser();
+                if (!user) return;
+                let messages = null;
+                // receiver_id is the confirmed correct column
+                const { data: m1, error: e1 } = await CognoSupabase.client
+                    .from('messages').select('id, content, created_at, sender_id, receiver_id')
+                    .eq('receiver_id', user.id).order('created_at', { ascending: false }).limit(10);
+                if (!e1) { messages = m1; }
+                if (messages && messages.length > 0) {
+                    const senderIds = [...new Set(messages.map(m => m.sender_id).filter(Boolean))];
+                    let profileMap = {};
+                    if (senderIds.length > 0) {
+                        const { data: profiles } = await CognoSupabase.client
+                            .from('profiles').select('id, full_name, avatar_url').in('id', senderIds);
+                        (profiles || []).forEach(p => { profileMap[p.id] = p; });
+                    }
+                    const unread = messages.filter(m => m.is_read === false || m.read === false).length;
+                    if (unread > 0) {
+                        const badge = document.getElementById('notifications-badge');
+                        if (badge) { badge.textContent = unread; badge.style.display = 'flex'; }
+                    }
+                    container.innerHTML = messages.map(msg => {
+                        const p = profileMap[msg.sender_id] || {};
+                        const senderName = p.full_name || 'Patient';
+                        const initials = senderName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                        const avatarUrl = p.avatar_url;
+                        const timeAgo = formatTimeAgo(msg.created_at);
+                        const preview = (msg.content || msg.message || 'Sent an attachment').substring(0, 60);
+                        const isUnread = (msg.is_read === false || msg.read === false);
+                        return `
+                            <div style="padding: 12px; border-bottom: 1px solid var(--border, #e2e8f0); display: flex; gap: 10px; align-items:flex-start; cursor:pointer; ${isUnread ? 'background: var(--primary-light, #eff6ff);' : ''}"
+                                 onclick="window.location.href='messages.html?user=${msg.sender_id}'"
+                                 onmouseover="this.style.background='var(--primary-light, #eff6ff)'"
+                                 onmouseout="this.style.background='${isUnread ? 'var(--primary-light, #eff6ff)' : 'transparent'}'">
+                                <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #06b6d4); color: white; display: flex; align-items:center; justify-content:center; flex-shrink: 0; font-weight: 600; font-size: 0.75rem; overflow:hidden;">
+                                    ${avatarUrl ? `<img src="${avatarUrl}" style="width:100%;height:100%;object-fit:cover;">` : initials}
+                                </div>
+                                <div style="flex:1; min-width:0;">
+                                    <div style="font-size: 0.85rem; font-weight: 600; color: var(--text, #1e293b); margin-bottom: 2px; display: flex; justify-content: space-between;">
+                                        <span>${senderName}</span>
+                                        <span style="font-size: 0.65rem; color: #64748b; font-weight: 400;">${timeAgo}</span>
+                                    </div>
+                                    <div style="font-size: 0.75rem; color: var(--text-muted, #64748b); line-height: 1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${preview}</div>
+                                </div>
+                                ${isUnread ? '<div style="width: 8px; height: 8px; border-radius: 50%; background: #3b82f6; flex-shrink:0; margin-top: 6px;"></div>' : ''}
+                            </div>`;
+                    }).join('');
+                } else {
+                    container.innerHTML = `<div style="padding: 2rem; text-align: center; color: var(--text-muted, #64748b);"><i class="fa-solid fa-message" style="font-size: 1.5rem; opacity: 0.3; margin-bottom: 0.5rem; display:block;"></i><p style="font-size: 0.85rem;">No messages found</p></div>`;
+                }
+            } catch(e) { console.warn('Could not load message notifications:', e); }
+        }
+        function formatTimeAgo(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            const diffMins = Math.floor((Date.now() - date) / 60000);
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return diffMins + 'm ago';
+            const diffHours = Math.floor(diffMins / 60);
+            if (diffHours < 24) return diffHours + 'h ago';
+            const diffDays = Math.floor(diffHours / 24);
+            if (diffDays < 7) return diffDays + 'd ago';
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+        
+        function toggleProfileMenu() {
+            const menu = document.getElementById('profile-menu');
+            const dropdown = document.getElementById('profile-dropdown');
+            const overlay = document.getElementById('dropdown-overlay');
+            if (menu.classList.contains('show')) {
+                closeAllDropdowns();
+            } else {
+                menu.classList.add('show');
+                dropdown.classList.add('open');
+                overlay.classList.add('show');
+            }
+        }
+        
+        async function logout() {
+            try {
+                await CognoSupabase.signOut();
+                window.location.href = '../auth/login.html';
+            } catch (error) {
+                window.location.href = '../auth/login.html';
+            }
+        }
+        
+        function updateProfileDropdown(profile) {
+            if (!profile) return;
+            const name = profile.full_name || 'Doctor';
+            const initial = name.charAt(0).toUpperCase();
+            document.getElementById('profile-avatar').textContent = initial;
+            document.getElementById('profile-name').textContent = name;
+            document.getElementById('menu-name').textContent = name;
+            document.getElementById('menu-email').textContent = profile.email || '';
+        }
+
+        let doctorId = null;
+        let patients = [];
+        let reports = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await waitForSupabase();
+            await loadDoctorInfo();
+            await loadPatients();
+            await loadReports();
+        });
+
+        async function waitForSupabase() {
+            return new Promise((resolve) => {
+                const check = () => {
+                    if (window.CognoSupabase?.client) resolve();
+                    else setTimeout(check, 100);
+                };
+                check();
+            });
+        }
+
+        async function loadDoctorInfo() {
+            try {
+                const { data: { user } } = await CognoSupabase.client.auth.getUser();
+                if (!user) {
+                    window.location.href = '../auth/login.html';
+                    return;
+                }
+                
+                doctorId = user.id;
+                
+                const { data: profile } = await CognoSupabase.client
+                    .from('profiles')
+                    .select('full_name, display_name, email')
+                    .eq('id', user.id)
+                    .single();
+                
+                if (profile) {
+                    const name = profile.display_name || profile.full_name || 'Doctor';
+                    const displayName = name.startsWith('Dr.') ? name : 'Dr. ' + name;
+                    updateProfileDropdown({ full_name: displayName, email: profile.email || user.email });
+                }
+            } catch (err) {
+                console.error('Failed to load doctor info:', err);
+            }
+        }
+
+        async function loadPatients() {
+            try {
+                const { data: assigned } = await CognoSupabase.client
+                    .from('doctor_patients')
+                    .select('patient:patient_id (id, full_name)')
+                    .eq('doctor_id', doctorId);
+                
+                if (assigned && assigned.length > 0) {
+                    patients = assigned.map(a => a.patient).filter(Boolean);
+                } else {
+                    const { data: students } = await CognoSupabase.client
+                        .from('profiles')
+                        .select('id, full_name')
+                        .eq('role', 'student');
+                    patients = students || [];
+                }
+                
+                const select = document.getElementById('report-patient');
+                patients.forEach(p => {
+                    const opt = document.createElement('option');
+                    opt.value = p.id;
+                    opt.textContent = p.full_name;
+                    select.appendChild(opt);
+                });
+            } catch (err) {
+                console.error('Failed to load patients:', err);
+            }
+        }
+
+        async function loadReports() {
+            const tbody = document.getElementById('reports-body');
+            tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i><p>Loading reports...</p></div></td></tr>`;
+            
+            console.log('Loading reports for doctor:', doctorId);
+            
+            try {
+                const { data, error } = await CognoSupabase.client
+                    .from('doctor_reports')
+                    .select(`
+                        id,
+                        title,
+                        report_type,
+                        content,
+                        assessment_data,
+                        recommendations,
+                        shared_with_parent,
+                        created_at,
+                        updated_at,
+                        patient:patient_id (id, full_name)
+                    `)
+                    .eq('doctor_id', doctorId)
+                    .order('created_at', { ascending: false });
+                
+                console.log('Reports query result:', { data, error });
+                
+                if (error) throw error;
+                
+                reports = (data || []).map(r => ({
+                    id: r.id,
+                    title: r.title,
+                    type: r.report_type,
+                    patient: r.patient?.full_name || 'Unknown',
+                    patient_id: r.patient?.id,
+                    date: r.created_at?.split('T')[0],
+                    status: r.shared_with_parent ? 'completed' : 'draft',
+                    content: r.content,
+                    assessment_data: r.assessment_data,
+                    recommendations: r.recommendations
+                }));
+                
+                console.log('Processed reports:', reports);
+                
+                updateStats();
+                renderReports(reports);
+            } catch (err) {
+                console.error('Failed to load reports:', err);
+                tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><i class="fa-solid fa-exclamation-circle" style="color: #ef4444;"></i><p>Error: ${err.message}</p></div></td></tr>`;
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('total-reports').textContent = reports.length;
+            document.getElementById('completed-reports').textContent = reports.filter(r => r.status === 'completed').length;
+            document.getElementById('drafts-count').textContent = reports.filter(r => r.status === 'draft').length;
+        }
+
+        function renderReports(data) {
+            const tbody = document.getElementById('reports-body');
+            
+            if (data.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <i class="fa-solid fa-file-lines"></i>
+                                <p>No reports found</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            const typeIcons = {
+                assessment: 'fa-clipboard-check',
+                progress: 'fa-chart-line',
+                evaluation: 'fa-star',
+                discharge: 'fa-flag-checkered'
+            };
+            
+            tbody.innerHTML = data.map(r => {
+                const initials = r.patient.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+                return `
+                    <tr>
+                        <td>
+                            <div class="report-title-cell">
+                                <div class="report-icon"><i class="fa-solid ${typeIcons[r.type] || 'fa-file'}"></i></div>
+                                <div class="report-title">
+                                    <h4>${r.title}</h4>
+                                    <p>${capitalize(r.type)}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="patient-cell">
+                                <div class="patient-avatar">${initials}</div>
+                                <span>${r.patient}</span>
+                            </div>
+                        </td>
+                        <td>${formatDate(r.date)}</td>
+                        <td><span class="status-badge ${r.status}">${capitalize(r.status)}</span></td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="btn btn-icon" onclick="viewReport('${r.id}')"><i class="fa-solid fa-eye"></i></button>
+                                <button class="btn btn-icon" onclick="editReport('${r.id}')"><i class="fa-solid fa-edit"></i></button>
+                                <button class="btn btn-icon" onclick="downloadReport('${r.id}')"><i class="fa-solid fa-download"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function openReportModal(type) {
+            document.getElementById('report-type').value = type;
+            document.getElementById('report-modal').classList.add('show');
+        }
+
+        function closeReportModal() {
+            document.getElementById('report-modal').classList.remove('show');
+        }
+
+        async function saveDraft() {
+            const title = document.getElementById('report-title').value;
+            const patientId = document.getElementById('report-patient').value;
+            
+            if (!title) {
+                alert('Please enter a title');
+                return;
+            }
+            
+            try {
+                const { error } = await CognoSupabase.client
+                    .from('doctor_reports')
+                    .insert({
+                        doctor_id: doctorId,
+                        patient_id: patientId || null,
+                        report_type: document.getElementById('report-type').value,
+                        title: title,
+                        content: document.getElementById('report-summary').value,
+                        assessment_data: { 
+                            findings: document.getElementById('report-findings').value 
+                        },
+                        recommendations: [document.getElementById('report-recommendations').value],
+                        shared_with_parent: false
+                    });
+                
+                if (error) throw error;
+                
+                await loadReports();
+                closeReportModal();
+                clearReportForm();
+                alert('Draft saved!');
+            } catch (err) {
+                console.error('Failed to save draft:', err);
+                alert('Failed to save draft: ' + err.message);
+            }
+        }
+
+        async function saveReport() {
+            const title = document.getElementById('report-title').value;
+            const patientId = document.getElementById('report-patient').value;
+            
+            if (!title || !patientId) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            try {
+                const reportData = {
+                    doctor_id: doctorId,
+                    patient_id: patientId,
+                    report_type: document.getElementById('report-type').value,
+                    title: title,
+                    content: document.getElementById('report-summary').value,
+                    assessment_data: { 
+                        findings: document.getElementById('report-findings').value 
+                    },
+                    recommendations: [document.getElementById('report-recommendations').value],
+                    shared_with_parent: true
+                };
+                
+                // Check if we're editing an existing report
+                const editingId = document.getElementById('report-modal').dataset.editingId;
+                
+                if (editingId) {
+                    const { error } = await CognoSupabase.client
+                        .from('doctor_reports')
+                        .update(reportData)
+                        .eq('id', editingId);
+                    if (error) throw error;
+                } else {
+                    const { error } = await CognoSupabase.client
+                        .from('doctor_reports')
+                        .insert(reportData);
+                    if (error) throw error;
+                }
+                
+                await loadReports();
+                closeReportModal();
+                clearReportForm();
+                alert(editingId ? 'Report updated!' : 'Report created!');
+            } catch (err) {
+                console.error('Failed to save report:', err);
+                alert('Failed to save report: ' + err.message);
+            }
+        }
+        
+        function clearReportForm() {
+            document.getElementById('report-title').value = '';
+            document.getElementById('report-patient').value = '';
+            document.getElementById('report-type').value = 'assessment';
+            document.getElementById('report-summary').value = '';
+            document.getElementById('report-findings').value = '';
+            document.getElementById('report-recommendations').value = '';
+            delete document.getElementById('report-modal').dataset.editingId;
+        }
+
+        async function viewReport(id) {
+            const report = reports.find(r => r.id === id);
+            if (!report) return;
+            
+            const viewHtml = `
+                <div style="padding: 1.5rem;">
+                    <h3 style="margin-bottom: 1rem;">${report.title}</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 1rem;"><strong>Patient:</strong> ${report.patient} | <strong>Type:</strong> ${capitalize(report.type)} | <strong>Date:</strong> ${formatDate(report.date)}</p>
+                    <div style="background: var(--primary-light, #f9fafb); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <h4 style="font-size: 0.9rem; color: var(--text); margin-bottom: 0.5rem;">Summary</h4>
+                        <p style="font-size: 0.9rem;">${report.content || 'No summary provided'}</p>
+                    </div>
+                    <div style="background: var(--primary-light, #f9fafb); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <h4 style="font-size: 0.9rem; color: var(--text); margin-bottom: 0.5rem;">Findings</h4>
+                        <p style="font-size: 0.9rem;">${report.assessment_data?.findings || 'No findings recorded'}</p>
+                    </div>
+                    <div style="background: var(--primary-light, #f9fafb); padding: 1rem; border-radius: 8px;">
+                        <h4 style="font-size: 0.9rem; color: var(--text); margin-bottom: 0.5rem;">Recommendations</h4>
+                        <p style="font-size: 0.9rem;">${Array.isArray(report.recommendations) ? report.recommendations.join(', ') : 'None'}</p>
+                    </div>
+                </div>
+            `;
+            
+            showViewModal('Report Details', viewHtml);
+        }
+        
+        function showViewModal(title, content) {
+            let modal = document.getElementById('view-modal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'view-modal';
+                modal.className = 'modal-overlay';
+                modal.innerHTML = `
+                    <div class="modal-content" style="max-width: 600px;">
+                        <div class="modal-header">
+                            <h2 id="view-modal-title"></h2>
+                            <button class="modal-close" onclick="document.getElementById('view-modal').classList.remove('show')">&times;</button>
+                        </div>
+                        <div id="view-modal-body"></div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+            document.getElementById('view-modal-title').textContent = title;
+            document.getElementById('view-modal-body').innerHTML = content;
+            modal.classList.add('show');
+        }
+        
+        function editReport(id) {
+            const report = reports.find(r => r.id === id);
+            if (!report) return;
+            
+            document.getElementById('report-modal').dataset.editingId = id;
+            document.getElementById('report-title').value = report.title;
+            document.getElementById('report-patient').value = report.patient_id || '';
+            document.getElementById('report-type').value = report.type;
+            document.getElementById('report-summary').value = report.content || '';
+            document.getElementById('report-findings').value = report.assessment_data?.findings || '';
+            document.getElementById('report-recommendations').value = Array.isArray(report.recommendations) ? report.recommendations.join('\n') : '';
+            
+            document.getElementById('report-modal').classList.add('show');
+        }
+        
+        function downloadReport(id) {
+            const report = reports.find(r => r.id === id);
+            if (!report) return;
+            
+            const content = `
+PATIENT REPORT
+==============
+
+Title: ${report.title}
+Patient: ${report.patient}
+Type: ${capitalize(report.type)}
+Date: ${formatDate(report.date)}
+Status: ${capitalize(report.status)}
+
+SUMMARY
+-------
+${report.content || 'No summary provided'}
+
+FINDINGS
+--------
+${report.assessment_data?.findings || 'No findings recorded'}
+
+RECOMMENDATIONS
+---------------
+${Array.isArray(report.recommendations) ? report.recommendations.join('\n') : 'None'}
+
+---
+Generated by Cogno Solution
+            `.trim();
+            
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${report.title.replace(/[^a-z0-9]/gi, '_')}_report.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function capitalize(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        function formatDate(dateStr) {
+            return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        // Search & Filter
+        document.getElementById('search-input')?.addEventListener('input', filterReports);
+        document.getElementById('filter-type')?.addEventListener('change', filterReports);
+        document.getElementById('filter-status')?.addEventListener('change', filterReports);
+
+        function filterReports() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const type = document.getElementById('filter-type').value;
+            const status = document.getElementById('filter-status').value;
+            
+            let filtered = reports;
+            if (query) filtered = filtered.filter(r => r.title.toLowerCase().includes(query) || r.patient.toLowerCase().includes(query));
+            if (type) filtered = filtered.filter(r => r.type === type);
+            if (status) filtered = filtered.filter(r => r.status === status);
+            
+            renderReports(filtered);
+        }
+    </script>
+</body>
+</html>

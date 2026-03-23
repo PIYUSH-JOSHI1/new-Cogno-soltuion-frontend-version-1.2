@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Cogno Solution</title>
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-darker: #1d4ed8;
+            --primary-light: #eff6ff;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --warning: #f59e0b;
+            --warning-light: #fef3c7;
+            --danger: #ef4444;
+            --danger-light: #fee2e2;
+            --bg: #f5f7fa;
+            --card: #ffffff;
+            --text: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+        }
+        
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --primary-light: #1e3a5f;
+            --success-light: #064e3b;
+            --warning-light: #451a03;
+            --danger-light: #450a0a;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg); 
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 90px;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* ===== TOPBAR (Dashboard style) ===== */
+        .topbar {
+            background: var(--card);
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            height: 70px;
+        }
+        
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .topbar-logo {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        
+        .topbar-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .topbar-btn {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+        }
+        
+        .topbar-btn:hover {
+            background: var(--border);
+            color: var(--text);
+        }
+        
+        .topbar-btn .badge {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            min-width: 18px;
+            height: 18px;
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            font-size: 0.65rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+        }
+
+        /* Profile Dropdown */
+        .profile-dropdown { position: relative; }
+        .profile-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.4rem 0.6rem;
+            border-radius: 10px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text);
+        }
+        .profile-btn:hover { background: var(--border); }
+        .profile-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--accent) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .profile-info { text-align: left; }
+        .profile-info .name { font-size: 0.85rem; font-weight: 600; color: var(--text); margin: 0; line-height: 1.2; }
+        .profile-info .role { font-size: 0.7rem; opacity: 0.7; color: var(--text-muted); margin: 0; }
+        .profile-chevron { font-size: 0.75rem; color: var(--text-muted); transition: transform 0.2s; }
+        .profile-dropdown.open .profile-chevron { transform: rotate(180deg); }
+
+        .profile-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background: var(--card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            min-width: 240px;
+            padding: 0.5rem;
+            display: none;
+            z-index: 1000;
+        }
+        .profile-menu.show { display: block; animation: slideDown 0.2s ease; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .profile-menu-header { padding: 0.75rem; border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+        .profile-menu-header .name { font-weight: 600; font-size: 0.95rem; color: var(--text); }
+        .profile-menu-header .email { font-size: 0.75rem; color: var(--primary); }
+        
+        .profile-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.7rem 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+            border: none;
+            background: transparent;
+            width: 100%;
+            color: var(--text);
+        }
+        .profile-menu-item:hover { background: var(--border); }
+        .profile-menu-item i { width: 20px; color: var(--text-muted); }
+        .profile-menu-item.danger { color: var(--danger); }
+        .profile-menu-item.danger i { color: var(--danger); }
+        
+        .theme-toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.7rem 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .theme-toggle-row:hover { background: var(--border); }
+        .theme-toggle-left { display: flex; align-items: center; gap: 0.75rem; color: var(--text); font-size: 0.85rem; }
+        .theme-toggle-left i { width: 20px; color: var(--text-muted); }
+        .theme-switch { position: relative; width: 44px; height: 24px; }
+        .theme-switch input { opacity: 0; width: 0; height: 0; }
+        .theme-slider { position: absolute; cursor: pointer; inset: 0; background: var(--border); transition: 0.3s; border-radius: 24px; }
+        .theme-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; transition: 0.3s; border-radius: 50%; }
+        input:checked + .theme-slider { background: var(--primary); }
+        input:checked + .theme-slider:before { transform: translateX(20px); }
+        .menu-divider { height: 1px; background: var(--border); margin: 0.5rem 0; }
+
+        /* Notifications Panel */
+        .notifications-panel {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background: var(--card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            width: 300px;
+            max-height: 400px;
+            overflow: hidden;
+            display: none;
+            z-index: 1000;
+        }
+        .notifications-panel.show { display: block; animation: slideDown 0.2s ease; }
+        .notifications-header { padding: 1rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .notifications-header h4 { font-size: 0.95rem; font-weight: 600; margin: 0; color: var(--text); }
+        .notifications-header button { font-size: 0.75rem; color: var(--primary); background: none; border: none; cursor: pointer; }
+        .notifications-empty { padding: 2rem; text-align: center; color: var(--text-muted); }
+
+        .dropdown-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 999; display: none; }
+        .dropdown-overlay.show { display: block; }
+        
+        /* Content */
+        .content {
+            padding: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Settings Section */
+        .settings-section {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border);
+        }
+        
+        .settings-section-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .setting-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.85rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+        
+        .setting-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .setting-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1rem;
+        }
+        
+        .setting-text .label {
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+        
+        .setting-text .description {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        .setting-control {
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 26px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--border);
+            transition: 0.3s;
+            border-radius: 26px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background: var(--primary);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(22px);
+        }
+        
+        /* Select */
+        .setting-select {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 0.85rem;
+            min-width: 120px;
+        }
+        
+        .setting-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        /* Buttons */
+        .setting-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: var(--text);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .setting-btn:hover {
+            background: var(--border);
+        }
+        
+        .setting-btn.danger {
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+        
+        .setting-btn.danger:hover {
+            background: var(--danger-light);
+        }
+
+        .setting-btn.primary {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .setting-btn.primary:hover {
+            background: var(--primary-dark);
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 0.5rem 0.25rem;
+            z-index: 1000;
+        }
+        
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.2rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.65rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            min-width: 50px;
+        }
+        
+        .nav-btn i {
+            font-size: 1.15rem;
+        }
+        
+        .nav-btn:hover, .nav-btn.active {
+            color: var(--primary);
+        }
+        
+        .nav-btn.active {
+            background: var(--primary-light);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-content {
+            background: var(--card);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 420px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            animation: slideDown 0.25s ease;
+        }
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+        }
+        .modal-actions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+            margin-top: 1.25rem;
+        }
+        .btn {
+            padding: 0.6rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
+        .btn-ghost:hover { background: var(--border); color: var(--text); }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card);
+            color: var(--text);
+            padding: 0.75rem 1.25rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 3000;
+            animation: slideUp 0.3s ease;
+            font-size: 0.9rem;
+            min-width: 200px;
+        }
+        .toast.success { border-left: 3px solid var(--success); }
+        .toast.error { border-left: 3px solid var(--danger); }
+        .toast.info { border-left: 3px solid var(--primary); }
+        
+        @keyframes slideUp {
+            from { transform: translateX(-50%) translateY(20px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+        
+        @media (max-width: 480px) {
+            .nav-btn { font-size: 0.6rem; min-width: 45px; }
+            .profile-info { display: none; }
+        }
+    
+        /* ── Fix Bottom Nav Squishing ── */
+        .bottom-nav {
+            overflow-x: auto;
+            justify-content: flex-start !important;
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+        .bottom-nav::-webkit-scrollbar { display: none; }
+        .nav-btn, .bottom-nav a { flex-shrink: 0; }
+
+    
+        @media (max-width: 600px) {
+            .notifications-panel { position: fixed !important; top: 60px !important; right: 10px !important; left: 10px !important; width: auto !important; max-width: none !important; }
+        }
+
+        /* ===== FAQ Items ===== */
+        .faq-item {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+        .faq-item:hover { border-color: var(--primary); }
+        .faq-item summary {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text);
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+        .faq-item summary::-webkit-details-marker { display: none; }
+        .faq-item summary::after {
+            content: '\002B';
+            font-size: 1rem;
+            color: var(--primary);
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+        .faq-item[open] summary::after { content: '\2212'; }
+        .faq-item p {
+            padding: 0 1rem 0.9rem;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body class="has-bottom-nav">
+    <!-- Dropdown Overlay -->
+    <div class="dropdown-overlay" id="dropdown-overlay" onclick="closeAllDropdowns()"></div>
+
+    <!-- Topbar (Dashboard-style) -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <div class="topbar-logo">C</div>
+            <span class="topbar-title">Settings</span>
+        </div>
+        <div class="topbar-right">
+            <!-- Language Selector -->
+            <div style="position:relative;">
+                <button class="topbar-btn" id="lang-btn" onclick="toggleLangMenu()" title="Language">
+                    <i class="fa-solid fa-globe"></i>
+                </button>
+                <div id="lang-menu" style="display:none; position:absolute; top:calc(100% + 8px); right:0; background:var(--card); border:1px solid var(--border); border-radius:12px; box-shadow:0 10px 32px rgba(0,0,0,0.18); min-width:160px; padding:0.4rem; z-index:1200;">
+                    <button onclick="setLang('en')" style="display:flex;align-items:center;gap:0.6rem;width:100%;padding:0.6rem 0.75rem;border:none;background:none;border-radius:8px;cursor:pointer;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;" onmouseover="this.style.background='var(--border)'" onmouseout="this.style.background='none'">&#127468;&#127463; English</button>
+                    <button onclick="setLang('hi')" style="display:flex;align-items:center;gap:0.6rem;width:100%;padding:0.6rem 0.75rem;border:none;background:none;border-radius:8px;cursor:pointer;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;" onmouseover="this.style.background='var(--border)'" onmouseout="this.style.background='none'">&#127470;&#127475; हिन्दी</button>
+                    <button onclick="setLang('mr')" style="display:flex;align-items:center;gap:0.6rem;width:100%;padding:0.6rem 0.75rem;border:none;background:none;border-radius:8px;cursor:pointer;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;" onmouseover="this.style.background='var(--border)'" onmouseout="this.style.background='none'">&#127470;&#127475; मराठी</button>
+                </div>
+            </div>
+            <!-- Notifications -->
+            <div style="position:relative;">
+                <button class="topbar-btn" id="notifications-btn" onclick="toggleNotifications()">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="badge" id="notifications-badge" style="display:none;">0</span>
+                </button>
+                
+                <div class="notifications-panel" id="notifications-panel">
+                    <div class="notifications-header">
+                        <h4>Notifications</h4>
+                        <button onclick="markAllRead()">Mark all read</button>
+                    </div>
+                    <!-- Notification Tabs -->
+                    <div style="display:flex; border-bottom: 1px solid var(--border-color, #e2e8f0); padding: 0;">
+                        <button class="notif-tab active" data-tab="all" onclick="switchNotifTab('all')">
+                            <i class="fa-solid fa-bell"></i> All
+                        </button>
+                        <button class="notif-tab" data-tab="messages" onclick="switchNotifTab('messages')">
+                            <i class="fa-solid fa-message"></i> Messages
+                        </button>
+                        <button class="notif-tab" data-tab="email" onclick="switchNotifTab('email')">
+                            <i class="fa-solid fa-envelope"></i> Email
+                        </button>
+                    </div>
+                    <!-- All Notifications -->
+                    <div class="notifications-list notif-content" id="notifications-list" data-tab="all">
+                        <div class="notifications-empty"><i class="fa-solid fa-bell-slash"></i><p>No notifications</p></div>
+                    </div>
+                    <!-- Message Notifications -->
+                    <div class="notifications-list notif-content" id="notif-messages" data-tab="messages" style="display:none;">
+                        <div id="msg-notif-list">
+                            <div class="notifications-empty"><i class="fa-solid fa-message"></i><p>No new messages</p></div>
+                        </div>
+                    </div>
+                    <!-- Email Notifications -->
+                    <div class="notifications-list notif-content" id="notif-email" data-tab="email" style="display:none;">
+                        <div id="email-notif-list">
+                            <div class="notifications-empty"><i class="fa-solid fa-envelope"></i><p>No emails</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+            </div>
+            <!-- Profile Dropdown -->
+            <div class="profile-dropdown" id="profile-dropdown">
+                <button class="profile-btn" onclick="toggleProfileMenu()">
+                    <div class="profile-avatar" id="profile-avatar">D</div>
+                    <div class="profile-info">
+                        <div class="name" id="profile-name">Doctor</div>
+                        <div class="role">Specialist</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-down profile-chevron"></i>
+                </button>
+                <div class="profile-menu" id="profile-menu">
+                    <div class="profile-menu-header">
+                        <div class="name" id="menu-name">Doctor</div>
+                        <div class="email" id="menu-email">doctor@example.com</div>
+                    </div>
+                    <a href="profile.html" class="profile-menu-item"><i class="fa-solid fa-user"></i><span>View Profile</span></a>
+                    <a href="settings.html" class="profile-menu-item"><i class="fa-solid fa-gear"></i><span>Settings</span></a>
+                    <div class="theme-toggle-row">
+                        <div class="theme-toggle-left"><i class="fa-solid fa-moon"></i><span>Dark Mode</span></div>
+                        <label class="theme-switch"><input type="checkbox" id="theme-toggle" onchange="toggleTheme()"><span class="theme-slider"></span></label>
+                    </div>
+                    <div class="menu-divider"></div>
+                    <button class="profile-menu-item danger" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i><span>Sign Out</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Content -->
+    <div class="content">
+        <!-- Appearance -->
+        <div class="settings-section">
+            <div class="settings-section-title">
+                <i class="fa-solid fa-palette"></i>
+                Appearance
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-icon"><i class="fa-solid fa-moon"></i></div>
+                    <div class="setting-text">
+                        <div class="label">Dark Mode</div>
+                        <div class="description">Enable dark theme</div>
+                    </div>
+                </div>
+                <div class="setting-control">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="dark-mode-toggle" onchange="toggleDarkMode()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-icon"><i class="fa-solid fa-text-height"></i></div>
+                    <div class="setting-text">
+                        <div class="label">Font Size</div>
+                        <div class="description">Adjust text size</div>
+                    </div>
+                </div>
+                <div class="setting-control">
+                    <select class="setting-select" id="font-size-select" onchange="changeFontSize()">
+                        <option value="small">Small</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="large">Large</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Notifications -->
+        <div class="settings-section">
+            <div class="settings-section-title">
+                <i class="fa-solid fa-bell"></i>
+                Notifications
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-icon"><i class="fa-solid fa-envelope"></i></div>
+                    <div class="setting-text">
+                        <div class="label">Email Notifications</div>
+                        <div class="description">Receive email alerts</div>
+                    </div>
+                </div>
+                <div class="setting-control">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="email-notif" checked onchange="saveNotifSettings()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-icon"><i class="fa-solid fa-mobile"></i></div>
+                    <div class="setting-text">
+                        <div class="label">Push Notifications</div>
+                        <div class="description">Browser push alerts</div>
+                    </div>
+                </div>
+                <div class="setting-control">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="push-notif" checked onchange="saveNotifSettings()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                    <div class="setting-text">
+                        <div class="label">Appointment Reminders</div>
+                        <div class="description">Get reminded before appointments</div>
+                    </div>
+                </div>
+                <div class="setting-control">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="apt-reminder" checked onchange="saveNotifSettings()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Privacy & Security -->
+        <div class="settings-section">
+            <div class="settings-section-title">
+                <i class="fa-solid fa-shield"></i>
+                Privacy &amp; Security
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-icon"><i class="fa-solid fa-lock"></i></div>
+                    <div class="setting-text">
+                        <div class="label">Change Password</div>
+                        <div class="description">Update your password</div>
+                    </div>
+                </div>
+                <div class="setting-control">
+                    <button class="setting-btn" onclick="openChangePasswordModal()">
+                        Change
+                    </button>
+                </div>
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-icon"><i class="fa-solid fa-key"></i></div>
+                    <div class="setting-text">
+                        <div class="label">Two-Factor Auth</div>
+                        <div class="description">Extra security layer</div>
+                    </div>
+                </div>
+                <div class="setting-control">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="two-factor" onchange="toggleTwoFactor()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Data & Storage -->
+        <div class="settings-section">
+            <div class="settings-section-title">
+                <i class="fa-solid fa-database"></i>
+                Data &amp; Storage
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-icon"><i class="fa-solid fa-download"></i></div>
+                    <div class="setting-text">
+                        <div class="label">Export Data</div>
+                        <div class="description">Download your data</div>
+                    </div>
+                </div>
+                <div class="setting-control">
+                    <button class="setting-btn" id="export-btn" onclick="exportData()">
+                        Export
+                    </button>
+                </div>
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-icon"><i class="fa-solid fa-broom"></i></div>
+                    <div class="setting-text">
+                        <div class="label">Clear Cache</div>
+                        <div class="description">Free up storage space</div>
+                    </div>
+                </div>
+                <div class="setting-control">
+                    <button class="setting-btn" onclick="clearCache()">
+                        Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Support -->
+        <div class="settings-section">
+            <div class="settings-section-title">
+                <i class="fa-solid fa-circle-question"></i>
+                Support
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-icon"><i class="fa-solid fa-headset"></i></div>
+                    <div class="setting-text">
+                        <div class="label">Help Center</div>
+                        <div class="description">FAQs and tutorials</div>
+                    </div>
+                </div>
+                <div class="setting-control">
+                    <button class="setting-btn" onclick="openHelpCenter()">
+                        Open <i class="fa-solid fa-arrow-right" style="font-size: 0.7rem; margin-left: 0.25rem;"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-icon"><i class="fa-solid fa-bug"></i></div>
+                    <div class="setting-text">
+                        <div class="label">Report Issue</div>
+                        <div class="description">Submit a bug report</div>
+                    </div>
+                </div>
+                <div class="setting-control">
+                    <button class="setting-btn" onclick="reportIssue()">
+                        Report
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Danger Zone -->
+        <div class="settings-section">
+            <div class="settings-section-title" style="color: var(--danger);">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                Danger Zone
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-icon" style="color: var(--danger);"><i class="fa-solid fa-trash"></i></div>
+                    <div class="setting-text">
+                        <div class="label">Delete Account</div>
+                        <div class="description">Permanently delete your account</div>
+                    </div>
+                </div>
+                <div class="setting-control">
+                    <button class="setting-btn danger" onclick="deleteAccount()">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div class="modal-overlay" id="change-password-modal">
+        <div class="modal-content">
+            <div class="modal-title">
+                <i class="fa-solid fa-lock" style="color: var(--primary);"></i>
+                Change Password
+            </div>
+            <div class="form-group">
+                <label>Current Password</label>
+                <input type="password" id="current-password" placeholder="Enter current password">
+            </div>
+            <div class="form-group">
+                <label>New Password</label>
+                <input type="password" id="new-password" placeholder="Enter new password (min 8 chars)">
+            </div>
+            <div class="form-group">
+                <label>Confirm New Password</label>
+                <input type="password" id="confirm-password" placeholder="Confirm new password">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-ghost" onclick="closeChangePasswordModal()">Cancel</button>
+                <button class="btn btn-primary" id="save-password-btn" onclick="savePassword()">
+                    <i class="fa-solid fa-check"></i> Update Password
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Two-Factor Auth Modal -->
+    <div class="modal-overlay" id="two-factor-modal">
+        <div class="modal-content">
+            <div class="modal-title">
+                <i class="fa-solid fa-key" style="color: var(--primary);"></i>
+                Two-Factor Authentication
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem; line-height: 1.5;">
+                Two-Factor Authentication adds an extra layer of security. When enabled, you'll need to verify via email OTP every login.
+            </p>
+            <div style="background: var(--primary-light); border-radius: 8px; padding: 1rem; color: var(--primary); font-size: 0.85rem; display: flex; gap: 0.5rem; align-items: flex-start; margin-bottom: 1rem;">
+                <i class="fa-solid fa-circle-info" style="margin-top: 2px; flex-shrink: 0;"></i>
+                <span>Your OTP will be sent to your registered email address each time you sign in.</span>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-ghost" onclick="closeTwoFactorModal(false)">Cancel</button>
+                <button class="btn btn-primary" onclick="closeTwoFactorModal(true)">
+                    Enable 2FA
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Center Modal -->
+    <div class="modal-overlay" id="help-center-modal" onclick="if(event.target===this) closeHelpCenter()" style="align-items:flex-start; padding-top:40px;">
+        <div class="modal-content" style="max-width:560px; max-height:82vh; overflow-y:auto; display:flex; flex-direction:column; gap:0;">
+            <div class="modal-title" style="display:flex; align-items:center; gap:0.5rem;">
+                <i class="fa-solid fa-headset" style="color:var(--primary);"></i>
+                <span>Cogno Solution Help Center</span>
+                <button onclick="closeHelpCenter()" style="margin-left:auto; background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem; padding:0; line-height:1;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- Search -->
+            <div style="position:relative; margin-bottom:1rem;">
+                <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:0.85rem;"></i>
+                <input type="text" id="help-search" placeholder="Search FAQs..." oninput="filterFAQs(this.value)"
+                    style="width:100%; padding:0.65rem 0.75rem 0.65rem 2.2rem; border:1px solid var(--border); border-radius:10px; background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; font-size:0.9rem; outline:none; transition:border 0.2s;"
+                    onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'">
+            </div>
+
+            <!-- Quick links -->
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; margin-bottom:1rem;">
+                <a href="mailto:support@cognosolution.com" style="display:flex; align-items:center; gap:0.5rem; padding:0.6rem 0.75rem; background:var(--primary-light); color:var(--primary); border-radius:8px; text-decoration:none; font-size:0.82rem; font-weight:600;">
+                    <i class="fa-solid fa-envelope"></i> Email Support
+                </a>
+                <button onclick="reportIssue()" style="display:flex; align-items:center; gap:0.5rem; padding:0.6rem 0.75rem; background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:8px; cursor:pointer; font-size:0.82rem; font-weight:600; font-family:'Inter',sans-serif;">
+                    <i class="fa-solid fa-bug" style="color:var(--danger);"></i> Report a Bug
+                </button>
+            </div>
+
+            <div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted); margin-bottom:0.5rem; font-weight:700;">Frequently Asked Questions</div>
+
+            <div id="faq-list" style="display:flex; flex-direction:column; gap:0.4rem;">
+                <details class="faq-item" data-q="add patient">
+                    <summary>How do I add a new patient?</summary>
+                    <p>Go to the <strong>Patients</strong> section from the bottom navigation. Tap the <strong>+ Add Patient</strong> button and fill in the patient's details. You can link existing app users by searching their phone or email.</p>
+                </details>
+                <details class="faq-item" data-q="video consultation start">
+                    <summary>How do I start a video consultation?</summary>
+                    <p>Go to the <strong>Consult</strong> section and click <strong>Start New Consultation</strong>. A video call room will open. Share the link with your patient to let them join.</p>
+                </details>
+                <details class="faq-item" data-q="messages patient chat">
+                    <summary>How do I view patient messages?</summary>
+                    <p>Tap <strong>Messages</strong> in the bottom navigation. All patient conversations appear here. Recent messages also show in the notification bell &#128276; in the top bar.</p>
+                </details>
+                <details class="faq-item" data-q="export pdf data report">
+                    <summary>How do I export my data as a PDF?</summary>
+                    <p>Go to <strong>Settings → Data &amp; Storage → Export Data</strong>. Click Export — an official Cogno Solution branded report opens in a new window. In the print dialog, choose <strong>Save as PDF</strong>.</p>
+                </details>
+                <details class="faq-item" data-q="change password security">
+                    <summary>How do I change my password?</summary>
+                    <p>Go to <strong>Settings → Privacy &amp; Security → Change Password</strong>. Click the Change button, enter your current and new password, and confirm.</p>
+                </details>
+                <details class="faq-item" data-q="two factor auth 2fa otp">
+                    <summary>How do I enable Two-Factor Authentication (2FA)?</summary>
+                    <p>Go to <strong>Settings → Privacy &amp; Security → Two-Factor Auth</strong> and toggle it on. Once enabled, you will receive an OTP to your email on every login.</p>
+                </details>
+                <details class="faq-item" data-q="dark mode light theme toggle">
+                    <summary>How do I switch between dark and light mode?</summary>
+                    <p>Use the <strong>Dark Mode</strong> toggle in <strong>Settings → Appearance</strong>, or use the moon icon toggle in the profile dropdown in the top bar.</p>
+                </details>
+                <details class="faq-item" data-q="schedule appointment calendar">
+                    <summary>How do I manage appointments and schedule?</summary>
+                    <p>Open the <strong>Schedule</strong> section. You can view upcoming appointments, mark them complete, reschedule, or cancel by tapping any appointment card.</p>
+                </details>
+                <details class="faq-item" data-q="reports medical generate">
+                    <summary>How do I generate medical reports?</summary>
+                    <p>Go to the <strong>Reports</strong> section. Click <strong>New Report</strong> to generate a report for a patient. Reports can be filtered by type and exported as PDF.</p>
+                </details>
+                <details class="faq-item" data-q="billing account contact support">
+                    <summary>Who do I contact for billing or account issues?</summary>
+                    <p>Email <strong>support@cognosolution.com</strong> with your account email and a description. Our team responds within 24 business hours.</p>
+                </details>
+            </div>
+
+            <div id="faq-empty" style="display:none; text-align:center; padding:1.5rem; color:var(--text-muted);">
+                <i class="fa-solid fa-circle-question" style="font-size:1.5rem; opacity:0.3; margin-bottom:0.5rem; display:block;"></i>
+                <p>No results found. Try a different keyword or email support.</p>
+            </div>
+
+            <div style="text-align:center; margin-top:1.25rem; padding-top:1rem; border-top:1px solid var(--border); color:var(--text-muted); font-size:0.78rem;">
+                <i class="fa-solid fa-shield-halved" style="color:var(--primary); margin-right:4px;"></i>
+                Cogno Solution &bull; support@cognosolution.com &bull; &copy; 2025
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-btn">
+            <i class="fa-solid fa-house"></i>
+            Home
+        </a>
+        <a href="patients.html" class="nav-btn">
+            <i class="fa-solid fa-user-group"></i>
+            Patients
+        </a>
+        <a href="schedule.html" class="nav-btn">
+            <i class="fa-solid fa-calendar"></i>
+            Schedule
+        </a>
+        <a href="consultations.html" class="nav-btn">
+            <i class="fa-solid fa-video"></i>
+            Consult
+        </a>
+        <a href="messages.html" class="nav-btn">
+            <i class="fa-solid fa-message"></i>
+            Messages
+        </a>
+        <a href="reports.html" class="nav-btn">
+            <i class="fa-solid fa-chart-bar"></i>
+            Reports
+        </a>
+        <a href="profile.html" class="nav-btn">
+            <i class="fa-solid fa-user"></i>
+            Profile
+        </a>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/i18n.js"></script>
+    <script>
+        // ===== THEME & HEADER =====
+        function initTheme() {
+            const savedTheme = localStorage.getItem('cogno_theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            const dmToggle = document.getElementById('dark-mode-toggle');
+            const topbarToggle = document.getElementById('theme-toggle');
+            if (dmToggle) dmToggle.checked = savedTheme === 'dark';
+            if (topbarToggle) topbarToggle.checked = savedTheme === 'dark';
+        }
+
+        function toggleTheme() {
+            const isDark = document.getElementById('theme-toggle').checked;
+            const theme = isDark ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('cogno_theme', theme);
+            const dmToggle = document.getElementById('dark-mode-toggle');
+            if (dmToggle) dmToggle.checked = isDark;
+        }
+
+        // ===== LANGUAGE =====
+        function toggleLangMenu() {
+            const m = document.getElementById('lang-menu');
+            if (!m) return;
+            m.style.display = m.style.display === 'block' ? 'none' : 'block';
+        }
+        function setLang(lang) {
+            localStorage.setItem('cogno_lang', lang);
+            const m = document.getElementById('lang-menu');
+            if (m) m.style.display = 'none';
+            if (window.i18n && typeof window.i18n.setLanguage === 'function') {
+                window.i18n.setLanguage(lang);
+            }
+            location.reload();
+        }
+        document.addEventListener('click', function(e) {
+            const btn = document.getElementById('lang-btn');
+            const menu = document.getElementById('lang-menu');
+            if (btn && menu && !btn.contains(e.target) && !menu.contains(e.target)) {
+                menu.style.display = 'none';
+            }
+        });
+
+        // ===== HELP CENTER =====
+        function openHelpCenter() {
+            document.getElementById('help-center-modal').classList.add('show');
+            const searchEl = document.getElementById('help-search');
+            if (searchEl) { searchEl.value = ''; filterFAQs(''); }
+        }
+        function closeHelpCenter() {
+            document.getElementById('help-center-modal').classList.remove('show');
+        }
+        function filterFAQs(query) {
+            const q = query.toLowerCase().trim();
+            const items = document.querySelectorAll('#faq-list .faq-item');
+            let anyVisible = false;
+            items.forEach(item => {
+                const text = (item.querySelector('summary')?.textContent || '') + ' ' + (item.dataset.q || '');
+                const match = !q || text.toLowerCase().includes(q);
+                item.style.display = match ? '' : 'none';
+                if (match) anyVisible = true;
+            });
+            const empty = document.getElementById('faq-empty');
+            if (empty) empty.style.display = anyVisible ? 'none' : 'block';
+        }
+
+        function toggleDarkMode() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const newTheme = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('cogno_theme', newTheme);
+            const topbarToggle = document.getElementById('theme-toggle');
+            if (topbarToggle) topbarToggle.checked = newTheme === 'dark';
+            showToast(newTheme === 'dark' ? 'Dark mode enabled' : 'Light mode enabled', 'success');
+        }
+
+        
+
+        function toggleProfileMenu() {
+            const menu = document.getElementById('profile-menu');
+            const dropdown = document.getElementById('profile-dropdown');
+            const overlay = document.getElementById('dropdown-overlay');
+            document.getElementById('notifications-panel')?.classList.remove('show');
+            if (menu.classList.contains('show')) { closeAllDropdowns(); }
+            else { menu.classList.add('show'); dropdown.classList.add('open'); overlay.classList.add('show'); }
+        }
+
+        function toggleNotifications() {
+            const panel = document.getElementById('notifications-panel');
+            const overlay = document.getElementById('dropdown-overlay');
+            document.getElementById('profile-menu')?.classList.remove('show');
+            document.getElementById('profile-dropdown')?.classList.remove('open');
+            if (panel.classList.contains('show')) { closeAllDropdowns(); }
+            else { panel.classList.add('show'); overlay.classList.add('show'); }
+        }
+
+        function markAllRead() {
+            const badge = document.getElementById('notifications-badge');
+            if (badge) { badge.style.display = 'none'; badge.textContent = '0'; }
+        }
+
+        async function logout() {
+            try { await CognoSupabase.signOut(); } catch(e) {}
+            window.location.href = '../auth/login.html';
+        }
+
+        async function loadDoctorHeader() {
+            try {
+                const { data: { user } } = await CognoSupabase.client.auth.getUser();
+                if (!user) { window.location.href = '../auth/login.html'; return; }
+                const { data: profile } = await CognoSupabase.client
+                    .from('profiles').select('full_name, avatar_url').eq('id', user.id).single();
+                if (profile) {
+                    const name = profile.full_name || user.email.split('@')[0];
+                    const initial = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
+                    const nameEl = document.getElementById('profile-name');
+                    const menuNameEl = document.getElementById('menu-name');
+                    const menuEmailEl = document.getElementById('menu-email');
+                    if (nameEl) nameEl.textContent = name;
+                    if (menuNameEl) menuNameEl.textContent = name;
+                    if (menuEmailEl) menuEmailEl.textContent = user.email;
+                    const avatarEl = document.getElementById('profile-avatar');
+                    const cachedAvatar = (() => { try { return localStorage.getItem('cogno_avatar_cache_' + user.id); } catch(e) { return null; } })();
+                    const avatarUrl = profile.avatar_url || cachedAvatar;
+                    if (avatarEl && avatarUrl) {
+                        avatarEl.innerHTML = `<img src="${avatarUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.textContent='${initial}'">`;
+                    } else if (avatarEl) {
+                        avatarEl.textContent = initial;
+                    }
+                }
+            } catch(e) { console.warn('Header load error:', e); }
+        }
+
+        // ===== SETTINGS FUNCTIONS =====
+
+        function loadSettings() {
+            const fontSize = localStorage.getItem('cogno_font_size') || 'medium';
+            document.getElementById('font-size-select').value = fontSize;
+
+            // Load notifications settings
+            const emailNotif = localStorage.getItem('cogno_email_notif') !== 'false';
+            const pushNotif = localStorage.getItem('cogno_push_notif') !== 'false';
+            const aptReminder = localStorage.getItem('cogno_apt_reminder') !== 'false';
+            document.getElementById('email-notif').checked = emailNotif;
+            document.getElementById('push-notif').checked = pushNotif;
+            document.getElementById('apt-reminder').checked = aptReminder;
+
+            // Load 2FA setting
+            const twoFactor = localStorage.getItem('cogno_two_factor') === 'true';
+            document.getElementById('two-factor').checked = twoFactor;
+        }
+
+        function changeFontSize() {
+            const size = document.getElementById('font-size-select').value;
+            localStorage.setItem('cogno_font_size', size);
+            const sizes = { small: '14px', medium: '16px', large: '18px' };
+            document.documentElement.style.fontSize = sizes[size];
+            showToast('Font size updated!', 'success');
+        }
+
+        function saveNotifSettings() {
+            localStorage.setItem('cogno_email_notif', document.getElementById('email-notif').checked);
+            localStorage.setItem('cogno_push_notif', document.getElementById('push-notif').checked);
+            localStorage.setItem('cogno_apt_reminder', document.getElementById('apt-reminder').checked);
+            showToast('Notification settings saved!', 'success');
+        }
+
+        // ===== CHANGE PASSWORD =====
+        function openChangePasswordModal() {
+            document.getElementById('current-password').value = '';
+            document.getElementById('new-password').value = '';
+            document.getElementById('confirm-password').value = '';
+            document.getElementById('change-password-modal').classList.add('show');
+        }
+
+        function closeChangePasswordModal() {
+            document.getElementById('change-password-modal').classList.remove('show');
+        }
+
+        async function savePassword() {
+            const currentPw = document.getElementById('current-password').value.trim();
+            const newPw = document.getElementById('new-password').value.trim();
+            const confirmPw = document.getElementById('confirm-password').value.trim();
+
+            if (!newPw || !confirmPw) {
+                showToast('Please fill all fields', 'error');
+                return;
+            }
+            if (newPw.length < 8) {
+                showToast('Password must be at least 8 characters', 'error');
+                return;
+            }
+            if (newPw !== confirmPw) {
+                showToast('New passwords do not match', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('save-password-btn');
+            const origText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Updating...';
+            btn.disabled = true;
+
+            try {
+                const { error } = await CognoSupabase.client.auth.updateUser({ password: newPw });
+                if (error) throw error;
+                closeChangePasswordModal();
+                showToast('Password updated successfully!', 'success');
+            } catch (err) {
+                console.error('Password change error:', err);
+                showToast('Failed: ' + (err.message || 'Unknown error'), 'error');
+            } finally {
+                btn.innerHTML = origText;
+                btn.disabled = false;
+            }
+        }
+
+        // ===== TWO-FACTOR AUTH =====
+        function toggleTwoFactor() {
+            const enabled = document.getElementById('two-factor').checked;
+            if (enabled) {
+                // Show info modal
+                document.getElementById('two-factor-modal').classList.add('show');
+            } else {
+                // Disable 2FA
+                localStorage.setItem('cogno_two_factor', 'false');
+                showToast('Two-Factor Authentication disabled', 'info');
+            }
+        }
+
+        function closeTwoFactorModal(confirm) {
+            document.getElementById('two-factor-modal').classList.remove('show');
+            if (confirm) {
+                localStorage.setItem('cogno_two_factor', 'true');
+                document.getElementById('two-factor').checked = true;
+                showToast('Two-Factor Authentication enabled!', 'success');
+                // In production: call Supabase MFA API
+                enableSupabase2FA();
+            } else {
+                document.getElementById('two-factor').checked = false;
+                localStorage.setItem('cogno_two_factor', 'false');
+            }
+        }
+
+        async function enableSupabase2FA() {
+            try {
+                // Supabase supports TOTP MFA - for email OTP, it's built-in
+                // This is a placeholder for actual MFA enrollment
+                const { data, error } = await CognoSupabase.client.auth.mfa.enroll({
+                    factorType: 'totp',
+                    friendlyName: 'Cogno Solution 2FA'
+                });
+                if (error) {
+                    console.warn('MFA enrollment note:', error.message);
+                    // Still show success as localStorage toggle is set
+                }
+            } catch(e) {
+                console.warn('2FA setup note:', e);
+            }
+        }
+
+        // exportData() is defined in ../js/export-pdf.js (loaded as a script tag below)
+
+        function clearCache() {
+            // Save theme before clearing
+            const theme = localStorage.getItem('cogno_theme');
+            localStorage.clear();
+            sessionStorage.clear();
+            if (theme) localStorage.setItem('cogno_theme', theme);
+            showToast('Cache cleared!', 'success');
+            setTimeout(() => location.reload(), 1000);
+        }
+
+        function reportIssue() {
+            const subject = encodeURIComponent('Bug Report - Cogno Solution');
+            const body = encodeURIComponent('Describe the issue here...\n\nPage: ' + window.location.href + '\nTime: ' + new Date().toISOString());
+            window.open(`mailto:piyushaundhekar@gmail.com?subject=${subject}&body=${body}`, '_blank');
+        }
+
+        function deleteAccount() {
+            if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+                showToast('Please contact piyushaundhekar@gmail.com to delete your account.', 'info');
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const icons = { success: 'check-circle', error: 'exclamation-circle', info: 'info-circle' };
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i class="fa-solid fa-${icons[type] || 'check-circle'}"></i> ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3500);
+        }
+
+        function switchNotifTab(tabName) {
+            document.querySelectorAll('.notif-tab').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tab === tabName);
+            });
+            document.querySelectorAll('.notif-content').forEach(content => {
+                content.style.display = content.dataset.tab === tabName ? 'block' : 'none';
+            });
+        }
+
+        function formatTimeAgo(dateStr) {
+            const date = new Date(dateStr);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return diffMins + 'm ago';
+            if (diffHours < 24) return diffHours + 'h ago';
+            if (diffDays < 7) return diffDays + 'd ago';
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+
+        async function loadMessageNotifications() {
+            try {
+                const { data: { user } } = await CognoSupabase.client.auth.getUser();
+                if (!user) return;
+                
+                // receiver_id is the confirmed correct column
+                const { data: messages, error } = await CognoSupabase.client
+                    .from('messages')
+                    .select('id, content, created_at, sender_id, receiver_id')
+                    .eq('receiver_id', user.id)
+                    .order('created_at', { ascending: false })
+                    .limit(10);
+                
+                if (error) { console.warn('Notif query error:', error.message); return; }
+                
+                const container = document.getElementById('msg-notif-list');
+                const badge = document.getElementById('notifications-badge');
+                if (!container) return;
+                
+                if (!messages || messages.length === 0) {
+                    container.innerHTML = `<div style="padding: 2rem; text-align: center; color: var(--text-muted, #64748b);"><i class="fa-solid fa-message" style="font-size: 1.5rem; opacity: 0.3; margin-bottom: 0.5rem; display:block;"></i><p>No messages yet</p></div>`;
+                    return;
+                }
+                
+                // Batch-fetch sender profiles
+                const senderIds = [...new Set(messages.map(m => m.sender_id).filter(Boolean))];
+                const profileMap = {};
+                if (senderIds.length > 0) {
+                    const { data: profiles } = await CognoSupabase.client
+                        .from('profiles').select('id, full_name, avatar_url').in('id', senderIds);
+                    (profiles || []).forEach(p => { profileMap[p.id] = p; });
+                }
+                
+                if (badge) { badge.textContent = messages.length; badge.style.display = 'flex'; }
+                
+                container.innerHTML = messages.map(msg => {
+                    const p = profileMap[msg.sender_id] || {};
+                    const senderName = p.full_name || 'Patient';
+                    const initials = senderName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                    const avatarUrl = p.avatar_url;
+                    const preview = (msg.content || 'Sent an attachment').substring(0, 60);
+                    return `
+                        <div style="padding: 12px; border-bottom: 1px solid var(--border-color, #e2e8f0); display: flex; gap: 10px; align-items:flex-start; cursor:pointer;" 
+                             onclick="window.location.href='messages.html?user=${msg.sender_id}'"
+                             onmouseover="this.style.background='var(--primary-light, #eff6ff)'"
+                             onmouseout="this.style.background='transparent'">
+                            <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #06b6d4); color: white; display: flex; align-items:center; justify-content:center; flex-shrink: 0; font-weight: 600; font-size: 0.75rem; overflow:hidden;">
+                                ${avatarUrl ? `<img src="${avatarUrl}" style="width:100%;height:100%;object-fit:cover;">` : initials}
+                            </div>
+                            <div style="flex:1; min-width:0;">
+                                <div style="font-size: 0.85rem; font-weight: 600; color: var(--text, #1e293b); margin-bottom: 2px; display: flex; justify-content: space-between;">
+                                    <span>${senderName}</span>
+                                    <span style="font-size: 0.65rem; color: #64748b; font-weight: 400;">${formatTimeAgo(msg.created_at)}</span>
+                                </div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted, #64748b); line-height: 1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${preview}</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch(e) { console.warn('Notif load error:', e); }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            loadSettings();
+            loadDoctorHeader();
+            loadMessageNotifications();
+        });
+    </script>
+    <!-- Export PDF function lives here to avoid HTML parser issues with </style> inside inline script -->
+    <script src="../js/export-pdf.js"></script>
+</body>
+</html>

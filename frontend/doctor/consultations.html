@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Consultations - Cogno Solution</title>
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #eff6ff;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --warning: #f59e0b;
+            --warning-light: #fef3c7;
+            --danger: #ef4444;
+            --danger-light: #fee2e2;
+            --info: #06b6d4;
+            --info-light: #cffafe;
+            --bg: #f5f7fa;
+            --card: #ffffff;
+            --text: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+        }
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --primary-light: #1e3a5f;
+            --success-light: #064e3b;
+            --warning-light: #451a03;
+            --danger-light: #450a0a;
+            --info-light: #164e63;
+        }
+        
+        .topbar {
+            background: var(--card);
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1100;
+        }
+        
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .topbar-left a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .topbar h1 {
+            font-size: 1.25rem;
+            color: var(--text);
+        }
+        
+        .content {
+            padding: 1.5rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .quick-action-card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quick-action-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+        
+        .quick-action-card.primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+        }
+        
+        .quick-action-card .icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: #3b82f6;
+        }
+        
+        .quick-action-card.primary .icon {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        
+        .quick-action-card h3 {
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .quick-action-card p {
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            background: var(--card);
+            padding: 0.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+        
+        .tab:hover {
+            background: var(--border);
+        }
+        
+        .tab.active {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .tab .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            background: #ef4444;
+            color: white;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+        
+        .tab.active .badge {
+            background: var(--card);
+            color: #3b82f6;
+        }
+        
+        /* Consultation Cards */
+        .consultation-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .consultation-card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .consultation-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .consultation-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .consultation-info {
+            flex: 1;
+        }
+        
+        .consultation-info h3 {
+            font-size: 1rem;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+        
+        .consultation-info p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+        
+        .consultation-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        .consultation-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        
+        .consultation-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .consultation-status.pending { background: #fef3c7; color: #d97706; }
+        .consultation-status.confirmed { background: var(--primary-light); color: #2563eb; }
+        .consultation-status.in_progress { background: #dcfce7; color: #16a34a; }
+        .consultation-status.completed { background: var(--border); color: var(--text-muted); }
+        .consultation-status.cancelled { background: #fee2e2; color: #dc2626; }
+        
+        .consultation-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+        }
+        
+        .btn-primary { background: #3b82f6; color: white; }
+        .btn-success { background: #10b981; color: white; }
+        .btn-outline { background: var(--card); border: 1px solid var(--border); color: var(--text); }
+        .btn-danger { background: #fee2e2; color: #dc2626; border: none; }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Profile Dropdown */
+        .profile-dropdown { position: relative; }
+        .profile-btn { display: flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0.6rem; border-radius: 10px; border: none; background: transparent; cursor: pointer; transition: all 0.2s; }
+        .profile-btn:hover { background: var(--border); }
+        .profile-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.85rem; }
+        .profile-info { text-align: left; }
+        .profile-info .name { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+        .profile-info .role { font-size: 0.7rem; color: var(--text-muted); }
+        .profile-chevron { color: var(--text-muted); font-size: 0.75rem; transition: transform 0.2s; }
+        .profile-dropdown.open .profile-chevron { transform: rotate(180deg); }
+        .profile-menu { position: absolute; top: calc(100% + 8px); right: 0; background: var(--card); border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0,0,0,0.15); min-width: 240px; padding: 0.5rem; display: none; z-index: 2000; }
+        .profile-menu.show { display: block; animation: slideDown 0.2s ease; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .profile-menu-header { padding: 0.75rem; border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+        .profile-menu-header .name { font-weight: 600; color: var(--text); font-size: 0.95rem; }
+        .profile-menu-header .email { font-size: 0.75rem; color: #3b82f6; }
+        .profile-menu-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.7rem 0.75rem; border-radius: 8px; cursor: pointer; color: var(--text); text-decoration: none; font-size: 0.85rem; transition: background 0.2s; border: none; background: none; width: 100%; }
+        .profile-menu-item:hover { background: var(--border); }
+        .profile-menu-item i { width: 20px; color: var(--text-muted); }
+        .profile-menu-item.danger { color: #ef4444; }
+        .profile-menu-item.danger i { color: #ef4444; }
+        .theme-toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 0.7rem 0.75rem; border-radius: 8px; }
+        .theme-toggle-row:hover { background: var(--border); }
+        .theme-toggle-left { display: flex; align-items: center; gap: 0.75rem; color: var(--text); font-size: 0.85rem; }
+        .theme-toggle-left i { width: 20px; color: var(--text-muted); }
+        .theme-switch { position: relative; width: 44px; height: 24px; }
+        .theme-switch input { opacity: 0; width: 0; height: 0; }
+        .theme-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: var(--border); transition: 0.3s; border-radius: 24px; }
+        .theme-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background: var(--card); transition: 0.3s; border-radius: 50%; }
+        input:checked + .theme-slider { background: #3b82f6; }
+        input:checked + .theme-slider:before { transform: translateX(20px); }
+        .menu-divider { height: 1px; background: var(--border); margin: 0.5rem 0; }
+        .dropdown-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 900; display: none; }
+        .dropdown-overlay.show { display: block; }
+
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .bottom-nav .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.4rem 0.75rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 0.65rem;
+            border-radius: 8px;
+            text-decoration: none;
+            min-width: 48px;
+        }
+        
+        .bottom-nav .nav-btn i {
+            font-size: 1.1rem;
+            margin-bottom: 0.2rem;
+        }
+        
+        .bottom-nav .nav-btn:hover {
+            background: var(--border);
+        }
+        
+        .bottom-nav .nav-btn.active {
+            color: #3b82f6;
+            background: var(--primary-light);
+        }
+        
+        .bottom-nav .nav-btn.primary {
+            background: #3b82f6;
+            color: white;
+            padding: 0.75rem 2rem;
+        }
+
+        @media (max-width: 600px) {
+            .consultation-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .consultation-actions {
+                flex-direction: row;
+                width: 100%;
+            }
+            .consultation-actions .btn {
+                flex: 1;
+            }
+        }
+    
+        
+        
+
+        /* ── Topbar & Profile Dropdown (shared across all doctor pages) ── */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 80px;
+            transition: background 0.3s, color 0.3s;
+        }
+        .topbar { background: var(--card); padding: 0.75rem 1rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1000; height: 64px; }
+        .topbar-left { display: flex; align-items: center; gap: 0.75rem; }
+        .topbar-logo { width: 36px; height: 36px; background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1rem; flex-shrink: 0; }
+        .topbar-title { font-size: 1.1rem; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .topbar-right { display: flex; align-items: center; gap: 0.5rem; }
+        .topbar-btn { position: relative; width: 40px; height: 40px; border-radius: 10px; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: all 0.2s; color: var(--text-muted); }
+        .topbar-btn:hover { background: var(--border); color: var(--text); }
+        .topbar-btn .badge { position: absolute; top: 6px; right: 6px; min-width: 18px; height: 18px; background: var(--danger); color: white; border-radius: 50%; font-size: 0.65rem; font-weight: 600; display: flex; align-items: center; justify-content: center; padding: 0 4px; }
+
+        /* Profile Dropdown */
+        .profile-dropdown { position: relative; }
+        .profile-btn { display: flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0.6rem; border-radius: 10px; border: none; background: transparent; cursor: pointer; transition: all 0.2s; color: var(--text); }
+        .profile-btn:hover { background: var(--border); }
+        .profile-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-dark) 0%, var(--accent) 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.85rem; overflow: hidden; flex-shrink: 0; }
+        .profile-info { text-align: left; }
+        .profile-info .name { font-size: 0.85rem; font-weight: 600; color: var(--text); line-height: 1.2; margin: 0; }
+        .profile-info .role { font-size: 0.7rem; color: var(--text-muted); margin: 0; }
+        .profile-chevron { font-size: 0.75rem; color: var(--text-muted); transition: transform 0.2s; }
+        .profile-dropdown.open .profile-chevron { transform: rotate(180deg); }
+        .profile-menu { position: absolute; top: calc(100% + 8px); right: 0; background: var(--card); border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0,0,0,0.15); min-width: 240px; padding: 0.5rem; display: none !important; z-index: 1100; }
+        .profile-menu.show { display: block !important; animation: slideDown 0.2s ease; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .profile-menu-header { padding: 0.75rem; border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+        .profile-menu-header .name { font-weight: 600; font-size: 0.95rem; color: var(--text); }
+        .profile-menu-header .email { font-size: 0.75rem; color: var(--primary); }
+        .profile-menu-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.7rem 0.75rem; border-radius: 8px; cursor: pointer; text-decoration: none; font-size: 0.85rem; transition: background 0.2s; border: none; background: transparent; width: 100%; color: var(--text); }
+        .profile-menu-item:hover { background: var(--border); }
+        .profile-menu-item i { width: 20px; color: var(--text-muted); }
+        .profile-menu-item.danger { color: var(--danger); }
+        .profile-menu-item.danger i { color: var(--danger); }
+        .theme-toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 0.7rem 0.75rem; border-radius: 8px; cursor: pointer; }
+        .theme-toggle-row:hover { background: var(--border); }
+        .theme-toggle-left { display: flex; align-items: center; gap: 0.75rem; font-size: 0.85rem; color: var(--text); }
+        .theme-toggle-left i { width: 20px; color: var(--text-muted); }
+        .theme-switch { position: relative; width: 44px; height: 24px; }
+        .theme-switch input { opacity: 0; width: 0; height: 0; }
+        .theme-slider { position: absolute; cursor: pointer; inset: 0; background: var(--border); transition: 0.3s; border-radius: 24px; }
+        .theme-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background: var(--card); transition: 0.3s; border-radius: 50%; }
+        input:checked + .theme-slider { background: var(--primary); }
+        input:checked + .theme-slider:before { transform: translateX(20px); }
+        .menu-divider { height: 1px; background: var(--border); margin: 0.5rem 0; }
+        .dropdown-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1050; display: none; }
+        .dropdown-overlay.show { display: block; }
+
+        /* Notifications Panel */
+        .notifications-panel { position: absolute; top: calc(100% + 8px); right: 0; background: var(--card); border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0,0,0,0.15); width: 300px; max-height: 400px; overflow: hidden; display: none !important; z-index: 1100; }
+        .notifications-panel.show { display: block !important; animation: slideDown 0.2s ease; }
+        .notifications-header { padding: 1rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .notifications-header h4 { font-size: 0.95rem; font-weight: 600; margin: 0; color: var(--text); }
+        .notifications-header button { font-size: 0.75rem; color: var(--primary); background: none; border: none; cursor: pointer; }
+        .notifications-empty { padding: 2rem; text-align: center; color: var(--text-muted); }
+        .notifications-list { max-height: 320px; overflow-y: auto; }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 0.5rem 0.75rem;
+            display: flex;
+            justify-content: space-around;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.06);
+        }
+        
+        
+        
+        
+
+        /* Responsive topbar */
+        @media (max-width: 600px) {
+            .topbar { padding: 0.5rem 0.75rem; height: 56px; gap: 0.5rem; }
+            .topbar-right { gap: 2px; }
+            .topbar-btn { width: 34px; height: 34px; font-size: 1rem; }
+            .profile-info { display: none; }
+            .topbar-title { font-size: 0.95rem; }
+            .notifications-panel { position: fixed; top: 60px; right: 10px; left: 10px; width: auto; max-width: none; }
+            .profile-menu { position: fixed; top: 60px; right: 10px; left: 10px; width: auto; max-width: none; }
+        }
+
+                /* ── Consultations page – responsive ── */
+        .content { padding: 1rem; max-width: 900px; margin: 0 auto; }
+        @media (min-width: 768px) { .content { padding: 1.5rem; } }
+
+        /* Dark-mode cards */
+        .quick-action-card { background: var(--card); border: 1px solid var(--border); color: var(--text); }
+        .quick-action-card .icon { background: var(--primary-light); color: var(--primary); }
+        .consultation-card { background: var(--card); border: 1px solid var(--border); color: var(--text); }
+        .consultation-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
+        .consultation-info h3 { color: var(--text); }
+        .consultation-info p { color: var(--text-muted); }
+        .consultation-meta { color: var(--text-muted); }
+        .tabs { background: var(--card); border: 1px solid var(--border); }
+        .tab { color: var(--text-muted); }
+        .tab:hover { background: var(--border); color: var(--text); }
+        .btn-outline { background: var(--card); border: 1px solid var(--border); color: var(--text); }
+
+        @media (max-width: 600px) {
+            .quick-actions { grid-template-columns: 1fr; }
+            .consultation-card { flex-direction: column; align-items: flex-start; }
+            .consultation-actions { flex-direction: row; width: 100%; }
+            .consultation-actions .btn { flex: 1; justify-content: center; }
+            .tabs { flex-wrap: wrap; }
+            .tab { flex: 1; min-width: 80px; font-size: 0.8rem; padding: 0.6rem 0.5rem; }
+        }
+
+                /* ── Bottom Nav – dashboard style ── */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 0.35rem 0.5rem;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 -2px 16px rgba(0,0,0,0.10);
+        }
+        .nav-btn, .bottom-nav .nav-btn, .bottom-nav a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0.45rem 0.65rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 0.62rem;
+            font-weight: 500;
+            border-radius: 10px;
+            text-decoration: none;
+            min-width: 0;
+            flex: 1;
+            max-width: 80px;
+            transition: all 0.18s;
+            font-family: 'Inter', sans-serif;
+            line-height: 1;
+            gap: 0.2rem;
+        }
+        .nav-btn i, .bottom-nav .nav-btn i, .bottom-nav a i {
+            font-size: 1.2rem;
+            display: block;
+        }
+        .nav-btn:hover, .bottom-nav .nav-btn:hover, .bottom-nav a:hover {
+            background: var(--border);
+            color: var(--text);
+        }
+        .nav-btn.active, .bottom-nav .nav-btn.active, .bottom-nav a.active {
+            color: var(--primary);
+            background: var(--primary-light);
+            border-radius: 10px;
+        }
+
+        
+        /* ── Language button – always visible in topbar ── */
+        #lang-btn { display: flex !important; }
+        #lang-menu { z-index: 2000 !important; }
+        /* On very small screens, hide text labels in topbar to save space */
+        @media (max-width: 400px) {
+            .topbar-title { display: none; }
+        }
+
+    
+                /*  Responsive bottom nav for small screens  */
+        @media (max-width: 480px) {
+            .nav-btn, .bottom-nav .nav-btn, .bottom-nav a {
+                font-size: 0.55rem;
+                padding: 0.35rem 0.2rem;
+                gap: 0.15rem;
+            }
+            .nav-btn i, .bottom-nav .nav-btn i, .bottom-nav a i {
+                font-size: 1.05rem;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Dropdown Overlay -->
+    <div class="dropdown-overlay" id="dropdown-overlay" onclick="closeAllDropdowns()"></div>
+
+        <!-- Dropdown Overlay -->
+
+    
+    <!-- Topbar -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <div class="topbar-logo">C</div>
+            <span class="topbar-title">Consultations</span>
+        </div>
+        <div class="topbar-right">
+                        <div style="position:relative;">
+                <button class="topbar-btn" id="lang-btn" onclick="toggleLangMenu()" title="Language">
+                    <i class="fa-solid fa-globe"></i>
+                </button>
+                <div id="lang-menu" style="display:none !important; position:absolute; top:calc(100% + 8px); right:0; background:var(--card, #1e293b); border:1px solid var(--border, #334155); border-radius:12px; box-shadow:0 10px 32px rgba(0,0,0,0.18); min-width:160px; padding:0.4rem; z-index:1200;">
+                    <button onclick="setLang('en')" style="display:flex;align-items:center;gap:0.6rem;width:100%;padding:0.6rem 0.75rem;border:none;background:none;border-radius:8px;cursor:pointer;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;" onmouseover="this.style.background='var(--border)'" onmouseout="this.style.background='none'">🇬🇧 English</button>
+                    <button onclick="setLang('hi')" style="display:flex;align-items:center;gap:0.6rem;width:100%;padding:0.6rem 0.75rem;border:none;background:none;border-radius:8px;cursor:pointer;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;" onmouseover="this.style.background='var(--border)'" onmouseout="this.style.background='none'">🇮🇳 हिन्दी</button>
+                    <button onclick="setLang('mr')" style="display:flex;align-items:center;gap:0.6rem;width:100%;padding:0.6rem 0.75rem;border:none;background:none;border-radius:8px;cursor:pointer;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;" onmouseover="this.style.background='var(--border)'" onmouseout="this.style.background='none'">🇮🇳 मराठी</button>
+                </div>
+            </div>
+            <div style="position:relative;">
+                <button class="topbar-btn" id="notifications-btn" onclick="toggleNotifications()">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="badge" id="notifications-badge" style="display:none;">0</span>
+                </button>
+                <div class="notifications-panel" id="notifications-panel">
+                    <div class="notifications-header">
+                        <h4>Notifications</h4>
+                        <button onclick="markAllRead()">Mark all read</button>
+                    </div>
+                    <!-- Notification Tabs -->
+                    <div style="display:flex; border-bottom: 1px solid var(--border-color, #e2e8f0); padding: 0;">
+                        <button class="notif-tab active" data-tab="all" onclick="switchNotifTab('all')" style="flex:1; padding: 0.6rem; border:none; background:none; cursor:pointer; font-size: 0.8rem; font-weight: 600; color: var(--primary, #3b82f6); border-bottom: 2px solid var(--primary, #3b82f6); font-family: 'Inter', sans-serif;">
+                            <i class="fa-solid fa-bell"></i> All
+                        </button>
+                        <button class="notif-tab" data-tab="messages" onclick="switchNotifTab('messages')" style="flex:1; padding: 0.6rem; border:none; background:none; cursor:pointer; font-size: 0.8rem; font-weight: 500; color: var(--text-muted, #64748b); border-bottom: 2px solid transparent; font-family: 'Inter', sans-serif;">
+                            <i class="fa-solid fa-message"></i> Messages
+                        </button>
+                        <button class="notif-tab" data-tab="email" onclick="switchNotifTab('email')" style="flex:1; padding: 0.6rem; border:none; background:none; cursor:pointer; font-size: 0.8rem; font-weight: 500; color: var(--text-muted, #64748b); border-bottom: 2px solid transparent; font-family: 'Inter', sans-serif;">
+                            <i class="fa-solid fa-envelope"></i> Email
+                        </button>
+                    </div>
+                    <!-- All Notifications -->
+                    <div class="notifications-list notif-content" id="notifications-list" data-tab="all">
+                        <div style="padding: 12px; border-bottom: 1px solid var(--border, #e2e8f0); display: flex; gap: 10px; align-items:flex-start; cursor:pointer;" onmouseover="this.style.background='var(--primary-light, #eff6ff)'" onmouseout="this.style.background='transparent'">
+                            <div style="width: 36px; height: 36px; border-radius: 50%; background: #eff6ff; color: #3b82f6; display: flex; align-items:center; justify-content:center; flex-shrink: 0;"><i class="fa-solid fa-calendar-check"></i></div>
+                            <div>
+                                <div style="font-size: 0.85rem; font-weight: 600; color: var(--text, #1e293b); margin-bottom: 2px;">Consultations Active</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted, #64748b); line-height: 1.3;">Manage your upcoming appointments here.</div>
+                                <div style="font-size: 0.65rem; color: #3b82f6; margin-top: 4px;">Just now</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Message Notifications -->
+                    <div class="notifications-list notif-content" id="notif-messages" data-tab="messages" style="display:none; max-height: 320px; overflow-y: auto;">
+                        <div id="msg-notif-list">
+                            <div style="padding: 2rem; text-align: center; color: var(--text-muted, #64748b);">
+                                <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; opacity: 0.5; margin-bottom: 0.5rem; display:block;"></i>
+                                <p style="font-size: 0.85rem;">Loading messages...</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Email Notifications -->
+                    <div class="notifications-list notif-content" id="notif-email" data-tab="email" style="display:none; max-height: 320px; overflow-y: auto;">
+                        <div style="padding: 2rem; text-align: center; color: var(--text-muted, #64748b);">
+                            <i class="fa-solid fa-envelope" style="font-size: 1.5rem; opacity: 0.3; margin-bottom: 0.5rem; display:block;"></i>
+                            <p style="font-size: 0.85rem;">No email notifications</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="profile-dropdown" id="profile-dropdown">
+                <button class="profile-btn" onclick="toggleProfileMenu()">
+                    <div class="profile-avatar" id="profile-avatar">D</div>
+                    <div class="profile-info">
+                        <div class="name" id="profile-name">Doctor</div>
+                        <div class="role">Specialist</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-down profile-chevron"></i>
+                </button>
+                <div class="profile-menu" id="profile-menu">
+                    <div class="profile-menu-header">
+                        <div class="name" id="menu-name">Doctor</div>
+                        <div class="email" id="menu-email">doctor@example.com</div>
+                    </div>
+                    <a href="profile.html" class="profile-menu-item"><i class="fa-solid fa-user"></i><span>View Profile</span></a>
+                    <a href="settings.html" class="profile-menu-item"><i class="fa-solid fa-gear"></i><span>Settings</span></a>
+                    <div class="theme-toggle-row">
+                        <div class="theme-toggle-left"><i class="fa-solid fa-moon"></i><span>Dark Mode</span></div>
+                        <label class="theme-switch"><input type="checkbox" id="theme-toggle" onchange="toggleTheme()"><span class="theme-slider"></span></label>
+                    </div>
+                    <div class="menu-divider"></div>
+                    <button class="profile-menu-item danger" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i><span>Sign Out</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <div class="quick-action-card primary" onclick="startInstantCall()">
+                <div class="icon"><i class="fa-solid fa-video"></i></div>
+                <div>
+                    <h3>Start Instant Call</h3>
+                    <p>Quick call with a patient</p>
+                </div>
+            </div>
+            <div class="quick-action-card" onclick="window.location.href='schedule.html'">
+                <div class="icon"><i class="fa-solid fa-calendar-plus"></i></div>
+                <div>
+                    <h3>Schedule Meeting</h3>
+                    <p>Book a future consultation</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab active" data-tab="upcoming">
+                Upcoming
+                <span class="badge" id="upcoming-count">0</span>
+            </div>
+            <div class="tab" data-tab="today">Today</div>
+            <div class="tab" data-tab="past">Past</div>
+            <div class="tab" data-tab="cancelled">Cancelled</div>
+        </div>
+
+        <!-- Consultation List -->
+        <div class="consultation-list" id="consultation-list">
+            <div class="empty-state">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <p>Loading consultations...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-btn">
+            <i class="fa-solid fa-house"></i>
+            Home
+        </a>
+        <a href="patients.html" class="nav-btn">
+            <i class="fa-solid fa-user-group"></i>
+            Patients
+        </a>
+        <a href="schedule.html" class="nav-btn">
+            <i class="fa-solid fa-calendar"></i>
+            Schedule
+        </a>
+        <a href="consultations.html" class="nav-btn active">
+            <i class="fa-solid fa-video"></i>
+            Consult
+        </a>
+        <a href="messages.html" class="nav-btn">
+            <i class="fa-solid fa-message"></i>
+            Messages
+        </a>
+        <a href="reports.html" class="nav-btn">
+            <i class="fa-solid fa-chart-bar"></i>
+            Reports
+        </a>
+        <a href="profile.html" class="nav-btn">
+            <i class="fa-solid fa-user"></i>
+            Profile
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/i18n.js"></script>
+    
+    <script>
+
+        // === SHARED DOCTOR HEADER JS ===
+        function initTheme() {
+            const saved = localStorage.getItem('cogno_theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', saved);
+            const toggle = document.getElementById('theme-toggle');
+            if (toggle) toggle.checked = saved === 'dark';
+        }
+        function toggleTheme() {
+            const isDark = document.getElementById('theme-toggle').checked;
+            const theme = isDark ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('cogno_theme', theme);
+        }
+        function closeAllDropdowns() {
+            document.getElementById('profile-menu')?.classList.remove('show');
+            document.getElementById('notifications-panel')?.classList.remove('show');
+            document.getElementById('profile-dropdown')?.classList.remove('open');
+            document.getElementById('dropdown-overlay')?.classList.remove('show');
+        }
+        function toggleProfileMenu() {
+            const menu = document.getElementById('profile-menu');
+            const dropdown = document.getElementById('profile-dropdown');
+            const overlay = document.getElementById('dropdown-overlay');
+            document.getElementById('notifications-panel')?.classList.remove('show');
+            if (menu.classList.contains('show')) { closeAllDropdowns(); }
+            else { menu.classList.add('show'); dropdown.classList.add('open'); overlay.classList.add('show'); }
+        }
+        function toggleNotifications() {
+            const panel = document.getElementById('notifications-panel');
+            const overlay = document.getElementById('dropdown-overlay');
+            document.getElementById('profile-menu')?.classList.remove('show');
+            document.getElementById('profile-dropdown')?.classList.remove('open');
+            if (panel.classList.contains('show')) { closeAllDropdowns(); }
+            else { panel.classList.add('show'); overlay.classList.add('show'); }
+        }
+        function markAllRead() {
+            const badge = document.getElementById('notifications-badge');
+            if (badge) { badge.style.display = 'none'; badge.textContent = '0'; }
+        }
+        function switchNotifTab(tabName) {
+            document.querySelectorAll('.notif-tab').forEach(btn => {
+                if (btn.dataset.tab === tabName) {
+                    btn.style.fontWeight = '600';
+                    btn.style.color = 'var(--primary, #3b82f6)';
+                    btn.style.borderBottom = '2px solid var(--primary, #3b82f6)';
+                } else {
+                    btn.style.fontWeight = '500';
+                    btn.style.color = 'var(--text-muted, #64748b)';
+                    btn.style.borderBottom = '2px solid transparent';
+                }
+            });
+            document.querySelectorAll('.notif-content').forEach(content => {
+                content.style.display = content.dataset.tab === tabName ? 'block' : 'none';
+            });
+            if (tabName === 'messages') loadMessageNotifications();
+        }
+        async function loadMessageNotifications() {
+            const container = document.getElementById('msg-notif-list');
+            if (!container) return;
+            try {
+                const { data: { user } } = await CognoSupabase.client.auth.getUser();
+                if (!user) return;
+                let messages = null;
+                // receiver_id is the confirmed correct column
+                const { data: m1, error: e1 } = await CognoSupabase.client
+                    .from('messages').select('id, content, created_at, sender_id, receiver_id')
+                    .eq('receiver_id', user.id).order('created_at', { ascending: false }).limit(10);
+                if (!e1) { messages = m1; }
+                if (!messages || messages.length === 0) {
+                    // Try fetching sender profiles for all messages without column filter
+                    const { data: m3 } = await CognoSupabase.client
+                        .from('messages').select('id, content, message, created_at, sender_id, is_read, read')
+                        .order('created_at', { ascending: false }).limit(10);
+                    messages = (m3 || []).filter(m => m.sender_id !== user.id);
+                }
+                if (messages && messages.length > 0) {
+                    // Fetch sender names
+                    const senderIds = [...new Set(messages.map(m => m.sender_id).filter(Boolean))];
+                    let profileMap = {};
+                    if (senderIds.length > 0) {
+                        const { data: profiles } = await CognoSupabase.client
+                            .from('profiles').select('id, full_name, avatar_url').in('id', senderIds);
+                        (profiles || []).forEach(p => { profileMap[p.id] = p; });
+                    }
+                    // Update badge
+                    const unread = messages.filter(m => m.is_read === false || m.read === false).length;
+                    if (unread > 0) {
+                        const badge = document.getElementById('notifications-badge');
+                        if (badge) { badge.textContent = unread; badge.style.display = 'flex'; }
+                    }
+                    container.innerHTML = messages.map(msg => {
+                        const p = profileMap[msg.sender_id] || {};
+                        const senderName = p.full_name || 'Patient';
+                        const initials = senderName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                        const avatarUrl = p.avatar_url;
+                        const timeAgo = formatTimeAgo(msg.created_at);
+                        const preview = (msg.content || msg.message || 'Sent an attachment').substring(0, 60);
+                        const isUnread = (msg.is_read === false || msg.read === false);
+                        return `
+                            <div style="padding: 12px; border-bottom: 1px solid var(--border, #e2e8f0); display: flex; gap: 10px; align-items:flex-start; cursor:pointer; ${isUnread ? 'background: var(--primary-light, #eff6ff);' : ''}"
+                                 onclick="window.location.href='messages.html?user=${msg.sender_id}'"
+                                 onmouseover="this.style.background='var(--primary-light, #eff6ff)'"
+                                 onmouseout="this.style.background='${isUnread ? 'var(--primary-light, #eff6ff)' : 'transparent'}'">
+                                <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #06b6d4); color: white; display: flex; align-items:center; justify-content:center; flex-shrink: 0; font-weight: 600; font-size: 0.75rem; overflow:hidden;">
+                                    ${avatarUrl ? `<img src="${avatarUrl}" style="width:100%;height:100%;object-fit:cover;">` : initials}
+                                </div>
+                                <div style="flex:1; min-width:0;">
+                                    <div style="font-size: 0.85rem; font-weight: 600; color: var(--text, #1e293b); margin-bottom: 2px; display: flex; justify-content: space-between;">
+                                        <span>${senderName}</span>
+                                        <span style="font-size: 0.65rem; color: #64748b; font-weight: 400;">${timeAgo}</span>
+                                    </div>
+                                    <div style="font-size: 0.75rem; color: var(--text-muted, #64748b); line-height: 1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${preview}</div>
+                                </div>
+                                ${isUnread ? '<div style="width: 8px; height: 8px; border-radius: 50%; background: #3b82f6; flex-shrink:0; margin-top: 6px;"></div>' : ''}
+                            </div>`;
+                    }).join('');
+                } else {
+                    container.innerHTML = `<div style="padding: 2rem; text-align: center; color: var(--text-muted, #64748b);"><i class="fa-solid fa-message" style="font-size: 1.5rem; opacity: 0.3; margin-bottom: 0.5rem; display:block;"></i><p style="font-size: 0.85rem;">No messages found</p></div>`;
+                }
+            } catch(e) { console.warn('Could not load message notifications:', e); }
+        }
+        function formatTimeAgo(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            const diffMins = Math.floor((Date.now() - date) / 60000);
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return diffMins + 'm ago';
+            const diffHours = Math.floor(diffMins / 60);
+            if (diffHours < 24) return diffHours + 'h ago';
+            const diffDays = Math.floor(diffHours / 24);
+            if (diffDays < 7) return diffDays + 'd ago';
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+        async function logout() {
+            try { await CognoSupabase.signOut(); } catch(e) {}
+            window.location.href = '../auth/login.html';
+        }
+        async function loadDoctorHeader() {
+            try {
+                const { data: { user } } = await CognoSupabase.client.auth.getUser();
+                if (!user) return;
+                const { data: profile } = await CognoSupabase.client
+                    .from('profiles').select('full_name, avatar_url').eq('id', user.id).single();
+                if (profile) {
+                    const name = profile.full_name || user.email.split('@')[0];
+                    const initial = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
+                    const nameEl = document.getElementById('profile-name');
+                    const menuNameEl = document.getElementById('menu-name');
+                    const menuEmailEl = document.getElementById('menu-email');
+                    if (nameEl) nameEl.textContent = name;
+                    if (menuNameEl) menuNameEl.textContent = name;
+                    if (menuEmailEl) menuEmailEl.textContent = user.email;
+                    const avatarEl = document.getElementById('profile-avatar');
+                    const cachedAvatar = (() => { try { return localStorage.getItem('cogno_avatar_cache_' + user.id); } catch(e) { return null; } })();
+                    const avatarUrl = profile.avatar_url || cachedAvatar;
+                    if (avatarEl && avatarUrl) {
+                        avatarEl.innerHTML = `<img src="${avatarUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.textContent='${initial}'">`;
+                    } else if (avatarEl) {
+                        avatarEl.textContent = initial;
+                    }
+                    const { count } = await CognoSupabase.client.from('notifications')
+                        .select('*', { count: 'exact', head: true }).eq('user_id', user.id).eq('is_read', false).catch(() => ({ count: 0 }));
+                    if (count > 0) {
+                        const badge = document.getElementById('notifications-badge');
+                        if (badge) { badge.textContent = count; badge.style.display = 'flex'; }
+                    }
+                }
+            } catch(e) { console.warn('Header load error:', e); }
+        }
+
+        // Theme initialization
+        (function() {
+            const savedTheme = localStorage.getItem('cogno_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            const toggle = document.getElementById('theme-toggle');
+            if (toggle) toggle.checked = savedTheme === 'dark';
+        })();
+        
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const newTheme = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('cogno_theme', newTheme);
+        }
+        
+        // Profile Dropdown functions
+        function closeAllDropdowns() {
+            document.getElementById('profile-menu')?.classList.remove('show');
+            document.getElementById('profile-dropdown')?.classList.remove('open');
+            document.getElementById('dropdown-overlay')?.classList.remove('show');
+        }
+        
+        function toggleProfileMenu() {
+            const menu = document.getElementById('profile-menu');
+            const dropdown = document.getElementById('profile-dropdown');
+            const overlay = document.getElementById('dropdown-overlay');
+            
+            if (menu.classList.contains('show')) {
+                closeAllDropdowns();
+            } else {
+                menu.classList.add('show');
+                dropdown.classList.add('open');
+                overlay.classList.add('show');
+            }
+        }
+        
+        async function logout() {
+            try {
+                await CognoSupabase.signOut();
+                window.location.href = '../auth/login.html';
+            } catch (error) {
+                console.error('Logout error:', error);
+                window.location.href = '../auth/login.html';
+            }
+        }
+        
+        function updateProfileDropdown(profile) {
+            if (!profile) return;
+            const name = profile.full_name || 'Doctor';
+            const initial = name.charAt(0).toUpperCase();
+            
+            document.getElementById('profile-avatar').textContent = initial;
+            document.getElementById('profile-name').textContent = name;
+            document.getElementById('menu-name').textContent = name;
+            document.getElementById('menu-email').textContent = profile.email || '';
+        }
+
+        let doctorId = null;
+        let allConsultations = [];
+        let currentTab = 'upcoming';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await waitForSupabase();
+            await loadDoctorInfo();
+            await loadConsultations();
+            setupTabs();
+        });
+
+        async function waitForSupabase() {
+            return new Promise((resolve) => {
+                const check = () => {
+                    if (window.CognoSupabase?.client) resolve();
+                    else setTimeout(check, 100);
+                };
+                check();
+            });
+        }
+
+        async function loadDoctorInfo() {
+            try {
+                const { data: { user } } = await CognoSupabase.client.auth.getUser();
+                if (!user) {
+                    window.location.href = '../auth/login.html';
+                    return;
+                }
+                
+                doctorId = user.id;
+                
+                const { data: profile } = await CognoSupabase.client
+                    .from('profiles')
+                    .select('full_name, display_name')
+                    .eq('id', user.id)
+                    .single();
+                
+                if (profile) {
+                    const name = profile.display_name || profile.full_name || 'Doctor';
+                    const displayName = name.startsWith('Dr.') ? name : 'Dr. ' + name;
+                    
+                    const initials = name.replace('Dr. ', '').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                    
+                    // Update profile dropdown
+                    updateProfileDropdown({
+                        full_name: displayName,
+                        email: user.email
+                    });
+                    document.getElementById('profile-avatar').textContent = initials;
+                }
+            } catch (err) {
+                console.error('Failed to load doctor info:', err);
+            }
+        }
+
+        async function loadConsultations() {
+            try {
+                const { data, error } = await CognoSupabase.client
+                    .from('consultations')
+                    .select(`
+                        id, scheduled_at, duration_minutes, meeting_url, notes, status, meeting_id,
+                        patient:patient_id (id, full_name, avatar_url)
+                    `)
+                    .eq('doctor_id', doctorId)
+                    .order('scheduled_at', { ascending: true });
+                
+                if (error) throw error;
+                
+                allConsultations = data || [];
+                renderConsultations();
+                
+            } catch (err) {
+                console.error('Failed to load consultations:', err);
+                document.getElementById('consultation-list').innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-exclamation-triangle"></i>
+                        <p>Failed to load consultations</p>
+                    </div>
+                `;
+            }
+        }
+
+        function setupTabs() {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    currentTab = tab.dataset.tab;
+                    renderConsultations();
+                });
+            });
+        }
+
+        function renderConsultations() {
+            const container = document.getElementById('consultation-list');
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            
+            let filtered = [];
+            
+            switch (currentTab) {
+                case 'upcoming':
+                    filtered = allConsultations.filter(c => {
+                        const date = new Date(c.scheduled_at);
+                        return date >= now && !['cancelled', 'completed', 'no_show'].includes(c.status);
+                    });
+                    break;
+                case 'today':
+                    filtered = allConsultations.filter(c => {
+                        const date = new Date(c.scheduled_at);
+                        return date >= today && date < tomorrow && !['cancelled', 'no_show'].includes(c.status);
+                    });
+                    break;
+                case 'past':
+                    filtered = allConsultations.filter(c => {
+                        const date = new Date(c.scheduled_at);
+                        return date < now || c.status === 'completed';
+                    });
+                    break;
+                case 'cancelled':
+                    filtered = allConsultations.filter(c => 
+                        c.status === 'cancelled' || c.status === 'no_show'
+                    );
+                    break;
+            }
+            
+            // Update badge
+            const upcomingCount = allConsultations.filter(c => {
+                const date = new Date(c.scheduled_at);
+                return date >= now && !['cancelled', 'completed', 'no_show'].includes(c.status);
+            }).length;
+            document.getElementById('upcoming-count').textContent = upcomingCount;
+            
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-calendar-check"></i>
+                        <p>No ${currentTab} consultations</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = filtered.map(c => {
+                const patient = c.patient || {};
+                const initials = (patient.full_name || 'P').split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+                const date = new Date(c.scheduled_at);
+                const isToday = date.toDateString() === now.toDateString();
+                const canJoin = ['pending', 'confirmed', 'in_progress'].includes(c.status) && 
+                    date <= new Date(Date.now() + 15 * 60000);
+                
+                return `
+                    <div class="consultation-card">
+                        <div class="consultation-avatar">${initials}</div>
+                        <div class="consultation-info">
+                            <h3>${patient.full_name || 'Patient'}</h3>
+                            <p>${c.notes || 'General Consultation'}</p>
+                            <div class="consultation-meta">
+                                <span><i class="fa-solid fa-calendar"></i> ${isToday ? 'Today' : formatDate(date)}</span>
+                                <span><i class="fa-solid fa-clock"></i> ${formatTime(date)}</span>
+                                <span><i class="fa-solid fa-hourglass-half"></i> ${c.duration_minutes || 30} min</span>
+                            </div>
+                        </div>
+                        <span class="consultation-status ${c.status}">${formatStatus(c.status)}</span>
+                        <div class="consultation-actions">
+                            ${canJoin ? `
+                                <button class="btn btn-success" onclick="joinCall('${c.id}', '${c.meeting_id || ''}')">
+                                    <i class="fa-solid fa-video"></i> Join
+                                </button>
+                            ` : ''}
+                            ${['pending', 'confirmed'].includes(c.status) ? `
+                                <button class="btn btn-outline" onclick="reschedule('${c.id}')">Reschedule</button>
+                                <button class="btn btn-danger" onclick="cancelCall('${c.id}')">Cancel</button>
+                            ` : ''}
+                            ${c.status === 'completed' ? `
+                                <button class="btn btn-outline" onclick="viewNotes('${c.id}')">
+                                    <i class="fa-solid fa-file-lines"></i> Notes
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function formatDate(date) {
+            return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        }
+
+        function formatTime(date) {
+            return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+        }
+
+        function formatStatus(status) {
+            const map = {
+                'pending': 'Pending',
+                'confirmed': 'Confirmed',
+                'in_progress': 'In Progress',
+                'completed': 'Completed',
+                'cancelled': 'Cancelled',
+                'no_show': 'No Show'
+            };
+            return map[status] || status;
+        }
+
+        async function joinCall(consultationId, meetingId) {
+            const roomId = meetingId || `cogno-consult-${consultationId}`;
+            
+            try {
+                await CognoSupabase.client
+                    .from('consultations')
+                    .update({ 
+                        status: 'in_progress',
+                        meeting_id: roomId,
+                        meeting_url: `${window.location.origin}${CognoPaths.getBasePath()}consultations/video.html?room=${roomId}`
+                    })
+                    .eq('id', consultationId);
+            } catch (err) {
+                console.error('Failed to update consultation:', err);
+            }
+            
+            window.open(`${CognoPaths.getBasePath()}consultations/video.html?room=${roomId}&consultation=${consultationId}`, '_blank');
+        }
+
+        async function startInstantCall() {
+            window.location.href = 'patients.html';
+        }
+
+        async function cancelCall(consultationId) {
+            if (!confirm('Cancel this consultation?')) return;
+            
+            try {
+                await CognoSupabase.client
+                    .from('consultations')
+                    .update({ status: 'cancelled' })
+                    .eq('id', consultationId);
+                
+                await loadConsultations();
+            } catch (err) {
+                console.error('Failed to cancel:', err);
+            }
+        }
+
+        function reschedule(consultationId) {
+            window.location.href = `schedule.html?reschedule=${consultationId}`;
+        }
+
+        function viewNotes(consultationId) {
+            window.location.href = `patient-detail.html?consultation=${consultationId}`;
+        }
+    </script>
+</body>
+</html>

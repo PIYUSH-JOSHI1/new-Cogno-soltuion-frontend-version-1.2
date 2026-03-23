@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Progress Tracking - Cogno Solution">
+    <title>My Progress - Cogno Solution</title>
+    
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
+    <link rel="stylesheet" href="../css/mobile-nav.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <link rel="stylesheet" href="../css/dashboard.css">
+    
+
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="../assets/images/icons/logo.svg" alt="Cogno" class="sidebar-logo">
+                <span class="sidebar-brand">Cogno Solution</span>
+                <button class="sidebar-close" id="sidebar-close" aria-label="Close sidebar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul class="sidebar-menu">
+                    <li class="sidebar-item">
+                        <a href="../dashboard/child-dashboard.html" class="sidebar-link">
+                            <i class="fa-solid fa-house"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-section">Learning Modules</li>
+                    <li class="sidebar-item">
+                        <a href="../modules/dyslexia/" class="sidebar-link">
+                            <i class="fa-solid fa-book-open" style="color: var(--color-dyslexia);"></i>
+                            <span>Reading &amp; Words</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="../modules/dyscalculia/" class="sidebar-link">
+                            <i class="fa-solid fa-calculator" style="color: var(--color-dyscalculia);"></i>
+                            <span>Numbers &amp; Math</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="../modules/dysgraphia/" class="sidebar-link">
+                            <i class="fa-solid fa-pen" style="color: var(--color-dysgraphia);"></i>
+                            <span>Writing Practice</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="../modules/dyspraxia/" class="sidebar-link">
+                            <i class="fa-solid fa-person-running" style="color: var(--color-dyspraxia);"></i>
+                            <span>Movement Games</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-section">More</li>
+                    <li class="sidebar-item">
+                        <a href="../learning-hub/" class="sidebar-link">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                            <span>Learning Hub</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item active">
+                        <a href="../progress/" class="sidebar-link">
+                            <i class="fa-solid fa-chart-line"></i>
+                            <span>My Progress</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="../profile/" class="sidebar-link">
+                            <i class="fa-solid fa-user"></i>
+                            <span>My Profile</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="../settings/" class="sidebar-link">
+                            <i class="fa-solid fa-gear"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button class="sidebar-link" id="logout-btn">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Sign Out</span>
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation - Same as Dashboard -->
+            <header class="navbar">
+                <div class="navbar-left">
+                    <button class="btn btn-ghost btn-icon sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <h1 class="page-title" data-i18n="nav.progress">My Progress</h1>
+                </div>
+                
+                <div class="navbar-right">
+                    <!-- Download Report Button -->
+                    <button class="btn btn-primary" onclick="window.ProgressTracker.exportReport()" style="display: flex; align-items: center; gap: 0.5rem; padding: 6px 14px; font-size: 0.85rem; border-radius: 20px;">
+                        <i class="fa-solid fa-file-pdf"></i>
+                        <span>Download Report</span>
+                    </button>
+                    <!-- Time Range Selector -->
+                    <select id="time-range" class="time-select" style="padding: 6px 14px; border: 1px solid var(--color-border); border-radius: 20px; background: var(--color-surface); font-size: 0.85rem; cursor: pointer; color: var(--color-text);">
+                        <option value="week">This Week</option>
+                        <option value="month" selected>This Month</option>
+                        <option value="year">This Year</option>
+                        <option value="all">All Time</option>
+                    </select>
+                    
+                    <!-- Accessibility Toggle -->
+                    <button class="btn btn-ghost btn-icon" id="accessibility-btn" title="Accessibility options">
+                        <i class="fa-solid fa-universal-access"></i>
+                    </button>
+                    
+                    <!-- Settings Quick Link -->
+                    <a href="../settings/" class="btn btn-ghost btn-icon" title="Settings">
+                        <i class="fa-solid fa-gear"></i>
+                    </a>
+                    
+                    <!-- Dark Mode Toggle -->
+                    <button class="btn btn-ghost btn-icon" id="dark-mode-toggle" title="Toggle dark mode">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+
+                    <!-- Notifications -->
+                    <div class="dropdown">
+                        <button class="btn btn-ghost btn-icon notification-btn" id="notification-btn">
+                            <i class="fa-solid fa-bell"></i>
+                            <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+                        </button>
+                    </div>
+                    
+                    <!-- User Menu -->
+                    <div class="dropdown">
+                        <button class="user-menu-btn" id="user-menu-btn">
+                            <div class="avatar avatar-sm" id="user-avatar">
+                                <img src="../assets/images/avatars/default.svg" alt="User avatar" id="user-avatar-img">
+                            </div>
+                            <span class="user-name" id="user-name">Loading...</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="dropdown-menu" id="user-dropdown">
+                            <a href="../profile/" class="dropdown-item">
+                                <i class="fa-solid fa-user"></i>
+                                <span>My Profile</span>
+                            </a>
+                            <a href="../settings/" class="dropdown-item">
+                                <i class="fa-solid fa-gear"></i>
+                                <span>Settings</span>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item" id="dropdown-logout">
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                                <span>Sign Out</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="content-area">
+                <!-- Overall Progress Summary -->
+                <div class="progress-hero card">
+                    <div class="progress-hero-content">
+                        <div class="overall-progress">
+                            <div class="circular-progress" id="overall-progress-circle">
+                                <svg viewBox="0 0 100 100">
+                                    <circle class="bg" cx="50" cy="50" r="45"></circle>
+                                    <circle class="progress" cx="50" cy="50" r="45" stroke-dasharray="283" stroke-dashoffset="79"></circle>
+                                </svg>
+                                <div class="progress-value">72%</div>
+                            </div>
+                            <div class="progress-label" data-i18n="progress.overall_progress">Overall Progress</div>
+                        </div>
+                        <div class="progress-stats">
+                            <div class="stat-item">
+                                <i class="fa-solid fa-trophy"></i>
+                                <div>
+                                    <span class="stat-value">156</span>
+                                    <span class="stat-label">Activities Completed</span>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fa-solid fa-clock"></i>
+                                <div>
+                                    <span class="stat-value">24.5h</span>
+                                    <span class="stat-label">Total Learning Time</span>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fa-solid fa-fire"></i>
+                                <div>
+                                    <span class="stat-value">12</span>
+                                    <span class="stat-label">Day Streak</span>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fa-solid fa-star"></i>
+                                <div>
+                                    <span class="stat-value">2,450</span>
+                                    <span class="stat-label">Points Earned</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Progress Chart -->
+                <div class="card chart-card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-chart-area"></i> Progress Over Time</h2>
+                        <div class="chart-legend" id="chart-legend"></div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="progress-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Module Breakdown -->
+                <div class="modules-progress">
+                    <h2><i class="fa-solid fa-puzzle-piece"></i> Module Progress</h2>
+                    <div class="modules-grid">
+                        <div class="module-progress-card dyslexia">
+                            <div class="module-header">
+                                <div class="module-icon">
+                                    <i class="fa-solid fa-book-reader"></i>
+                                </div>
+                                <h3>Dyslexia</h3>
+                            </div>
+                            <div class="progress-ring">
+                                <svg viewBox="0 0 80 80">
+                                    <circle class="bg" cx="40" cy="40" r="35"></circle>
+                                    <circle class="progress" cx="40" cy="40" r="35" stroke-dasharray="220" stroke-dashoffset="55"></circle>
+                                </svg>
+                                <span>75%</span>
+                            </div>
+                            <div class="module-stats">
+                                <span><i class="fa-solid fa-check"></i> 45 activities</span>
+                                <span><i class="fa-solid fa-clock"></i> 8.2h</span>
+                            </div>
+                            <a href="../modules/dyslexia/" class="btn btn-sm btn-outline">View Details</a>
+                        </div>
+                        
+                        <div class="module-progress-card dyscalculia">
+                            <div class="module-header">
+                                <div class="module-icon">
+                                    <i class="fa-solid fa-calculator"></i>
+                                </div>
+                                <h3>Dyscalculia</h3>
+                            </div>
+                            <div class="progress-ring">
+                                <svg viewBox="0 0 80 80">
+                                    <circle class="bg" cx="40" cy="40" r="35"></circle>
+                                    <circle class="progress" cx="40" cy="40" r="35" stroke-dasharray="220" stroke-dashoffset="88"></circle>
+                                </svg>
+                                <span>60%</span>
+                            </div>
+                            <div class="module-stats">
+                                <span><i class="fa-solid fa-check"></i> 38 activities</span>
+                                <span><i class="fa-solid fa-clock"></i> 6.5h</span>
+                            </div>
+                            <a href="../modules/dyscalculia/" class="btn btn-sm btn-outline">View Details</a>
+                        </div>
+                        
+                        <div class="module-progress-card dysgraphia">
+                            <div class="module-header">
+                                <div class="module-icon">
+                                    <i class="fa-solid fa-pen"></i>
+                                </div>
+                                <h3>Dysgraphia</h3>
+                            </div>
+                            <div class="progress-ring">
+                                <svg viewBox="0 0 80 80">
+                                    <circle class="bg" cx="40" cy="40" r="35"></circle>
+                                    <circle class="progress" cx="40" cy="40" r="35" stroke-dasharray="220" stroke-dashoffset="44"></circle>
+                                </svg>
+                                <span>80%</span>
+                            </div>
+                            <div class="module-stats">
+                                <span><i class="fa-solid fa-check"></i> 52 activities</span>
+                                <span><i class="fa-solid fa-clock"></i> 5.8h</span>
+                            </div>
+                            <a href="../modules/dysgraphia/" class="btn btn-sm btn-outline">View Details</a>
+                        </div>
+                        
+                        <div class="module-progress-card dyspraxia">
+                            <div class="module-header">
+                                <div class="module-icon">
+                                    <i class="fa-solid fa-person-walking"></i>
+                                </div>
+                                <h3>Dyspraxia</h3>
+                            </div>
+                            <div class="progress-ring">
+                                <svg viewBox="0 0 80 80">
+                                    <circle class="bg" cx="40" cy="40" r="35"></circle>
+                                    <circle class="progress" cx="40" cy="40" r="35" stroke-dasharray="220" stroke-dashoffset="66"></circle>
+                                </svg>
+                                <span>70%</span>
+                            </div>
+                            <div class="module-stats">
+                                <span><i class="fa-solid fa-check"></i> 21 activities</span>
+                                <span><i class="fa-solid fa-clock"></i> 4.0h</span>
+                            </div>
+                            <a href="../modules/dyspraxia/" class="btn btn-sm btn-outline">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Activity -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-history"></i> Recent Activity</h2>
+                        <a href="#" class="btn btn-ghost btn-sm">View All</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="activity-timeline" id="activity-timeline">
+                            <div class="activity-item">
+                                <div class="activity-icon success">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <h4>Completed "Letter Recognition" activity</h4>
+                                    <p>Dyslexia Module • Score: 95%</p>
+                                    <span class="activity-time">2 hours ago</span>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon primary">
+                                    <i class="fa-solid fa-trophy"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <h4>Earned "Quick Learner" badge</h4>
+                                    <p>Completed 5 activities in one day</p>
+                                    <span class="activity-time">5 hours ago</span>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon info">
+                                    <i class="fa-solid fa-play"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <h4>Started "Number Patterns" activity</h4>
+                                    <p>Dyscalculia Module</p>
+                                    <span class="activity-time">Yesterday</span>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon success">
+                                    <i class="fa-solid fa-star"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <h4>Reached Level 5 in Writing exercises</h4>
+                                    <p>Dysgraphia Module</p>
+                                    <span class="activity-time">2 days ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Achievements -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-medal"></i> Recent Achievements</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="achievements-grid">
+                            <div class="achievement-badge earned" style="position: relative; display: flex; flex-direction: column; align-items: center; padding-bottom: 3.5rem;">
+                                <div class="badge-icon">
+                                    <i class="fa-solid fa-fire"></i>
+                                </div>
+                                <span>7-Day Streak</span>
+                                <div style="display: flex; gap: 4px; position: absolute; bottom: 4px;">
+                                    <button onclick="downloadBadgeCertificate(event, '7-Day Streak', '🔥')" class="btn btn-primary" style="font-size: 0.6rem; padding: 3px 7px; border-radius: 4px; cursor: pointer;" title="Download Certificate"><i class="fa-solid fa-download"></i></button>
+                                    <button onclick="shareBadgeWhatsApp('7-Day Streak')" class="btn" style="font-size: 0.6rem; padding: 3px 7px; border-radius: 4px; cursor: pointer; background: #25D366; color: white;" title="Share on WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>
+                                </div>
+                            </div>
+                            <div class="achievement-badge earned" style="position: relative; display: flex; flex-direction: column; align-items: center; padding-bottom: 3.5rem;">
+                                <div class="badge-icon">
+                                    <i class="fa-solid fa-book"></i>
+                                </div>
+                                <span>Bookworm</span>
+                                <div style="display: flex; gap: 4px; position: absolute; bottom: 4px;">
+                                    <button onclick="downloadBadgeCertificate(event, 'Bookworm', '📚')" class="btn btn-primary" style="font-size: 0.6rem; padding: 3px 7px; border-radius: 4px; cursor: pointer;" title="Download Certificate"><i class="fa-solid fa-download"></i></button>
+                                    <button onclick="shareBadgeWhatsApp('Bookworm')" class="btn" style="font-size: 0.6rem; padding: 3px 7px; border-radius: 4px; cursor: pointer; background: #25D366; color: white;" title="Share on WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>
+                                </div>
+                            </div>
+                            <div class="achievement-badge earned" style="position: relative; display: flex; flex-direction: column; align-items: center; padding-bottom: 3.5rem;">
+                                <div class="badge-icon">
+                                    <i class="fa-solid fa-bolt"></i>
+                                </div>
+                                <span>Quick Learner</span>
+                                <div style="display: flex; gap: 4px; position: absolute; bottom: 4px;">
+                                    <button onclick="downloadBadgeCertificate(event, 'Quick Learner', '⚡')" class="btn btn-primary" style="font-size: 0.6rem; padding: 3px 7px; border-radius: 4px; cursor: pointer;" title="Download Certificate"><i class="fa-solid fa-download"></i></button>
+                                    <button onclick="shareBadgeWhatsApp('Quick Learner')" class="btn" style="font-size: 0.6rem; padding: 3px 7px; border-radius: 4px; cursor: pointer; background: #25D366; color: white;" title="Share on WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>
+                                </div>
+                            </div>
+                            <div class="achievement-badge locked">
+                                <div class="badge-icon">
+                                    <i class="fa-solid fa-crown"></i>
+                                </div>
+                                <span>Master</span>
+                            </div>
+                            <div class="achievement-badge locked">
+                                <div class="badge-icon">
+                                    <i class="fa-solid fa-gem"></i>
+                                </div>
+                                <span>Perfectionist</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Add jsPDF for certificates -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="../js/header.js"></script>
+    <script src="./progress.js"></script>
+    <script>
+        // ========== CERTIFICATE GENERATION ==========
+        async function getFullUserName() {
+            // Try to get from global storage set by header.js
+            if (window._cognoUserName && window._cognoUserName !== 'User') {
+                return window._cognoUserName;
+            }
+            // Try supabase profile
+            try {
+                const sessionRes = await CognoSupabase.getSession();
+                const user = sessionRes?.session?.user || sessionRes?.user; // fallback just in case
+                if (user) {
+                    const { data } = await CognoSupabase.client
+                        .from('profiles')
+                        .select('full_name, display_name')
+                        .eq('id', user.id)
+                        .single();
+                    const name = data?.full_name || data?.display_name || user.user_metadata?.full_name;
+                    if (name) return name;
+                    return user.email?.split('@')[0] || 'Learner';
+                }
+            } catch(e) {
+                console.error("Error fetching full user name:", e);
+            }
+            return window._cognoUserName || 'Learner';
+        }
+
+        window.downloadBadgeCertificate = async function(event, badgeName, badgeEmoji) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            const btn = event.currentTarget;
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+            btn.disabled = true;
+
+            try {
+                const jsPDFConstructor = window.jspdf?.jsPDF || window.jsPDF;
+                if (!jsPDFConstructor) {
+                    throw new Error('PDF library not loaded');
+                }
+                
+                const userName = await getFullUserName();
+                const emoji = badgeEmoji || '🏆';
+                const dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+                const doc = new jsPDFConstructor({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+                const W = doc.internal.pageSize.getWidth();
+                const H = doc.internal.pageSize.getHeight();
+
+                // --- PREMIUM LIGHT THEME ---
+                // Clean white background
+                doc.setFillColor(255, 255, 255);
+                doc.rect(0, 0, W, H, 'F');
+
+                // Decorative outer border (Primary Blue)
+                doc.setDrawColor(59, 130, 246);
+                doc.setLineWidth(1.5);
+                doc.roundedRect(8, 8, W - 16, H - 16, 4, 4);
+
+                // Thinner inner border (Indigo)
+                doc.setDrawColor(99, 102, 241);
+                doc.setLineWidth(0.5);
+                doc.roundedRect(10, 10, W - 20, H - 20, 3, 3);
+
+                // Modern corner accents
+                const accentSize = 25;
+                doc.setFillColor(59, 130, 246, 0.1); 
+                doc.triangle(8, 8, 8 + accentSize, 8, 8, 8 + accentSize, 'F');
+                doc.triangle(W - 8, 8, W - 8 - accentSize, 8, W - 8, 8 + accentSize, 'F');
+                doc.triangle(8, H - 8, 8 + accentSize, H - 8, 8, H - 8 - accentSize, 'F');
+                doc.triangle(W - 8, H - 8, W - 8 - accentSize, H - 8, W - 8, H - 8 - accentSize, 'F');
+
+                // --- HEADER: COGNO SOLUTION ---
+                doc.setTextColor(30, 41, 59);
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text('COGNO SOLUTION', W / 2, 25, { align: 'center' });
+                
+                // --- MAIN TITLE ---
+                doc.setTextColor(59, 130, 246);
+                doc.setFontSize(42);
+                doc.setFont('helvetica', 'bold');
+                doc.text('CERTIFICATE', W / 2, 48, { align: 'center' });
+                
+                doc.setTextColor(71, 85, 105);
+                doc.setFontSize(18);
+                doc.setFont('helvetica', 'normal');
+                doc.text('OF ACHIEVEMENT', W / 2, 58, { align: 'center' });
+
+                // Divider line
+                doc.setDrawColor(226, 232, 240);
+                doc.setLineWidth(0.8);
+                doc.line(W / 2 - 60, 68, W / 2 + 60, 68);
+
+                // --- BODY ---
+                doc.setTextColor(51, 65, 85);
+                doc.setFontSize(14);
+                doc.text('This is to proudly certify that', W / 2, 82, { align: 'center' });
+
+                // Recipient Name
+                doc.setTextColor(37, 99, 235);
+                doc.setFontSize(32);
+                doc.setFont('helvetica', 'bold');
+                doc.text(userName.toUpperCase(), W / 2, 100, { align: 'center' });
+
+                // Achievement description
+                doc.setTextColor(71, 85, 105);
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'normal');
+                doc.text('has successfully completed requirements for the', W / 2, 115, { align: 'center' });
+
+                // Badge Name Pill
+                doc.setFillColor(59, 130, 246);
+                doc.roundedRect(W / 2 - 50, 122, 100, 14, 7, 7, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(18);
+                doc.setFont('helvetica', 'bold');
+                doc.text(`${badgeName}`, W / 2, 132, { align: 'center' });
+
+                // Sub-description based on badge
+                doc.setTextColor(148, 163, 184);
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'italic');
+                const badgeInfo = {
+                    '7-Day Streak': 'awarded for consistent daily learning and extraordinary commitment to educational growth.',
+                    'Bookworm': 'awarded for outstanding engagement with reading activities and literacy modules.',
+                    'Quick Learner': 'awarded for completing multiple activities with high speed and exceptional accuracy.'
+                };
+                const descText = badgeInfo[badgeName] || 'awarded for outstanding performance and continued progress in their learning journey.';
+                const splitDesc = doc.splitTextToSize(descText, 180);
+                doc.text(splitDesc, W / 2, 145, { align: 'center' });
+
+                // --- FOOTER ---
+                doc.setTextColor(71, 85, 105);
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                doc.text('DATE ISSUED', 45, 168);
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(12);
+                doc.text(dateStr, 45, 175);
+                doc.line(30, 178, 80, 178);
+
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                doc.text('AUTHORIZED BY', W - 45, 168, { align: 'center' });
+                doc.setFont('times', 'italic');
+                doc.setFontSize(18);
+                doc.text('Cogno Team', W - 45, 175, { align: 'center' });
+                doc.line(W - 80, 178, W - 30, 178);
+                doc.setFontSize(9);
+                doc.setFont('helvetica', 'normal');
+                doc.text('Education Director', W - 45, 184, { align: 'center' });
+
+                // --- DECORATIVE SEAL ---
+                doc.setFillColor(255, 215, 0); 
+                doc.circle(W / 2, 175, 15, 'F');
+                doc.setDrawColor(184, 134, 11);
+                doc.setLineWidth(0.5);
+                doc.circle(W / 2, 175, 15, 'D');
+                
+                for (let i = 0; i < 360; i += 10) {
+                    const angle = (i * Math.PI) / 180;
+                    doc.line(W / 2 + Math.cos(angle) * 15, 175 + Math.sin(angle) * 15, W / 2 + Math.cos(angle) * 17, 175 + Math.sin(angle) * 17);
+                }
+                
+                doc.setTextColor(133, 77, 14);
+                doc.setFontSize(8);
+                doc.setFont('helvetica', 'bold');
+                doc.text('COGNO', W / 2, 173, { align: 'center' });
+                doc.text('CERTIFIED', W / 2, 178, { align: 'center' });
+
+                doc.save(`Cogno_Certificate_${badgeName.replace(/\s+/g, '_')}_${userName.replace(/\s+/g, '_')}.pdf`);
+                
+                if (window.CognoNotifications?.toast) {
+                    CognoNotifications.toast.success('Certificate downloaded! 🎉');
+                }
+            } catch(e) {
+                console.error('Certificate error:', e);
+                if (window.CognoNotifications?.toast) {
+                    CognoNotifications.toast.error('Could not generate certificate.');
+                }
+            } finally {
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            }
+        };
+
+        window.shareBadgeWhatsApp = async function(badgeName) {
+            const userName = await getFullUserName();
+            const text = encodeURIComponent(
+                `🏆 I just earned the "${badgeName}" badge on Cogno Solution! 🎉\n\n` +
+                `My name: ${userName}\n` +
+                `Keep learning every day! 📚\n\n` +
+                `#CognoSolution #LearningAchievement #${badgeName.replace(/ /g, '')}`
+            );
+            window.open(`https://wa.me/?text=${text}`, '_blank');
+        };
+
+        // Header interactivity for progress page
+        document.addEventListener('DOMContentLoaded', () => {
+            // Sidebar toggle
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebarClose = document.getElementById('sidebar-close');
+            sidebarToggle?.addEventListener('click', () => sidebar?.classList.toggle('open'));
+            sidebarClose?.addEventListener('click', () => sidebar?.classList.remove('open'));
+
+            // Dark mode
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            if (localStorage.getItem('cogno-theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+                if (darkModeToggle) darkModeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
+            }
+            darkModeToggle?.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                const isDark = document.body.classList.contains('dark-mode');
+                localStorage.setItem('cogno-theme', isDark ? 'dark' : 'light');
+                darkModeToggle.innerHTML = isDark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+            });
+
+            // User dropdown
+            const userMenuBtn = document.getElementById('user-menu-btn');
+            const userDropdown = document.getElementById('user-dropdown');
+            userMenuBtn?.addEventListener('click', () => userDropdown?.classList.toggle('show'));
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.dropdown')) {
+                    document.querySelectorAll('.dropdown-menu.show').forEach(m => m.classList.remove('show'));
+                }
+            });
+
+            // Logout
+            document.querySelectorAll('#logout-btn, #dropdown-logout').forEach(btn => {
+                btn?.addEventListener('click', async () => {
+                    if (confirm('Sign out?')) {
+                        await CognoSupabase.signOut();
+                        window.location.href = '../auth/login.html';
+                    }
+                });
+            });
+        });
+    </script>
+    
+    <style>
+        .time-select {
+            padding: var(--space-2) var(--space-3);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background: var(--color-surface);
+        }
+        
+        .progress-hero {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+            color: white;
+        }
+        
+        .progress-hero-content {
+            display: flex;
+            align-items: center;
+            gap: var(--space-8);
+            padding: var(--space-6);
+        }
+        
+        .overall-progress {
+            text-align: center;
+        }
+        
+        .circular-progress {
+            width: 150px;
+            height: 150px;
+            position: relative;
+        }
+        
+        .circular-progress svg {
+            transform: rotate(-90deg);
+        }
+        
+        .circular-progress circle {
+            fill: none;
+            stroke-width: 8;
+        }
+        
+        .circular-progress .bg {
+            stroke: rgba(255,255,255,0.2);
+        }
+        
+        .circular-progress .progress {
+            stroke: white;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.5s;
+        }
+        
+        .progress-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .progress-label {
+            margin-top: var(--space-2);
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .progress-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-4);
+            flex: 1;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-4);
+            background: rgba(255,255,255,0.1);
+            border-radius: var(--radius-lg);
+        }
+        
+        .stat-item i {
+            font-size: 1.5rem;
+        }
+        
+        .stat-value {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .stat-label {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+        
+        .chart-card {
+            margin-top: var(--space-6);
+        }
+        
+        .chart-container {
+            height: 300px;
+        }
+        
+        .modules-progress {
+            margin-top: var(--space-6);
+        }
+        
+        .modules-progress h2 {
+            margin-bottom: var(--space-4);
+        }
+        
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-4);
+        }
+        
+        .module-progress-card {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            padding: var(--space-5);
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--color-border);
+        }
+        
+        .module-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-3);
+            margin-bottom: var(--space-4);
+        }
+        
+        .module-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        
+        .dyslexia .module-icon { background: var(--color-primary-100); color: var(--color-primary); }
+        .dyscalculia .module-icon { background: var(--color-success-100); color: var(--color-success); }
+        .dysgraphia .module-icon { background: var(--color-warning-100); color: var(--color-warning); }
+        .dyspraxia .module-icon { background: var(--color-info-100); color: var(--color-info); }
+        
+        .progress-ring {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto var(--space-4);
+        }
+        
+        .progress-ring svg {
+            transform: rotate(-90deg);
+        }
+        
+        .progress-ring circle {
+            fill: none;
+            stroke-width: 6;
+        }
+        
+        .progress-ring .bg {
+            stroke: var(--color-border);
+        }
+        
+        .dyslexia .progress-ring .progress { stroke: var(--color-primary); }
+        .dyscalculia .progress-ring .progress { stroke: var(--color-success); }
+        .dysgraphia .progress-ring .progress { stroke: var(--color-warning); }
+        .dyspraxia .progress-ring .progress { stroke: var(--color-info); }
+        
+        .progress-ring span {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .module-stats {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-4);
+            margin-bottom: var(--space-4);
+            font-size: 0.8rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .activity-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+        
+        .activity-item {
+            display: flex;
+            gap: var(--space-3);
+        }
+        
+        .activity-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .activity-icon.success { background: var(--color-success-100); color: var(--color-success); }
+        .activity-icon.primary { background: var(--color-primary-100); color: var(--color-primary); }
+        .activity-icon.info { background: var(--color-info-100); color: var(--color-info); }
+        
+        .activity-content h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .activity-content p {
+            font-size: 0.8rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .activity-time {
+            font-size: 0.7rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .achievements-grid {
+            display: flex;
+            gap: var(--space-4);
+            flex-wrap: wrap;
+        }
+        
+        .achievement-badge {
+            text-align: center;
+            padding: var(--space-4);
+            border-radius: var(--radius-lg);
+            min-width: 100px;
+        }
+        
+        .achievement-badge.earned {
+            background: var(--color-primary-100);
+        }
+        
+        .achievement-badge.locked {
+            background: var(--color-background);
+            opacity: 0.5;
+        }
+        
+        .badge-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: var(--radius-full);
+            background: var(--color-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-2);
+            font-size: 1.25rem;
+        }
+        
+        .achievement-badge.locked .badge-icon {
+            background: var(--color-border);
+        }
+        
+        .achievement-badge span {
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .progress-hero-content {
+                flex-direction: column;
+            }
+            
+            .progress-stats {
+                width: 100%;
+            }
+        }
+    </style>
+    
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span data-i18n="nav.home">Home</span>
+        </a>
+        <a href="../learn/index.html" class="nav-item">
+            <i class="fa-solid fa-book-open"></i>
+            <span data-i18n="nav.learn">Learn</span>
+        </a>
+        <a href="../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span data-i18n="nav.doctors">Doctors</span>
+        </a>
+        <a href="../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span data-i18n="nav.hub">Hub</span>
+        </a>
+        <a href="index.html" class="nav-item active">
+            <i class="fa-solid fa-chart-line"></i>
+            <span data-i18n="nav.progress">Progress</span>
+        </a>
+        <a href="../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span data-i18n="nav.profile">Profile</span>
+        </a>
+    </nav>
+</body>
+</html>
