@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Create your Cogno Solution account - AI-Powered Cognitive Support for Children">
+    <title>Register - Cogno Solution</title>
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
+    <link rel="stylesheet" href="../css/cognitive-friendly.css">
+    <style>
+        :root{--auth-bg:#f8fafc;--auth-card:#fff;--auth-fg:#0f172a;--auth-fg2:#64748b;--auth-fg3:#94a3b8;--auth-primary:#2563eb;--auth-primary-dk:#1d4ed8;--auth-border:#e2e8f0;--auth-shadow:0 20px 60px rgba(0,0,0,.08);--auth-input:#f1f5f9;}
+        [data-theme="dark"]{--auth-bg:#0d1117;--auth-card:#161b22;--auth-fg:#f0f6fc;--auth-fg2:#8b949e;--auth-fg3:#6e7681;--auth-primary:#3b82f6;--auth-primary-dk:#2563eb;--auth-border:#30363d;--auth-shadow:0 20px 60px rgba(0,0,0,.45);--auth-input:#21262d;}
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Inter',sans-serif;background:var(--auth-bg);color:var(--auth-fg);min-height:100vh;transition:background .3s,color .3s;}
+
+        .auth-page{min-height:100vh;display:flex;position:relative;overflow:hidden;}
+
+        .auth-blob{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;opacity:.4;z-index:0;}
+        .auth-blob.b1{width:500px;height:500px;background:rgba(16,185,129,.1);top:-120px;right:-120px;}
+        .auth-blob.b2{width:350px;height:350px;background:rgba(37,99,235,.1);bottom:-80px;left:-80px;}
+
+        /* Sidebar */
+        .auth-sidebar{flex:0 0 44%;display:none;background:linear-gradient(160deg,#065f46 0%,#059669 50%,#10b981 100%);color:#fff;padding:52px 48px;position:relative;overflow:hidden;flex-direction:column;justify-content:center;}
+        @media(min-width:1024px){.auth-sidebar{display:flex;}}
+        .auth-sidebar::before{content:'';position:absolute;top:-40%;right:-40%;width:80%;height:80%;background:radial-gradient(circle,rgba(255,255,255,.08),transparent 65%);pointer-events:none;}
+        .auth-sidebar::after{content:'';position:absolute;bottom:-30%;left:-20%;width:60%;height:60%;background:radial-gradient(circle,rgba(255,255,255,.05),transparent 60%);pointer-events:none;}
+        [data-theme="dark"] .auth-sidebar{background:linear-gradient(160deg,#0d1117 0%,#065f46 50%,#059669 100%);}
+        .sidebar-inner{position:relative;z-index:1;max-width:400px;}
+        .sidebar-back{display:inline-flex;align-items:center;gap:8px;color:rgba(255,255,255,.7);text-decoration:none;font-size:.88rem;font-weight:500;margin-bottom:40px;transition:color .2s;}
+        .sidebar-back:hover{color:#fff;}
+        .auth-sidebar h1{font-size:2.5rem;font-weight:900;line-height:1.1;letter-spacing:-.03em;margin-bottom:16px;}
+        .auth-sidebar h1 span{color:rgba(255,255,255,.6);}
+        .sidebar-inner>p{font-size:1rem;color:rgba(255,255,255,.75);line-height:1.7;margin-bottom:36px;}
+        .auth-features{list-style:none;padding:0;margin:0;}
+        .auth-features li{display:flex;align-items:center;gap:14px;margin-bottom:18px;font-size:.9rem;color:rgba(255,255,255,.85);}
+        .feat-check{width:30px;height:30px;border-radius:9px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0;backdrop-filter:blur(8px);}
+
+        /* Main */
+        .auth-main{flex:1;display:flex;align-items:center;justify-content:center;padding:32px 24px;position:relative;z-index:1;overflow-y:auto;}
+        .auth-container{width:100%;max-width:480px;padding:16px 0;animation:fadeIn .5s ease both;}
+
+        .auth-logo{text-align:center;margin-bottom:28px;}
+        .auth-logo-icon{width:48px;height:48px;background:var(--auth-primary);border-radius:12px;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:1.2rem;margin-bottom:10px;box-shadow:0 8px 24px rgba(37,99,235,.25);}
+        .auth-logo h2{font-size:1.3rem;font-weight:800;letter-spacing:-.02em;color:var(--auth-fg);}
+        .auth-logo-sub{font-size:.78rem;color:var(--auth-fg3);margin-top:4px;}
+
+        .auth-card{background:var(--auth-card);border-radius:20px;padding:32px 28px;box-shadow:var(--auth-shadow);border:1px solid var(--auth-border);transition:all .3s;}
+        .auth-card h3{font-size:1.4rem;font-weight:800;text-align:center;margin-bottom:6px;letter-spacing:-.02em;}
+        .auth-card .subtitle{text-align:center;color:var(--auth-fg2);font-size:.88rem;margin-bottom:24px;}
+
+        /* Form */
+        .auth-form .form-group{margin-bottom:18px;}
+        .auth-form .form-row{display:flex;gap:16px;}
+        .auth-form .form-row .form-group{flex:1;}
+        .auth-form .form-label{display:block;font-weight:600;font-size:.83rem;margin-bottom:7px;color:var(--auth-fg);}
+        .auth-form .input-icon-wrapper{position:relative;}
+        .auth-form .input-icon-wrapper>i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--auth-fg3);font-size:.85rem;z-index:1;}
+        .auth-form .input-icon-wrapper .form-input,
+        .auth-form .input-icon-wrapper .form-select{width:100%;padding:12px 14px 12px 42px;background:var(--auth-input);border:2px solid var(--auth-border);border-radius:12px;font-size:.9rem;font-family:'Inter',sans-serif;color:var(--auth-fg);outline:none;transition:all .25s;}
+        .auth-form .form-input{width:100%;padding:12px 14px;background:var(--auth-input);border:2px solid var(--auth-border);border-radius:12px;font-size:.9rem;font-family:'Inter',sans-serif;color:var(--auth-fg);outline:none;transition:all .25s;}
+        .auth-form .form-input:focus,
+        .auth-form .input-icon-wrapper .form-input:focus,
+        .auth-form .input-icon-wrapper .form-select:focus{border-color:var(--auth-primary);box-shadow:0 0 0 4px rgba(37,99,235,.1);background:var(--auth-card);}
+        .auth-form .form-input::placeholder,
+        .auth-form .input-icon-wrapper .form-input::placeholder{color:var(--auth-fg3);}
+        .auth-form .password-toggle{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--auth-fg3);cursor:pointer;padding:4px;font-size:.85rem;transition:color .2s;}
+        .auth-form .password-toggle:hover{color:var(--auth-primary);}
+        .auth-form .form-select{appearance:none;cursor:pointer;}
+
+        /* Password strength */
+        .password-strength{margin-top:8px;}
+        .password-strength-bar{height:4px;background:var(--auth-border);border-radius:2px;overflow:hidden;margin-bottom:4px;}
+        .password-strength-fill{height:100%;width:0;transition:all .3s;}
+        .password-strength-fill.weak{width:25%;background:#ef4444;}
+        .password-strength-fill.fair{width:50%;background:#f59e0b;}
+        .password-strength-fill.good{width:75%;background:#3b82f6;}
+        .password-strength-fill.strong{width:100%;background:#10b981;}
+        .password-strength-text{font-size:.72rem;color:var(--auth-fg3);}
+
+        /* Role selector */
+        .role-selector{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:18px;}
+        .role-option{position:relative;}
+        .role-option input{position:absolute;opacity:0;}
+        .role-option label{display:flex;flex-direction:column;align-items:center;padding:18px 12px;border:2px solid var(--auth-border);border-radius:14px;cursor:pointer;transition:all .25s;text-align:center;background:var(--auth-card);}
+        .role-option label:hover{border-color:var(--auth-primary);background:rgba(37,99,235,.03);}
+        .role-option input:checked+label{border-color:var(--auth-primary);background:rgba(37,99,235,.06);box-shadow:0 0 0 4px rgba(37,99,235,.08);}
+        .role-option .role-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;font-size:1.15rem;}
+        .role-option.student .role-icon{background:rgba(59,130,246,.12);color:#3b82f6;}
+        .role-option.parent .role-icon{background:rgba(16,185,129,.12);color:#10b981;}
+        .role-option.doctor .role-icon{background:rgba(245,158,11,.12);color:#f59e0b;}
+        .role-option.admin .role-icon{background:rgba(239,68,68,.12);color:#ef4444;}
+        .role-option .role-name{font-weight:700;font-size:.88rem;margin-bottom:2px;color:var(--auth-fg);}
+        .role-option .role-desc{font-size:.72rem;color:var(--auth-fg3);}
+
+        /* Terms */
+        .terms-agreement{display:flex;align-items:flex-start;gap:10px;margin-bottom:20px;}
+        .terms-agreement input{margin-top:3px;width:16px;height:16px;accent-color:var(--auth-primary);cursor:pointer;flex-shrink:0;}
+        .terms-agreement label{font-size:.82rem;color:var(--auth-fg2);line-height:1.5;}
+        .terms-agreement a{color:var(--auth-primary);text-decoration:none;font-weight:500;}
+
+        /* Submit */
+        .btn-submit{width:100%;padding:13px;background:var(--auth-primary);color:#fff;border:none;border-radius:12px;font-size:.95rem;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .25s;box-shadow:0 4px 16px rgba(37,99,235,.25);}
+        .btn-submit:hover{background:var(--auth-primary-dk);transform:translateY(-2px);box-shadow:0 8px 28px rgba(37,99,235,.35);}
+
+        /* Error */
+        .auth-error{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:#ef4444;padding:12px 16px;border-radius:12px;margin-bottom:18px;display:none;align-items:center;gap:10px;font-size:.85rem;}
+        .auth-error.show{display:flex;}
+
+        .auth-footer{text-align:center;margin-top:24px;color:var(--auth-fg2);font-size:.9rem;}
+        .auth-footer a{color:var(--auth-primary);font-weight:600;text-decoration:none;transition:opacity .2s;}
+        .auth-footer a:hover{opacity:.8;}
+
+        .theme-btn{position:fixed;top:20px;right:20px;width:44px;height:44px;border-radius:50%;border:2px solid var(--auth-border);background:var(--auth-card);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--auth-fg2);transition:all .3s;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.06);}
+        .theme-btn:hover{border-color:var(--auth-primary);color:var(--auth-primary);transform:rotate(20deg);}
+
+        /* Doctor info card */
+        .doctor-info-card{padding:14px 16px;background:rgba(245,158,11,.06);border-radius:12px;margin-bottom:18px;border:1px solid rgba(245,158,11,.15);}
+        .doctor-info-card h4{margin:0 0 6px;font-size:.83rem;color:#b45309;display:flex;align-items:center;gap:6px;}
+        .doctor-info-card p{font-size:.78rem;color:var(--auth-fg2);margin:0;line-height:1.5;}
+        [data-theme="dark"] .doctor-info-card{background:rgba(245,158,11,.05);border-color:rgba(245,158,11,.1);}
+        [data-theme="dark"] .doctor-info-card h4{color:#f59e0b;}
+
+        /* Legal modal */
+        .legal-modal{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:2000;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:all .35s ease;padding:24px;}
+        .legal-modal.show{opacity:1;visibility:visible;}
+        .legal-modal-content{background:var(--auth-card);width:100%;max-width:640px;max-height:85vh;border-radius:20px;box-shadow:0 40px 100px rgba(0,0,0,.25);display:flex;flex-direction:column;transform:scale(.95) translateY(16px);transition:all .35s cubic-bezier(.34,1.56,.64,1);border:1px solid var(--auth-border);overflow:hidden;}
+        .legal-modal.show .legal-modal-content{transform:scale(1) translateY(0);}
+        .modal-header{padding:20px 24px;border-bottom:1px solid var(--auth-border);display:flex;justify-content:space-between;align-items:center;background:var(--auth-input);}
+        .modal-title{font-size:1.15rem;font-weight:800;color:var(--auth-primary);margin:0;}
+        .modal-body{padding:24px;overflow-y:auto;line-height:1.7;color:var(--auth-fg2);font-size:.9rem;}
+        .modal-body h3{color:var(--auth-fg);margin:1.2rem 0 .5rem;font-size:1.05rem;text-align:left;}
+        .modal-body h3:first-child{margin-top:0;}
+        .modal-footer{padding:16px 24px;border-top:1px solid var(--auth-border);display:flex;justify-content:flex-end;gap:12px;background:var(--auth-input);}
+        .modal-close{background:none;border:none;font-size:1.2rem;color:var(--auth-fg3);cursor:pointer;transition:color .2s;padding:4px;}
+        .modal-close:hover{color:#ef4444;}
+        .modal-footer .btn{padding:10px 20px;border-radius:10px;font-size:.88rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s;}
+        .modal-footer .btn-outline{background:transparent;border:2px solid var(--auth-border);color:var(--auth-fg2);}
+        .modal-footer .btn-outline:hover{border-color:var(--auth-primary);color:var(--auth-primary);}
+        .modal-footer .btn-primary{background:var(--auth-primary);color:#fff;border:2px solid var(--auth-primary);}
+        .modal-footer .btn-primary:hover{background:var(--auth-primary-dk);border-color:var(--auth-primary-dk);}
+
+        @media(max-width:768px){
+            .auth-main{padding:24px 16px;}
+            .auth-card{padding:24px 18px;border-radius:16px;}
+            .auth-card h3{font-size:1.2rem;}
+            .auth-form .form-row{flex-direction:column;gap:0;}
+            .role-selector{grid-template-columns:1fr;gap:10px;}
+            .role-option label{padding:14px 12px;flex-direction:row;gap:12px;text-align:left;}
+            .role-option .role-icon{margin-bottom:0;}
+            .legal-modal{padding:16px;}
+        }
+        @media(max-width:480px){.auth-card{padding:20px 14px;}.auth-logo-icon{width:40px;height:40px;font-size:1rem;}}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+        .sidebar-inner{animation:fadeIn .6s .1s ease both;}
+    </style>
+</head>
+<body>
+    <div class="auth-blob b1"></div>
+    <div class="auth-blob b2"></div>
+    <button class="theme-btn" id="themeToggle" title="Toggle dark mode"><i class="fa-solid fa-moon" id="themeIcon"></i></button>
+
+    <div class="auth-page">
+        <aside class="auth-sidebar">
+            <div class="sidebar-inner">
+                <a href="../index.html" class="sidebar-back"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+                <h1>Join <span>Cogno Solution</span></h1>
+                <p>Start your child's personalized learning journey with our AI-powered cognitive support platform.</p>
+                <ul class="auth-features">
+                    <li><div class="feat-check"><i class="fa-solid fa-check"></i></div><span>Support for Dyslexia, Dyscalculia, Dysgraphia & Dyspraxia</span></li>
+                    <li><div class="feat-check"><i class="fa-solid fa-check"></i></div><span>Real-time progress tracking for parents</span></li>
+                    <li><div class="feat-check"><i class="fa-solid fa-check"></i></div><span>Connect with certified specialists</span></li>
+                    <li><div class="feat-check"><i class="fa-solid fa-check"></i></div><span>Gamified learning experience</span></li>
+                    <li><div class="feat-check"><i class="fa-solid fa-check"></i></div><span>Secure and COPPA compliant</span></li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="auth-main">
+            <div class="auth-container">
+                <div class="auth-logo">
+                    <div class="auth-logo-icon"><i class="fa-solid fa-brain"></i></div>
+                    <h2>Cogno Solution</h2>
+                    <p class="auth-logo-sub">Create Your Account</p>
+                </div>
+
+                <div class="auth-card">
+                    <h3>Create Account</h3>
+                    <p class="subtitle">Join thousands of families on their learning journey</p>
+
+                    <div class="auth-error" id="auth-error">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <span id="error-message">Registration failed</span>
+                    </div>
+
+                    <!-- Role Selector -->
+                    <div class="form-group">
+                        <label class="form-label">I am a...</label>
+                        <div class="role-selector">
+                            <div class="role-option student">
+                                <input type="radio" name="role" id="role-student" value="student" checked>
+                                <label for="role-student">
+                                    <div class="role-icon"><i class="fa-solid fa-child"></i></div>
+                                    <div>
+                                        <span class="role-name">Child</span>
+                                        <span class="role-desc">I want to learn</span>
+                                    </div>
+                                </label>
+                            </div>
+                            <!-- Parent role hidden but preserved in code -->
+                            <!-- 
+                            <div class="role-option parent">
+                                <input type="radio" name="role" id="role-parent" value="parent">
+                                <label for="role-parent">
+                                    <div class="role-icon"><i class="fa-solid fa-user-group"></i></div>
+                                    <div>
+                                        <span class="role-name">Parent</span>
+                                        <span class="role-desc">For my child</span>
+                                    </div>
+                                </label>
+                            </div>
+                            -->
+                            <div class="role-option doctor">
+                                <input type="radio" name="role" id="role-doctor" value="doctor">
+                                <label for="role-doctor">
+                                    <div class="role-icon"><i class="fa-solid fa-user-doctor"></i></div>
+                                    <div>
+                                        <span class="role-name">Doctor</span>
+                                        <span class="role-desc">Specialist</span>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="role-option admin" style="display: none;">
+                                <input type="radio" name="role" id="role-admin" value="admin">
+                                <label for="role-admin">
+                                    <div class="role-icon"><i class="fa-solid fa-shield"></i></div>
+                                    <div>
+                                        <span class="role-name">Admin</span>
+                                        <span class="role-desc">Platform admin</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Register Form -->
+                    <form class="auth-form" id="register-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="firstName">First Name</label>
+                                <input type="text" id="firstName" name="firstName" class="form-input" placeholder="First name" autocomplete="given-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="lastName">Last Name</label>
+                                <input type="text" id="lastName" name="lastName" class="form-input" placeholder="Last name" autocomplete="family-name" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="email">Email Address</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-envelope"></i>
+                                <input type="email" id="email" name="email" class="form-input" placeholder="Enter your email" autocomplete="email" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="password">Password</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-lock"></i>
+                                <input type="password" id="password" name="password" class="form-input" placeholder="Create a password" autocomplete="new-password" required minlength="8">
+                                <button type="button" class="password-toggle" aria-label="Toggle password visibility">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="password-strength">
+                                <div class="password-strength-bar">
+                                    <div class="password-strength-fill" id="password-strength-fill"></div>
+                                </div>
+                                <span class="password-strength-text" id="password-strength-text">Use 8+ characters with mix of letters & numbers</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="confirmPassword">Confirm Password</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-lock"></i>
+                                <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" placeholder="Confirm your password" autocomplete="new-password" required>
+                            </div>
+                        </div>
+
+                        <!-- Child-specific: Date of Birth -->
+                        <div class="form-group child-field">
+                            <label class="form-label" for="dateOfBirth">Date of Birth</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-calendar"></i>
+                                <input type="date" id="dateOfBirth" name="dateOfBirth" class="form-input">
+                            </div>
+                        </div>
+
+                        <!-- Parent-specific: Child info (Commented out) -->
+                        <!-- 
+                        <div class="child-info-fields" id="child-info-fields">
+                            <h4>Child Information (Optional - can be added later)</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="childName">Child's Name</label>
+                                    <input type="text" id="childName" name="childName" class="form-input" placeholder="Child's name">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="childDob">Child's Date of Birth</label>
+                                    <input type="date" id="childDob" name="childDob" class="form-input">
+                                </div>
+                            </div>
+                        </div>
+                        -->
+
+                        <!-- Doctor-specific: Credentials -->
+                        <div class="doctor-field doctor-info-card" style="display: none;">
+                            <h4><i class="fa-solid fa-user-doctor"></i> Doctor Registration</h4>
+                            <p>You'll be automatically added as a platform doctor and patients will be able to book consultations with you.</p>
+                        </div>
+
+                        <div class="form-group doctor-field" style="display: none;">
+                            <label class="form-label" for="specialization">Specialization</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-stethoscope"></i>
+                                <select id="specialization" name="specialization" class="form-select">
+                                    <option value="">Select specialization</option>
+                                    <option value="Learning Disabilities Specialist">Learning Disabilities Specialist</option>
+                                    <option value="Child Development Specialist">Child Development Specialist</option>
+                                    <option value="Neurodevelopmental Disorders Expert">Neurodevelopmental Disorders Expert</option>
+                                    <option value="Child Psychologist">Child Psychologist</option>
+                                    <option value="Speech Therapist">Speech Therapist</option>
+                                    <option value="Occupational Therapist">Occupational Therapist</option>
+                                    <option value="Special Educator">Special Educator</option>
+                                    <option value="Developmental Pediatrician">Developmental Pediatrician</option>
+                                    <option value="Pediatric Neurologist">Pediatric Neurologist</option>
+                                    <option value="General Specialist">General Specialist</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group doctor-field" style="display: none;">
+                            <label class="form-label" for="licenseNumber">License/Registration Number (Optional)</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-id-card"></i>
+                                <input type="text" id="licenseNumber" name="licenseNumber" class="form-input" placeholder="Professional license number">
+                            </div>
+                        </div>
+
+                        <div class="terms-agreement">
+                            <input type="checkbox" id="terms" name="terms" required>
+                            <label for="terms">
+                                I agree to the <a href="#" id="open-terms">Terms of Service</a> 
+                                and <a href="#" id="open-privacy">Privacy Policy</a>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-full btn-submit" id="register-btn">
+                            <span class="btn-text">Create Account</span>
+                            <span class="btn-loader hidden"><i class="fa-solid fa-spinner fa-spin"></i></span>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="auth-footer">
+                    <p>Already have an account? <a href="login.html">Sign In</a></p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Legal Modal -->
+    <div id="legal-modal" class="legal-modal">
+        <div class="legal-modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title" class="modal-title">Terms & Conditions</h2>
+                <button id="modal-close" class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="modal-body" class="modal-body">
+                <!-- Content will be injected here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="modal-cancel" class="btn btn-outline">Close</button>
+                <button type="button" id="modal-accept" class="btn btn-primary">Accept & Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/i18n.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="./auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoAuth.initRegisterPage();
+
+            // === Legal Modal Logic ===
+            const modal = document.getElementById('legal-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
+            const modalClose = document.getElementById('modal-close');
+            const modalCancel = document.getElementById('modal-cancel');
+            const modalAccept = document.getElementById('modal-accept');
+            const termsCheckbox = document.getElementById('terms');
+
+            const TERMS_CONTENT = `
+                <h3>1. Acceptance of Terms</h3>
+                <p>By creating an account, you agree to these Terms of Service and our Privacy Policy. If you are a parent or guardian registering on behalf of a child, you confirm you have the authority to do so.</p>
+                <h3>2. Use of Service</h3>
+                <p>Cogno Solution provides AI-powered cognitive support tools for educational purposes. Our platform includes modules for Dyslexia, Dyscalculia, Dysgraphia, and Dyspraxia. These tools are supplementary and do not replace professional medical advice.</p>
+                <h3>3. Accounts</h3>
+                <p>You are responsible for maintaining the confidentiality of your account credentials. Notify us immediately of any unauthorized use at support@cognosolution.com.</p>
+                <h3>4. Children's Privacy (COPPA)</h3>
+                <p>We comply with COPPA. Parental or guardian consent is required for users under 13. We collect only the minimum data necessary for the service to function.</p>
+                <h3>5. Data & Content</h3>
+                <p>Progress data and activity scores are stored securely in Supabase. You may request deletion of your data at any time.</p>
+                <h3>6. Limitation of Liability</h3>
+                <p>Cogno Solution is not liable for educational outcomes. The platform is an assistive tool and performance may vary by individual.</p>
+            `;
+
+            const PRIVACY_CONTENT = `
+                <h3>1. Information We Collect</h3>
+                <p>We collect your name, email address, role (parent/doctor/student), and learning activity data including scores and session durations.</p>
+                <h3>2. How We Use Your Information</h3>
+                <p>Your information is used to: personalize your learning experience, track progress, enable doctor-patient communication, and improve our platform.</p>
+                <h3>3. Data Storage</h3>
+                <p>All data is stored using Supabase, a secure cloud database provider. Data is encrypted at rest and in transit.</p>
+                <h3>4. Data Sharing</h3>
+                <p>We do not sell your data. Progress data may be shared with linked doctors/specialists to support your care. We do not share data with advertisers.</p>
+                <h3>5. Cookies</h3>
+                <p>We use session storage to maintain your login session and save form progress. No third-party tracking cookies are used.</p>
+                <h3>6. Your Rights</h3>
+                <p>You have the right to access, correct, or delete your data. Contact support@cognosolution.com to exercise these rights.</p>
+                <h3>7. Children's Data</h3>
+                <p>Data for users under 13 is handled with extra protection under COPPA. Parents/guardians may request full data deletion at any time.</p>
+            `;
+
+            function openModal(type) {
+                if (type === 'terms') {
+                    modalTitle.textContent = 'Terms of Service';
+                    modalBody.innerHTML = TERMS_CONTENT;
+                } else {
+                    modalTitle.textContent = 'Privacy Policy';
+                    modalBody.innerHTML = PRIVACY_CONTENT;
+                }
+                modal.classList.add('show');
+                modalBody.scrollTop = 0;
+            }
+
+            function closeModal() {
+                modal.classList.remove('show');
+            }
+
+            document.getElementById('open-terms')?.addEventListener('click', (e) => {
+                e.preventDefault();
+                openModal('terms');
+            });
+
+            document.getElementById('open-privacy')?.addEventListener('click', (e) => {
+                e.preventDefault();
+                openModal('privacy');
+            });
+
+            modalClose?.addEventListener('click', closeModal);
+            modalCancel?.addEventListener('click', closeModal);
+
+            modalAccept?.addEventListener('click', () => {
+                if (termsCheckbox) {
+                    termsCheckbox.checked = true;
+                    termsCheckbox.dispatchEvent(new Event('change'));
+                }
+                closeModal();
+            });
+
+            modal?.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+        });
+
+        // Theme toggle
+        const tgl=document.getElementById('themeToggle'),ico=document.getElementById('themeIcon'),htm=document.documentElement;
+        const sv=localStorage.getItem('theme')||'light';
+        htm.setAttribute('data-theme',sv);if(sv==='dark')document.body.classList.add('dark-mode');
+        ico.className=sv==='dark'?'fa-solid fa-sun':'fa-solid fa-moon';
+        tgl.addEventListener('click',()=>{const c=htm.getAttribute('data-theme'),n=c==='dark'?'light':'dark';htm.setAttribute('data-theme',n);localStorage.setItem('theme',n);document.body.classList.toggle('dark-mode',n==='dark');ico.className=n==='dark'?'fa-solid fa-sun':'fa-solid fa-moon';});
+    </script>
+</body>
+</html>

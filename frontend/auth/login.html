@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Login to Cogno Solution - AI-Powered Cognitive Support Platform for Children">
+    <title>Login - Cogno Solution</title>
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    <link rel="apple-touch-icon" href="../assets/images/icons/apple-touch-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
+    <link rel="stylesheet" href="../css/cognitive-friendly.css">
+    <style>
+        :root{--auth-bg:#f8fafc;--auth-card:#fff;--auth-fg:#0f172a;--auth-fg2:#64748b;--auth-fg3:#94a3b8;--auth-primary:#2563eb;--auth-primary-dk:#1d4ed8;--auth-border:#e2e8f0;--auth-shadow:0 20px 60px rgba(0,0,0,.08);--auth-input:#f1f5f9;}
+        [data-theme="dark"]{--auth-bg:#0d1117;--auth-card:#161b22;--auth-fg:#f0f6fc;--auth-fg2:#8b949e;--auth-fg3:#6e7681;--auth-primary:#3b82f6;--auth-primary-dk:#2563eb;--auth-border:#30363d;--auth-shadow:0 20px 60px rgba(0,0,0,.45);--auth-input:#21262d;}
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Inter',sans-serif;background:var(--auth-bg);color:var(--auth-fg);min-height:100vh;transition:background .3s,color .3s;}
+
+        .auth-page{min-height:100vh;display:flex;position:relative;overflow:hidden;}
+
+        .auth-blob{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;opacity:.4;z-index:0;}
+        .auth-blob.b1{width:500px;height:500px;background:rgba(37,99,235,.12);top:-120px;right:-120px;}
+        .auth-blob.b2{width:350px;height:350px;background:rgba(14,165,233,.1);bottom:-80px;left:-80px;}
+
+        /* Sidebar */
+        .auth-sidebar{flex:0 0 48%;display:none;background:linear-gradient(160deg,#1e3a8a 0%,#2563eb 50%,#0ea5e9 100%);color:#fff;padding:64px 56px;position:relative;overflow:hidden;flex-direction:column;justify-content:center;}
+        @media(min-width:1024px){.auth-sidebar{display:flex;}}
+        .auth-sidebar::before{content:'';position:absolute;top:-40%;right:-40%;width:80%;height:80%;background:radial-gradient(circle,rgba(255,255,255,.08),transparent 65%);pointer-events:none;}
+        .auth-sidebar::after{content:'';position:absolute;bottom:-30%;left:-20%;width:60%;height:60%;background:radial-gradient(circle,rgba(255,255,255,.05),transparent 60%);pointer-events:none;}
+        .sidebar-inner{position:relative;z-index:1;max-width:440px;}
+        .sidebar-back{display:inline-flex;align-items:center;gap:8px;color:rgba(255,255,255,.7);text-decoration:none;font-size:.88rem;font-weight:500;margin-bottom:48px;transition:color .2s;}
+        .sidebar-back:hover{color:#fff;}
+        .auth-sidebar h1{font-size:2.8rem;font-weight:900;line-height:1.1;letter-spacing:-.03em;margin-bottom:18px;}
+        .auth-sidebar h1 span{color:rgba(255,255,255,.6);}
+        .sidebar-inner p{font-size:1.05rem;color:rgba(255,255,255,.75);line-height:1.7;margin-bottom:40px;}
+        .auth-features{list-style:none;padding:0;margin:0;}
+        .auth-features li{display:flex;align-items:center;gap:14px;margin-bottom:20px;font-size:.95rem;color:rgba(255,255,255,.85);}
+        .feat-check{width:32px;height:32px;border-radius:10px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0;backdrop-filter:blur(8px);}
+
+        /* Main */
+        .auth-main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 24px;position:relative;z-index:1;}
+        .auth-container{width:100%;max-width:440px;animation:fadeIn .5s ease both;}
+
+        .auth-logo{text-align:center;margin-bottom:36px;}
+        .auth-logo-icon{width:52px;height:52px;background:var(--auth-primary);border-radius:14px;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:1.3rem;margin-bottom:12px;box-shadow:0 8px 24px rgba(37,99,235,.25);}
+        .auth-logo h2{font-size:1.4rem;font-weight:800;letter-spacing:-.02em;color:var(--auth-fg);}
+        .auth-logo-sub{font-size:.82rem;color:var(--auth-fg3);margin-top:4px;}
+
+        .auth-card{background:var(--auth-card);border-radius:20px;padding:36px 32px;box-shadow:var(--auth-shadow);border:1px solid var(--auth-border);transition:all .3s;}
+        .auth-card h3{font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:6px;letter-spacing:-.02em;}
+        .auth-card .subtitle{text-align:center;color:var(--auth-fg2);font-size:.9rem;margin-bottom:28px;}
+
+        .auth-form .form-group{margin-bottom:20px;}
+        .auth-form .form-label{display:block;font-weight:600;font-size:.85rem;margin-bottom:8px;color:var(--auth-fg);}
+        .auth-form .input-icon-wrapper{position:relative;}
+        .auth-form .input-icon-wrapper>i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--auth-fg3);font-size:.9rem;z-index:1;}
+        .auth-form .input-icon-wrapper .form-input{width:100%;padding:13px 14px 13px 42px;background:var(--auth-input);border:2px solid var(--auth-border);border-radius:12px;font-size:.92rem;font-family:'Inter',sans-serif;color:var(--auth-fg);outline:none;transition:all .25s;}
+        .auth-form .input-icon-wrapper .form-input:focus{border-color:var(--auth-primary);box-shadow:0 0 0 4px rgba(37,99,235,.1);background:var(--auth-card);}
+        .auth-form .input-icon-wrapper .form-input::placeholder{color:var(--auth-fg3);}
+        .auth-form .password-toggle{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--auth-fg3);cursor:pointer;padding:4px;font-size:.9rem;transition:color .2s;}
+        .auth-form .password-toggle:hover{color:var(--auth-primary);}
+
+        .auth-form .form-footer{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
+        .auth-form .remember-me{display:flex;align-items:center;gap:8px;font-size:.88rem;color:var(--auth-fg2);}
+        .auth-form .remember-me input[type="checkbox"]{width:16px;height:16px;accent-color:var(--auth-primary);cursor:pointer;}
+        .text-link{color:var(--auth-primary);text-decoration:none;font-size:.88rem;font-weight:500;transition:opacity .2s;}
+        .text-link:hover{opacity:.8;}
+
+        .btn-submit{width:100%;padding:14px;background:var(--auth-primary);color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .25s;box-shadow:0 4px 16px rgba(37,99,235,.25);}
+        .btn-submit:hover{background:var(--auth-primary-dk);transform:translateY(-2px);box-shadow:0 8px 28px rgba(37,99,235,.35);}
+
+        .auth-error{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:#ef4444;padding:12px 16px;border-radius:12px;margin-bottom:20px;display:none;align-items:center;gap:10px;font-size:.88rem;}
+        .auth-error.show{display:flex;}
+
+        .auth-footer{text-align:center;margin-top:28px;color:var(--auth-fg2);font-size:.92rem;}
+        .auth-footer a{color:var(--auth-primary);font-weight:600;text-decoration:none;transition:opacity .2s;}
+        .auth-footer a:hover{opacity:.8;}
+
+        .theme-btn{position:fixed;top:20px;right:20px;width:44px;height:44px;border-radius:50%;border:2px solid var(--auth-border);background:var(--auth-card);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--auth-fg2);transition:all .3s;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.06);}
+        .theme-btn:hover{border-color:var(--auth-primary);color:var(--auth-primary);transform:rotate(20deg);}
+
+        @media(max-width:768px){.auth-main{padding:24px 16px;}.auth-card{padding:28px 20px;border-radius:16px;}.auth-card h3{font-size:1.3rem;}}
+        @media(max-width:480px){.auth-form .form-footer{flex-direction:column;align-items:flex-start;gap:12px;}.auth-card{padding:24px 16px;}}
+
+        @keyframes fadeIn{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+        .sidebar-inner{animation:fadeIn .6s .1s ease both;}
+    </style>
+</head>
+<body>
+    <div class="auth-blob b1"></div>
+    <div class="auth-blob b2"></div>
+    <button class="theme-btn" id="themeToggle" title="Toggle dark mode"><i class="fa-solid fa-moon" id="themeIcon"></i></button>
+
+    <div class="auth-page">
+        <aside class="auth-sidebar">
+            <div class="sidebar-inner">
+                <a href="../index.html" class="sidebar-back"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+                <h1>Welcome <span>Back!</span></h1>
+                <p>Continue your learning journey with Cogno Solution — where every child can thrive and grow.</p>
+                <ul class="auth-features">
+                    <li><div class="feat-check"><i class="fa-solid fa-check"></i></div><span>Personalized learning paths for every child</span></li>
+                    <li><div class="feat-check"><i class="fa-solid fa-check"></i></div><span>Track progress across all modules</span></li>
+                    <li><div class="feat-check"><i class="fa-solid fa-check"></i></div><span>Connect with certified cognitive specialists</span></li>
+                    <li><div class="feat-check"><i class="fa-solid fa-check"></i></div><span>Safe, child-friendly environment</span></li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="auth-main">
+            <div class="auth-container">
+                <div class="auth-logo">
+                    <div class="auth-logo-icon"><i class="fa-solid fa-brain"></i></div>
+                    <h2>Cogno Solution</h2>
+                    <p class="auth-logo-sub">AI-Powered Learning Platform</p>
+                </div>
+
+                <div class="auth-card">
+                    <h3>Sign In</h3>
+                    <p class="subtitle">Enter your credentials to access your account</p>
+
+                    <div class="auth-error" id="auth-error">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <span id="error-message">Invalid email or password</span>
+                    </div>
+
+                    <form class="auth-form" id="login-form">
+                        <div class="form-group">
+                            <label class="form-label" for="email">Email Address</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-envelope"></i>
+                                <input type="email" id="email" name="email" class="form-input" placeholder="Enter your email" autocomplete="email" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="password">Password</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-lock"></i>
+                                <input type="password" id="password" name="password" class="form-input" placeholder="Enter your password" autocomplete="current-password" required>
+                                <button type="button" class="password-toggle" aria-label="Toggle password visibility">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-footer">
+                            <label class="remember-me">
+                                <input type="checkbox" name="remember" id="remember">
+                                <span>Remember me</span>
+                            </label>
+                            <a href="forgot-password.html" class="text-link">Forgot password?</a>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-full btn-submit" id="login-btn">
+                            <span class="btn-text">Sign In</span>
+                            <span class="btn-loader hidden"><i class="fa-solid fa-spinner fa-spin"></i></span>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="auth-footer">
+                    <p>Don't have an account? <a href="register.html">Create Account</a></p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/i18n.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="./auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => { CognoAuth.initLoginPage(); });
+        // Theme toggle
+        const tgl=document.getElementById('themeToggle'),ico=document.getElementById('themeIcon'),htm=document.documentElement;
+        const sv=localStorage.getItem('theme')||'light';
+        htm.setAttribute('data-theme',sv);if(sv==='dark')document.body.classList.add('dark-mode');
+        ico.className=sv==='dark'?'fa-solid fa-sun':'fa-solid fa-moon';
+        tgl.addEventListener('click',()=>{const c=htm.getAttribute('data-theme'),n=c==='dark'?'light':'dark';htm.setAttribute('data-theme',n);localStorage.setItem('theme',n);document.body.classList.toggle('dark-mode',n==='dark');ico.className=n==='dark'?'fa-solid fa-sun':'fa-solid fa-moon';});
+    </script>
+</body>
+</html>
