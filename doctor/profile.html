@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Cogno Solution</title>
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-darker: #1d4ed8;
+            --primary-light: #eff6ff;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --warning: #f59e0b;
+            --warning-light: #fef3c7;
+            --danger: #ef4444;
+            --danger-light: #fee2e2;
+            --bg: #f5f7fa;
+            --card: #ffffff;
+            --text: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+        }
+        
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --primary-light: #1e3a5f;
+            --success-light: #064e3b;
+            --warning-light: #451a03;
+            --danger-light: #450a0a;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg); 
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 90px;
+            transition: background 0.3s, color 0.3s;
+        }
+        
+        /* Topbar */
+        .topbar {
+            background: var(--card);
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            height: 70px;
+        }
+        
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .topbar-logo {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        
+        .topbar-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .topbar-btn {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+        }
+        
+        .topbar-btn:hover {
+            background: var(--border);
+            color: var(--text);
+        }
+        
+        .topbar-btn .badge {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            min-width: 18px;
+            height: 18px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            font-size: 0.65rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+        }
+
+        /* Profile Dropdown */
+        .profile-dropdown { position: relative; }
+        .profile-btn { display: flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0.6rem; border-radius: 10px; border: none; background: transparent; cursor: pointer; transition: all 0.2s; color: var(--text); }
+        .profile-btn:hover { background: var(--border); }
+        .profile-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-dark) 0%, var(--accent) 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.85rem; overflow: hidden; flex-shrink: 0; }
+        .profile-info { text-align: left; }
+        .profile-info .name { font-size: 0.85rem; font-weight: 600; color: var(--text); text-align: left; margin: 0; line-height: 1.2;}
+        .profile-info .role { font-size: 0.7rem; opacity: 0.7; color: var(--text-muted); text-align: left; margin: 0;}
+        .profile-chevron { font-size: 0.75rem; color: var(--text-muted); transition: transform 0.2s; }
+        .profile-dropdown.open .profile-chevron { transform: rotate(180deg); }
+        .profile-menu { position: absolute; top: calc(100% + 8px); right: 0; background: var(--card); border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0,0,0,0.15); min-width: 240px; padding: 0.5rem; display: none; z-index: 1000; }
+        .profile-menu.show { display: block; animation: slideDown 0.2s ease; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .profile-menu-header { padding: 0.75rem; border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+        .profile-menu-header .name { font-weight: 600; font-size: 0.95rem; color: var(--text); }
+        .profile-menu-header .email { font-size: 0.75rem; color: #3b82f6; }
+        .profile-menu-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.7rem 0.75rem; border-radius: 8px; cursor: pointer; text-decoration: none; font-size: 0.85rem; transition: background 0.2s; border: none; background: transparent; width: 100%; color: var(--text); }
+        .profile-menu-item:hover { background: var(--border); }
+        .profile-menu-item i { width: 20px; color: var(--text-muted); }
+        .profile-menu-item.danger { color: #ef4444; }
+        .profile-menu-item.danger i { color: #ef4444; }
+        .theme-toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 0.7rem 0.75rem; border-radius: 8px; cursor: pointer;}
+        .theme-toggle-row:hover { background: var(--border); }
+        .theme-toggle-left { display: flex; align-items: center; gap: 0.75rem; font-size: 0.85rem; color: var(--text); }
+        .theme-toggle-left i { width: 20px; color: var(--text-muted); }
+        .theme-switch { position: relative; width: 44px; height: 24px; }
+        .theme-switch input { opacity: 0; width: 0; height: 0; }
+        .theme-slider { position: absolute; cursor: pointer; inset: 0; background: var(--border); transition: 0.3s; border-radius: 24px; }
+        .theme-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; transition: 0.3s; border-radius: 50%; }
+        input:checked + .theme-slider { background: #3b82f6; }
+        input:checked + .theme-slider:before { transform: translateX(20px); }
+        .menu-divider { height: 1px; background: var(--border); margin: 0.5rem 0; }
+        
+        /* Notifications Panel */
+        .notifications-panel { position: absolute; top: calc(100% + 8px); right: 0; background: var(--card); border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0,0,0,0.15); width: 300px; max-height: 400px; overflow: hidden; display: none; z-index: 1000; }
+        .notifications-panel.show { display: block; animation: slideDown 0.2s ease; }
+        .notifications-header { padding: 1rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .notifications-header h4 { font-size: 0.95rem; font-weight: 600; margin: 0; color: var(--text); }
+        .notifications-header button { font-size: 0.75rem; color: #3b82f6; background: none; border: none; cursor: pointer; }
+        .notifications-empty { padding: 2rem; text-align: center; color: var(--text-muted); }
+
+        /* Main Content */
+        .content {
+            padding: 1.5rem 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Profile Header */
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--accent) 100%);
+            border-radius: 16px;
+            padding: 2rem 1.5rem;
+            color: white;
+            text-align: center;
+            margin-bottom: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+        
+        .profile-avatar-large {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border: 3px solid rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            font-weight: 600;
+            margin: 0 auto 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .profile-avatar-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .avatar-edit-btn {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: white;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: transform 0.2s;
+            z-index: 10;
+        }
+        
+        .avatar-edit-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .profile-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        
+        .profile-specialization {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 0.25rem;
+        }
+        
+        .profile-email {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+        
+        .profile-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+        
+        .profile-stat {
+            text-align: center;
+        }
+        
+        .profile-stat .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .profile-stat .label {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+        
+        /* Form Card */
+        .form-card {
+            background: var(--card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+        
+        .form-card-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        .form-card-header i {
+            color: var(--primary);
+        }
+        
+        .form-card-body {
+            padding: 1.5rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+        
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .form-group {
+            margin-bottom: 0;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            background: var(--bg);
+            color: var(--text);
+            transition: all 0.2s;
+        }
+        
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+        
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        
+        .checkbox-label input {
+            accent-color: var(--primary);
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-ghost:hover {
+            background: var(--border);
+            color: var(--text);
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card);
+            color: var(--text);
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 2000;
+            animation: slideUp 0.3s ease;
+            border: 1px solid var(--border);
+        }
+        
+        .toast.success { border-left: 4px solid var(--success); }
+        .toast.error { border-left: 4px solid var(--danger); }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 0.6rem 0.5rem;
+            display: flex;
+            justify-content: space-around;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 0.65rem;
+            border-radius: 10px;
+            text-decoration: none;
+            min-width: 50px;
+            transition: all 0.2s;
+        }
+        
+        .nav-btn i {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .nav-btn:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        
+        .nav-btn.active {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+        
+        /* Language Selector Extra Styles */
+        #lang-menu button:hover { background: var(--border) !important; }
+        
+        .dropdown-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.1); z-index: 999; display: none; }
+        .dropdown-overlay.show { display: block; }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .profile-stats { gap: 1rem; }
+            .profile-stat .value { font-size: 1.1rem; }
+            .form-actions { flex-direction: column; }
+            .form-actions .btn { width: 100%; }
+            .topbar-title { display: none; }
+            .notifications-panel { width: 90%; left: 5%; right: 5%; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Dropdown Overlay -->
+    <div class="dropdown-overlay" id="dropdown-overlay" onclick="closeAllDropdowns()"></div>
+
+    <!-- Topbar -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <div class="topbar-logo">C</div>
+            <span class="topbar-title">My Profile</span>
+        </div>
+        
+        <div class="topbar-right">
+            <!-- Language Selector -->
+            <div style="position:relative;">
+                <button class="topbar-btn" id="lang-btn" onclick="toggleLangMenu()" title="Language">
+                    <i class="fa-solid fa-globe"></i>
+                </button>
+                <div id="lang-menu" style="display:none !important; position:absolute; top:calc(100% + 8px); right:0; background:var(--card); border:1px solid var(--border); border-radius:12px; box-shadow:0 10px 32px rgba(0,0,0,0.18); min-width:160px; padding:0.4rem; z-index:1200;">
+                    <button onclick="setLang('en')" style="display:flex;align-items:center;gap:0.6rem;width:100%;padding:0.6rem 0.75rem;border:none;background:none;border-radius:8px;cursor:pointer;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;">🇬🇧 English</button>
+                    <button onclick="setLang('hi')" style="display:flex;align-items:center;gap:0.6rem;width:100%;padding:0.6rem 0.75rem;border:none;background:none;border-radius:8px;cursor:pointer;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;">🇮🇳 हिन्दी</button>
+                    <button onclick="setLang('mr')" style="display:flex;align-items:center;gap:0.6rem;width:100%;padding:0.6rem 0.75rem;border:none;background:none;border-radius:8px;cursor:pointer;color:var(--text);font-size:0.85rem;font-family:'Inter',sans-serif;">🇮🇳 मराठी</button>
+                </div>
+            </div>
+
+            <!-- Notifications -->
+            <div style="position: relative;">
+                <button class="topbar-btn" id="notifications-btn" onclick="toggleNotifications()">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="badge" id="notifications-badge" style="display: none;">0</span>
+                </button>
+                
+                <div class="notifications-panel" id="notifications-panel">
+                    <div class="notifications-header">
+                        <h4>Notifications</h4>
+                        <button onclick="markAllRead()">Mark all read</button>
+                    </div>
+                    <div id="msg-notif-list" class="notifications-list">
+                        <div class="notifications-empty">
+                            <i class="fa-solid fa-bell"></i>
+                            <p>No new notifications</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Profile Dropdown -->
+            <div class="profile-dropdown" id="profile-dropdown">
+                <button class="profile-btn" onclick="toggleProfileMenu()">
+                    <div class="profile-avatar" id="dropdown-avatar">D</div>
+                    <div class="profile-info">
+                        <div class="name" id="dropdown-name">Doctor</div>
+                        <div class="role">Medical Professional</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-down profile-chevron"></i>
+                </button>
+                
+                <div class="profile-menu" id="profile-menu">
+                    <div class="profile-menu-header">
+                        <div class="name" id="menu-name">Doctor</div>
+                        <div class="email" id="menu-email">doctor@cogno.com</div>
+                    </div>
+                    
+                    <a href="profile.html" class="profile-menu-item active">
+                        <i class="fa-solid fa-user"></i> My Profile
+                    </a>
+                    <a href="settings.html" class="profile-menu-item">
+                        <i class="fa-solid fa-gear"></i> Settings
+                    </a>
+                    
+                    <div class="menu-divider"></div>
+                    
+                    <div class="theme-toggle-row" onclick="toggleTheme()">
+                        <div class="theme-toggle-left">
+                            <i class="fa-solid fa-moon"></i> Dark Mode
+                        </div>
+                        <label class="theme-switch" onclick="event.stopPropagation()">
+                            <input type="checkbox" id="theme-checkbox" onchange="toggleTheme()">
+                            <span class="theme-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="menu-divider"></div>
+                    
+                    <button class="profile-menu-item danger" onclick="logout()">
+                        <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="content">
+        <!-- Profile Header Card -->
+        <div class="profile-header">
+            <div class="profile-avatar-large" id="profile-avatar-large">
+                D
+                <label class="avatar-edit-btn" for="avatar-input">
+                    <i class="fa-solid fa-camera"></i>
+                </label>
+                <input type="file" id="avatar-input" accept="image/*" style="display: none;">
+            </div>
+            <h1 class="profile-name" id="profile-name">Dr. Doctor</h1>
+            <p class="profile-specialization" id="profile-specialization">Medical Professional</p>
+            <p class="profile-email" id="profile-email">doctor@cogno.com</p>
+            
+            <div class="profile-stats">
+                <div class="profile-stat">
+                    <div class="value" id="stat-patients">0</div>
+                    <div class="label">Patients</div>
+                </div>
+                <div class="profile-stat">
+                    <div class="value" id="stat-consultations">0</div>
+                    <div class="label">Consultations</div>
+                </div>
+                <div class="profile-stat">
+                    <div class="value" id="stat-experience">0</div>
+                    <div class="label">Years Exp.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Personal Information -->
+        <div class="form-card">
+            <div class="form-card-header">
+                <i class="fa-solid fa-user"></i>
+                Personal Information
+            </div>
+            <div class="form-card-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="full-name">Full Name</label>
+                        <input type="text" id="full-name" class="form-input" placeholder="Dr. John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" class="form-input" readonly>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" class="form-input" placeholder="+1 (555) 000-0000">
+                    </div>
+                    <div class="form-group">
+                        <label for="date-of-birth">Date of Birth</label>
+                        <input type="date" id="date-of-birth" class="form-input">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Professional Information -->
+        <div class="form-card">
+            <div class="form-card-header">
+                <i class="fa-solid fa-stethoscope"></i>
+                Professional Information
+            </div>
+            <div class="form-card-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="specialization">Specialization</label>
+                        <select id="specialization" class="form-select">
+                            <option value="">Select specialization</option>
+                            <option value="pediatric-neurologist">Pediatric Neurologist</option>
+                            <option value="child-psychologist">Child Psychologist</option>
+                            <option value="speech-therapist">Speech Therapist</option>
+                            <option value="occupational-therapist">Occupational Therapist</option>
+                            <option value="special-educator">Special Educator</option>
+                            <option value="developmental-pediatrician">Developmental Pediatrician</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="license-number">License Number</label>
+                        <input type="text" id="license-number" class="form-input" placeholder="Enter license number">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="years-experience">Years of Experience</label>
+                        <input type="number" id="years-experience" class="form-input" min="0" placeholder="10">
+                    </div>
+                    <div class="form-group">
+                        <label for="consultation-fee">Consultation Fee (USD)</label>
+                        <input type="number" id="consultation-fee" class="form-input" min="0" placeholder="100">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top: 1.25rem;">
+                    <label for="bio">Professional Bio</label>
+                    <textarea id="bio" class="form-textarea" rows="4" placeholder="Briefly describe your experience and expertise..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+            <button class="btn btn-ghost" onclick="location.reload()">
+                <i class="fa-solid fa-rotate-left"></i> Reset
+            </button>
+            <button class="btn btn-primary" id="save-btn" onclick="saveProfile()">
+                <i class="fa-solid fa-save"></i> Save Changes
+            </button>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-btn">
+            <i class="fa-solid fa-house"></i>
+            Home
+        </a>
+        <a href="patients.html" class="nav-btn">
+            <i class="fa-solid fa-user-group"></i>
+            Patients
+        </a>
+        <a href="schedule.html" class="nav-btn">
+            <i class="fa-solid fa-calendar"></i>
+            Schedule
+        </a>
+        <a href="consultations.html" class="nav-btn">
+            <i class="fa-solid fa-video"></i>
+            Consult
+        </a>
+        <a href="messages.html" class="nav-btn">
+            <i class="fa-solid fa-message"></i>
+            Messages
+        </a>
+        <a href="profile.html" class="nav-btn active">
+            <i class="fa-solid fa-user"></i>
+            Profile
+        </a>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/i18n.js"></script>
+
+    <script>
+        let currentUser = null;
+        let profileData = null;
+
+        // Theme Management
+        function initTheme() {
+            const savedTheme = localStorage.getItem('cogno_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            const checkbox = document.getElementById('theme-checkbox');
+            if (checkbox) checkbox.checked = savedTheme === 'dark';
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('cogno_theme', newTheme);
+            const checkbox = document.getElementById('theme-checkbox');
+            if (checkbox) checkbox.checked = newTheme === 'dark';
+        }
+
+        // Dropdown Handlers
+        function closeAllDropdowns() {
+            document.getElementById('profile-menu')?.classList.remove('show');
+            document.getElementById('notifications-panel')?.classList.remove('show');
+            document.getElementById('profile-dropdown')?.classList.remove('open');
+            document.getElementById('dropdown-overlay')?.classList.remove('show');
+            const langMenu = document.getElementById('lang-menu');
+            if (langMenu) {
+                langMenu.style.display = 'none';
+                langMenu.style.setProperty('display', 'none', 'important');
+            }
+        }
+
+        function toggleProfileMenu() {
+            const menu = document.getElementById('profile-menu');
+            const dropdown = document.getElementById('profile-dropdown');
+            const overlay = document.getElementById('dropdown-overlay');
+            const isShowing = menu.classList.contains('show');
+            closeAllDropdowns();
+            if (!isShowing) {
+                menu.classList.add('show');
+                dropdown.classList.add('open');
+                overlay.classList.add('show');
+            }
+        }
+
+        function toggleNotifications() {
+            const panel = document.getElementById('notifications-panel');
+            const overlay = document.getElementById('dropdown-overlay');
+            const isShowing = panel.classList.contains('show');
+            closeAllDropdowns();
+            if (!isShowing) {
+                panel.classList.add('show');
+                overlay.classList.add('show');
+            }
+        }
+
+        function toggleLangMenu() {
+            const menu = document.getElementById('lang-menu');
+            const isShowing = menu.style.display === 'block';
+            closeAllDropdowns();
+            if (!isShowing) {
+                menu.style.display = 'block';
+                menu.style.setProperty('display', 'block', 'important');
+            }
+        }
+
+        function setLang(lang) {
+            localStorage.setItem('cogno_language', lang);
+            if (window.CognoI18n && typeof window.CognoI18n.setLanguage === 'function') {
+                window.CognoI18n.setLanguage(lang);
+            }
+            location.reload();
+        }
+
+        // Show Toast
+        function showToast(message, type = 'success') {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <i class="fa-solid fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                ${message}
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Load Profile
+        async function loadProfile() {
+            try {
+                if (!window.CognoSupabase || !window.CognoSupabase.client) {
+                    console.error('Supabase client not found');
+                    return;
+                }
+
+                const { data: { user } } = await window.CognoSupabase.client.auth.getUser();
+                if (!user) {
+                    window.location.href = '../auth/login.html';
+                    return;
+                }
+                currentUser = user;
+
+                const { data: profile, error: profileError } = await window.CognoSupabase.client
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', user.id)
+                    .single();
+
+                if (profileError) throw profileError;
+                profileData = profile;
+
+                // Update UI Header
+                const name = profile.full_name || user.email.split('@')[0];
+                const initial = name.charAt(0).toUpperCase();
+                
+                document.getElementById('profile-name').textContent = name.startsWith('Dr.') ? name : `Dr. ${name}`;
+                document.getElementById('profile-email').textContent = user.email;
+                document.getElementById('profile-specialization').textContent = profile.specialization || 'Medical Professional';
+                
+                // Update stats
+                document.getElementById('stat-experience').textContent = profile.years_experience || '0';
+                loadStats(user.id);
+
+                // Update Avatar
+                if (profile.avatar_url) {
+                    document.getElementById('profile-avatar-large').innerHTML = `
+                        <img src="${profile.avatar_url}" alt="Avatar">
+                        <label class="avatar-edit-btn" for="avatar-input">
+                            <i class="fa-solid fa-camera"></i>
+                        </label>
+                        <input type="file" id="avatar-input" accept="image/*" style="display: none;">
+                    `;
+                    document.getElementById('dropdown-avatar').innerHTML = `<img src="${profile.avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                } else {
+                    document.getElementById('dropdown-avatar').textContent = initial;
+                }
+                
+                document.getElementById('dropdown-name').textContent = name;
+                document.getElementById('menu-name').textContent = name;
+                document.getElementById('menu-email').textContent = user.email;
+
+                // Fill Form
+                document.getElementById('full-name').value = profile.full_name || '';
+                document.getElementById('email').value = user.email;
+                document.getElementById('phone').value = profile.phone || '';
+                document.getElementById('date-of-birth').value = profile.date_of_birth || '';
+                document.getElementById('license-number').value = profile.license_number || '';
+                document.getElementById('years-experience').value = profile.years_experience || '';
+                document.getElementById('consultation-fee').value = profile.consultation_fee || '';
+                document.getElementById('bio').value = profile.bio || '';
+                
+                if (profile.specialization) {
+                    const specSelect = document.getElementById('specialization');
+                    const option = Array.from(specSelect.options).find(o => o.value === profile.specialization || o.text === profile.specialization);
+                    if (option) option.selected = true;
+                }
+
+                setupAvatarUpload();
+
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                showToast('Failed to load profile', 'error');
+            }
+        }
+
+        async function loadStats(doctorId) {
+            try {
+                const { count: patients } = await window.CognoSupabase.client
+                    .from('doctor_patients')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('doctor_id', doctorId)
+                    .eq('status', 'active');
+                document.getElementById('stat-patients').textContent = patients || 0;
+
+                const { count: consultations } = await window.CognoSupabase.client
+                    .from('consultations')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('doctor_id', doctorId);
+                document.getElementById('stat-consultations').textContent = consultations || 0;
+            } catch (e) { console.warn('Stats error:', e); }
+        }
+
+        async function saveProfile() {
+            const btn = document.getElementById('save-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+
+            const updates = {
+                full_name: document.getElementById('full-name').value,
+                phone: document.getElementById('phone').value,
+                date_of_birth: document.getElementById('date-of-birth').value || null,
+                specialization: document.getElementById('specialization').value || document.getElementById('specialization').selectedOptions[0]?.text,
+                license_number: document.getElementById('license-number').value,
+                years_experience: parseInt(document.getElementById('years-experience').value) || null,
+                consultation_fee: parseFloat(document.getElementById('consultation-fee').value) || null,
+                bio: document.getElementById('bio').value,
+                updated_at: new Date()
+            };
+
+            try {
+                const { error } = await window.CognoSupabase.client
+                    .from('profiles')
+                    .update(updates)
+                    .eq('id', currentUser.id);
+
+                if (error) throw error;
+                showToast('Profile updated successfully!', 'success');
+                setTimeout(() => location.reload(), 1500);
+            } catch (error) {
+                console.error('Save error:', error);
+                showToast('Failed to save profile', 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-save"></i> Save Changes';
+            }
+        }
+
+        function setupAvatarUpload() {
+            const input = document.getElementById('avatar-input');
+            if (input) {
+                input.addEventListener('change', async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    
+                    try {
+                        showToast('Uploading avatar...', 'info');
+                        const fileExt = file.name.split('.').pop();
+                        const fileName = `${currentUser.id}/avatar-${Date.now()}.${fileExt}`;
+                        
+                        const { error: uploadError } = await window.CognoSupabase.client
+                            .storage
+                            .from('avatars')
+                            .upload(fileName, file, { upsert: true });
+                        
+                        if (uploadError) throw uploadError;
+                        
+                        const { data: { publicUrl } } = window.CognoSupabase.client
+                            .storage
+                            .from('avatars')
+                            .getPublicUrl(fileName);
+                        
+                        await window.CognoSupabase.client
+                            .from('profiles')
+                            .update({ avatar_url: publicUrl })
+                            .eq('id', currentUser.id);
+                        
+                        showToast('Avatar updated!', 'success');
+                        setTimeout(() => location.reload(), 1000);
+                    } catch (error) {
+                        console.error('Upload error:', error);
+                        showToast('Failed to upload avatar', 'error');
+                    }
+                });
+            }
+        }
+
+        async function loadMessageNotifications() {
+            try {
+                // Try both possible column names for receiver and read status
+                let messages = null;
+                let { data: msgs1, error: err1 } = await window.CognoSupabase.client
+                    .from('messages')
+                    .select('id, content, message, created_at, sender_id, is_read, read, profiles!messages_sender_id_fkey(full_name, avatar_url)')
+                    .eq('recipient_id', currentUser.id)
+                    .order('created_at', { ascending: false })
+                    .limit(10);
+                
+                if (!err1 && msgs1 && msgs1.length > 0) {
+                    messages = msgs1;
+                } else {
+                    const { data: msgs2 } = await window.CognoSupabase.client
+                        .from('messages')
+                        .select('id, content, message, created_at, sender_id, is_read, read, profiles!messages_sender_id_fkey(full_name, avatar_url)')
+                        .eq('receiver_id', currentUser.id)
+                        .order('created_at', { ascending: false })
+                        .limit(10);
+                    messages = msgs2;
+                }
+                
+                const container = document.getElementById('msg-notif-list');
+                const badge = document.getElementById('notifications-badge');
+                
+                if (messages && messages.length > 0) {
+                    const unreadCount = messages.filter(m => m.is_read === false || m.read === false).length;
+                    if (badge && unreadCount > 0) {
+                        badge.textContent = unreadCount;
+                        badge.style.display = 'flex';
+                    }
+                    
+                    container.innerHTML = messages.map(msg => {
+                        const senderName = msg.profiles?.full_name || 'Patient';
+                        const initials = senderName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                        const avatarUrl = msg.profiles?.avatar_url;
+                        const preview = (msg.content || msg.message || 'Sent an attachment').substring(0, 40);
+                        const isUnread = (msg.is_read === false || msg.read === false);
+                        
+                        return `
+                            <div class="notification-item ${isUnread ? 'unread' : ''}" onclick="window.location.href='messages.html?user=${msg.sender_id}'" style="display:flex; gap:10px; padding:12px; border-bottom:1px solid var(--border-color); cursor:pointer; ${isUnread ? 'background:rgba(59,130,246,0.05);' : ''}">
+                                <div class="notification-avatar" style="width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#3b82f6,#8b5cf6); color:white; display:flex; align-items:center; justify-content:center; flex-shrink:0; overflow:hidden;">
+                                    ${avatarUrl ? `<img src="${avatarUrl}" style="width:100%; height:100%; object-fit:cover;">` : initials}
+                                </div>
+                                <div class="notification-content" style="flex:1; min-width:0;">
+                                    <div class="notification-title" style="font-weight:600; font-size:0.85rem; display:flex; justify-content:space-between;">
+                                        <span>${senderName}</span>
+                                        <span class="notification-time" style="font-size:0.65rem; color:var(--text-secondary); font-weight:400;">${formatTimeAgo(msg.created_at)}</span>
+                                    </div>
+                                    <div class="notification-text" style="font-size:0.75rem; color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${preview}</div>
+                                </div>
+                                ${isUnread ? '<div style="width:8px; height:8px; border-radius:50%; background:#3b82f6; flex-shrink:0; margin-top:6px;"></div>' : ''}
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    container.innerHTML = `
+                        <div class="notifications-empty" style="padding:2rem; text-align:center; color:var(--text-secondary);">
+                            <i class="fa-solid fa-bell" style="font-size:1.5rem; opacity:0.3; margin-bottom:0.5rem; display:block;"></i>
+                            <p>No messages found</p>
+                        </div>
+                    `;
+                }
+            } catch (e) { console.warn('Notifications error:', e); }
+        }
+
+        function formatTimeAgo(dateStr) {
+            const date = new Date(dateStr);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins}m ago`;
+            const diffHours = Math.floor(diffMins / 60);
+            if (diffHours < 24) return `${diffHours}h ago`;
+            return date.toLocaleDateString();
+        }
+
+        async function logout() {
+            await window.CognoSupabase.client.auth.signOut();
+            window.location.href = '../auth/login.html';
+        }
+
+        function markAllRead() {
+            document.getElementById('notifications-badge').style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            loadProfile();
+            loadMessageNotifications();
+            
+            // Close dropdowns on click outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.profile-dropdown') && !e.target.closest('.topbar-btn')) {
+                    closeAllDropdowns();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
