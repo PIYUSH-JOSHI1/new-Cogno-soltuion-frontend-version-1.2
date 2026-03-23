@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Create your Cogno Solution account - AI-Powered Cognitive Support for Children">
+    <title>Register - Cogno Solution</title>
+    
+    <!-- Favicons -->
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
+    <link rel="stylesheet" href="../css/cognitive-friendly.css">
+    
+    <style>
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            background: linear-gradient(135deg, var(--color-primary-50) 0%, var(--color-bg) 50%, var(--color-success-50) 100%);
+        }
+        
+        .auth-sidebar {
+            flex: 1;
+            display: none;
+            background: linear-gradient(135deg, var(--color-success) 0%, var(--color-success-dark, #059669) 100%);
+            color: white;
+            padding: var(--space-12);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        @media (min-width: 1024px) {
+            .auth-sidebar {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+        }
+        
+        .auth-sidebar::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+        }
+        
+        .auth-sidebar-content {
+            position: relative;
+            z-index: 1;
+            max-width: 480px;
+        }
+        
+        .auth-sidebar h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: var(--space-4);
+        }
+        
+        .auth-sidebar p {
+            font-size: 1.125rem;
+            opacity: 0.9;
+            margin-bottom: var(--space-8);
+        }
+        
+        .auth-features {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .auth-features li {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            margin-bottom: var(--space-4);
+            font-size: 1rem;
+        }
+        
+        .auth-features i {
+            width: 24px;
+            height: 24px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+        }
+        
+        .auth-main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-6);
+            overflow-y: auto;
+        }
+        
+        .auth-container {
+            width: 100%;
+            max-width: 480px;
+            padding: var(--space-4) 0;
+        }
+        
+        .auth-logo {
+            text-align: center;
+            margin-bottom: var(--space-6);
+        }
+        
+        .auth-logo img {
+            height: 48px;
+            margin-bottom: var(--space-2);
+        }
+        
+        .auth-logo h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+        
+        .auth-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--space-6) var(--space-8);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .dark-mode .auth-card {
+            background: var(--color-surface);
+        }
+        
+        .auth-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: var(--space-2);
+        }
+        
+        .auth-card .subtitle {
+            text-align: center;
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-6);
+        }
+        
+        .auth-form .form-group {
+            margin-bottom: var(--space-4);
+        }
+        
+        .auth-form .form-row {
+            display: flex;
+            gap: var(--space-4);
+        }
+        
+        .auth-form .form-row .form-group {
+            flex: 1;
+        }
+        
+        .auth-form .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: var(--space-2);
+        }
+        
+        .auth-form .input-icon-wrapper {
+            position: relative;
+        }
+        
+        .auth-form .input-icon-wrapper i {
+            position: absolute;
+            left: var(--space-3);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--color-text-tertiary);
+        }
+        
+        .auth-form .input-icon-wrapper .form-input,
+        .auth-form .input-icon-wrapper .form-select {
+            padding-left: var(--space-10);
+        }
+        
+        .auth-form .password-toggle {
+            position: absolute;
+            right: var(--space-3);
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--color-text-tertiary);
+            cursor: pointer;
+            padding: var(--space-1);
+        }
+        
+        .password-strength {
+            margin-top: var(--space-2);
+        }
+        
+        .password-strength-bar {
+            height: 4px;
+            background: var(--color-border);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: var(--space-1);
+        }
+        
+        .password-strength-fill {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s ease;
+        }
+        
+        .password-strength-fill.weak { width: 25%; background: var(--color-danger); }
+        .password-strength-fill.fair { width: 50%; background: var(--color-warning); }
+        .password-strength-fill.good { width: 75%; background: var(--color-info); }
+        .password-strength-fill.strong { width: 100%; background: var(--color-success); }
+        
+        .password-strength-text {
+            font-size: 0.75rem;
+            color: var(--color-text-tertiary);
+        }
+        
+        .role-selector {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-3);
+            margin-bottom: var(--space-4);
+        }
+        
+        .role-option {
+            position: relative;
+        }
+        
+        .role-option input {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .role-option label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: var(--space-4);
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            text-align: center;
+        }
+        
+        .role-option label:hover {
+            border-color: var(--color-primary-300);
+            background: var(--color-primary-50);
+        }
+        
+        .role-option input:checked + label {
+            border-color: var(--color-primary);
+            background: var(--color-primary-50);
+        }
+        
+        .role-option .role-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: var(--space-2);
+            font-size: 1.25rem;
+        }
+        
+        .role-option.child .role-icon { background: var(--color-info-100); color: var(--color-info); }
+        .role-option.parent .role-icon { background: var(--color-success-100); color: var(--color-success); }
+        .role-option.doctor .role-icon { background: var(--color-warning-100); color: var(--color-warning); }
+        .role-option.admin .role-icon { background: var(--color-danger-100); color: var(--color-danger); }
+        
+        .role-option .role-name {
+            font-weight: 600;
+            margin-bottom: var(--space-1);
+        }
+        
+        .role-option .role-desc {
+            font-size: 0.75rem;
+            color: var(--color-text-tertiary);
+        }
+        
+        .terms-agreement {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-2);
+            margin-bottom: var(--space-6);
+        }
+        
+        .terms-agreement input {
+            margin-top: 4px;
+        }
+        
+        .terms-agreement label {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .terms-agreement a {
+            color: var(--color-primary);
+        }
+        
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            margin: var(--space-6) 0;
+            color: var(--color-text-tertiary);
+            font-size: 0.875rem;
+        }
+        
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--color-border);
+        }
+        
+        .btn-google {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            background: white;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            font-weight: 500;
+            transition: all var(--transition-normal);
+        }
+        
+        .dark-mode .btn-google {
+            background: var(--color-surface-elevated);
+        }
+        
+        .btn-google:hover {
+            background: var(--color-bg-secondary);
+            border-color: var(--color-border-hover);
+        }
+        
+        .btn-google img {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .auth-footer {
+            text-align: center;
+            margin-top: var(--space-6);
+            color: var(--color-text-secondary);
+        }
+        
+        .auth-footer a {
+            color: var(--color-primary);
+            font-weight: 500;
+        }
+        
+        .auth-error {
+            background: var(--color-danger-50);
+            border: 1px solid var(--color-danger-200);
+            color: var(--color-danger);
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-4);
+            display: none;
+            align-items: center;
+            gap: var(--space-2);
+        }
+        
+        .auth-error.show {
+            display: flex;
+        }
+        
+        @media (max-width: 768px) {
+            .auth-main {
+                padding: var(--space-4);
+            }
+            
+            .auth-container {
+                max-width: 100%;
+            }
+            
+            .auth-card {
+                padding: var(--space-6) var(--space-4);
+                border-radius: var(--radius-lg);
+            }
+            
+            .auth-card h3 {
+                font-size: 1.25rem;
+            }
+            
+            .auth-card .subtitle {
+                font-size: 0.875rem;
+                margin-bottom: var(--space-4);
+            }
+            
+            .auth-form .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .role-selector {
+                grid-template-columns: 1fr;
+                gap: var(--space-3);
+            }
+            
+            .role-option label {
+                padding: var(--space-3);
+            }
+            
+            .role-option .role-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            
+            .auth-sidebar h1 {
+                font-size: 2rem;
+            }
+            
+            .auth-sidebar p {
+                font-size: 1rem;
+            }
+            
+            .btn-lg {
+                padding: var(--space-3) var(--space-6);
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .auth-logo img {
+                height: 40px;
+            }
+            
+            .auth-logo h2 {
+                font-size: 1.25rem;
+            }
+            
+            .auth-card {
+                padding: var(--space-5) var(--space-3);
+            }
+        }
+        /* Premium Legal Modal */
+        .legal-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .legal-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .legal-modal-content {
+            background: var(--color-bg);
+            width: 95%;
+            max-width: 650px;
+            max-height: 85vh;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            display: flex;
+            flex-direction: column;
+            transform: scale(0.95) translateY(20px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--color-border);
+            overflow: hidden;
+        }
+
+        .legal-modal.show .legal-modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--color-surface);
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin: 0;
+        }
+
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            line-height: 1.6;
+            color: var(--color-text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .modal-body h3 {
+            color: var(--color-text);
+            margin: 1.25rem 0 0.5rem;
+            font-size: 1.1rem;
+            text-align: left;
+        }
+
+        .modal-body h3:first-child {
+            margin-top: 0;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--color-border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            background: var(--color-surface);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: var(--color-text-tertiary);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            color: var(--color-danger);
+        }
+
+        .dark-mode .legal-modal-content {
+            background: #111827;
+            border-color: rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-page">
+        <!-- Sidebar (desktop only) -->
+        <aside class="auth-sidebar">
+            <div class="auth-sidebar-content">
+                <h1>Join Cogno Solution</h1>
+                <p>Start your child's personalized learning journey with our AI-powered cognitive support platform.</p>
+                
+                <ul class="auth-features">
+                    <li>
+                        <i class="fa-solid fa-check"></i>
+                        <span>Support for Dyslexia, Dyscalculia, Dysgraphia & Dyspraxia</span>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-check"></i>
+                        <span>Real-time progress tracking for parents</span>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-check"></i>
+                        <span>Connect with certified specialists</span>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-check"></i>
+                        <span>Gamified learning experience</span>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-check"></i>
+                        <span>Secure and COPPA compliant</span>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="auth-main">
+            <div class="auth-container">
+                <!-- Logo -->
+                <div class="auth-logo">
+                    <img src="../assets/images/icons/logo.svg" alt="Cogno Solution Logo">
+                    <h2>Cogno Solution</h2>
+                </div>
+                
+                <!-- Register Card -->
+                <div class="auth-card">
+                    <h3>Create Account</h3>
+                    <p class="subtitle">Join thousands of families on their learning journey</p>
+                    
+                    <!-- Error Message -->
+                    <div class="auth-error" id="auth-error">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <span id="error-message">Registration failed</span>
+                    </div>
+                    
+                    <!-- Role Selector -->
+                    <div class="form-group">
+                        <label class="form-label">I am a...</label>
+                        <div class="role-selector">
+                            <div class="role-option student">
+                                <input type="radio" name="role" id="role-student" value="student" checked>
+                                <label for="role-student">
+                                    <div class="role-icon"><i class="fa-solid fa-child"></i></div>
+                                    <span class="role-name">Child</span>
+                                    <span class="role-desc">I want to learn</span>
+                                </label>
+                            </div>
+                            <!-- Parent role hidden but preserved in code -->
+                            <!-- 
+                            <div class="role-option parent">
+                                <input type="radio" name="role" id="role-parent" value="parent">
+                                <label for="role-parent">
+                                    <div class="role-icon"><i class="fa-solid fa-user-group"></i></div>
+                                    <span class="role-name">Parent</span>
+                                    <span class="role-desc">For my child</span>
+                                </label>
+                            </div>
+                            -->
+                            <div class="role-option doctor">
+                                <input type="radio" name="role" id="role-doctor" value="doctor">
+                                <label for="role-doctor">
+                                    <div class="role-icon"><i class="fa-solid fa-user-doctor"></i></div>
+                                    <span class="role-name">Doctor</span>
+                                    <span class="role-desc">Specialist</span>
+                                </label>
+                            </div>
+                            <div class="role-option admin" style="display: none;">
+                                <input type="radio" name="role" id="role-admin" value="admin">
+                                <label for="role-admin">
+                                    <div class="role-icon"><i class="fa-solid fa-shield"></i></div>
+                                    <span class="role-name">Admin</span>
+                                    <span class="role-desc">Platform admin</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Register Form -->
+                    <form class="auth-form" id="register-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="firstName">First Name</label>
+                                <input 
+                                    type="text" 
+                                    id="firstName" 
+                                    name="firstName" 
+                                    class="form-input" 
+                                    placeholder="First name"
+                                    autocomplete="given-name"
+                                    required
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="lastName">Last Name</label>
+                                <input 
+                                    type="text" 
+                                    id="lastName" 
+                                    name="lastName" 
+                                    class="form-input" 
+                                    placeholder="Last name"
+                                    autocomplete="family-name"
+                                    required
+                                >
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="email">Email Address</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-envelope"></i>
+                                <input 
+                                    type="email" 
+                                    id="email" 
+                                    name="email" 
+                                    class="form-input" 
+                                    placeholder="Enter your email"
+                                    autocomplete="email"
+                                    required
+                                >
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="password">Password</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-lock"></i>
+                                <input 
+                                    type="password" 
+                                    id="password" 
+                                    name="password" 
+                                    class="form-input" 
+                                    placeholder="Create a password"
+                                    autocomplete="new-password"
+                                    required
+                                    minlength="8"
+                                >
+                                <button type="button" class="password-toggle" aria-label="Toggle password visibility">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="password-strength">
+                                <div class="password-strength-bar">
+                                    <div class="password-strength-fill" id="password-strength-fill"></div>
+                                </div>
+                                <span class="password-strength-text" id="password-strength-text">Use 8+ characters with mix of letters & numbers</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="confirmPassword">Confirm Password</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-lock"></i>
+                                <input 
+                                    type="password" 
+                                    id="confirmPassword" 
+                                    name="confirmPassword" 
+                                    class="form-input" 
+                                    placeholder="Confirm your password"
+                                    autocomplete="new-password"
+                                    required
+                                >
+                            </div>
+                        </div>
+                        
+                        <!-- Child-specific: Date of Birth -->
+                        <div class="form-group child-field">
+                            <label class="form-label" for="dateOfBirth">Date of Birth</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-calendar"></i>
+                                <input 
+                                    type="date" 
+                                    id="dateOfBirth" 
+                                    name="dateOfBirth" 
+                                    class="form-input"
+                                >
+                            </div>
+                        </div>
+                        
+                        <!-- Parent-specific: Child info (Commented out) -->
+                        <!-- 
+                        <div class="child-info-fields" id="child-info-fields">
+                            <h4>Child Information (Optional - can be added later)</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="childName">Child's Name</label>
+                                    <input 
+                                        type="text" 
+                                        id="childName" 
+                                        name="childName" 
+                                        class="form-input" 
+                                        placeholder="Child's name"
+                                    >
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="childDob">Child's Date of Birth</label>
+                                    <input 
+                                        type="date" 
+                                        id="childDob" 
+                                        name="childDob" 
+                                        class="form-input"
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                        -->
+                        
+                        <!-- Doctor-specific: Credentials -->
+                        <div class="doctor-field" style="display: none; padding: 1rem; background: var(--color-warning-50); border-radius: var(--radius-md); margin-bottom: var(--space-4); border: 1px solid var(--color-warning-200);">
+                            <h4 style="margin: 0 0 0.5rem; font-size: 0.875rem; color: var(--color-warning-700);">
+                                <i class="fa-solid fa-user-doctor"></i> Doctor Registration
+                            </h4>
+                            <p style="font-size: 0.8rem; color: var(--color-warning-600); margin: 0;">
+                                You'll be automatically added as a platform doctor and patients will be able to book consultations with you.
+                            </p>
+                        </div>
+                        
+                        <div class="form-group doctor-field" style="display: none;">
+                            <label class="form-label" for="specialization">Specialization</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-stethoscope"></i>
+                                <select id="specialization" name="specialization" class="form-select">
+                                    <option value="">Select specialization</option>
+                                    <option value="Learning Disabilities Specialist">Learning Disabilities Specialist</option>
+                                    <option value="Child Development Specialist">Child Development Specialist</option>
+                                    <option value="Neurodevelopmental Disorders Expert">Neurodevelopmental Disorders Expert</option>
+                                    <option value="Child Psychologist">Child Psychologist</option>
+                                    <option value="Speech Therapist">Speech Therapist</option>
+                                    <option value="Occupational Therapist">Occupational Therapist</option>
+                                    <option value="Special Educator">Special Educator</option>
+                                    <option value="Developmental Pediatrician">Developmental Pediatrician</option>
+                                    <option value="Pediatric Neurologist">Pediatric Neurologist</option>
+                                    <option value="General Specialist">General Specialist</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group doctor-field" style="display: none;">
+                            <label class="form-label" for="licenseNumber">License/Registration Number (Optional)</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-id-card"></i>
+                                <input 
+                                    type="text" 
+                                    id="licenseNumber" 
+                                    name="licenseNumber" 
+                                    class="form-input" 
+                                    placeholder="Professional license number"
+                                >
+                            </div>
+                        </div>
+                        
+                        <div class="terms-agreement">
+                            <input type="checkbox" id="terms" name="terms" required>
+                            <label for="terms">
+                                I agree to the <a href="#" id="open-terms">Terms of Service</a> 
+                                and <a href="#" id="open-privacy">Privacy Policy</a>
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-lg w-full" id="register-btn">
+                            <span class="btn-text">Create Account</span>
+                            <span class="btn-loader hidden">
+                                <i class="fa-solid fa-spinner fa-spin"></i>
+                            </span>
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Footer -->
+                <div class="auth-footer">
+                    <p>Already have an account? <a href="login.html">Sign In</a></p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Legal Modal -->
+    <div id="legal-modal" class="legal-modal">
+        <div class="legal-modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title" class="modal-title">Terms & Conditions</h2>
+                <button id="modal-close" class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="modal-body" class="modal-body">
+                <!-- Content will be injected here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="modal-cancel" class="btn btn-outline">Close</button>
+                <button type="button" id="modal-accept" class="btn btn-primary">Accept & Continue</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Cogno Scripts -->
+    <script src="../js/config.js"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/i18n.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="./auth.js"></script>
+    
+    <script>
+        // Initialize register page
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoAuth.initRegisterPage();
+
+            // === Legal Modal Logic ===
+            const modal = document.getElementById('legal-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
+            const modalClose = document.getElementById('modal-close');
+            const modalCancel = document.getElementById('modal-cancel');
+            const modalAccept = document.getElementById('modal-accept');
+            const termsCheckbox = document.getElementById('terms');
+
+            const TERMS_CONTENT = `
+                <h3>1. Acceptance of Terms</h3>
+                <p>By creating an account, you agree to these Terms of Service and our Privacy Policy. If you are a parent or guardian registering on behalf of a child, you confirm you have the authority to do so.</p>
+                <h3>2. Use of Service</h3>
+                <p>Cogno Solution provides AI-powered cognitive support tools for educational purposes. Our platform includes modules for Dyslexia, Dyscalculia, Dysgraphia, and Dyspraxia. These tools are supplementary and do not replace professional medical advice.</p>
+                <h3>3. Accounts</h3>
+                <p>You are responsible for maintaining the confidentiality of your account credentials. Notify us immediately of any unauthorized use at support@cognosolution.com.</p>
+                <h3>4. Children's Privacy (COPPA)</h3>
+                <p>We comply with COPPA. Parental or guardian consent is required for users under 13. We collect only the minimum data necessary for the service to function.</p>
+                <h3>5. Data & Content</h3>
+                <p>Progress data and activity scores are stored securely in Supabase. You may request deletion of your data at any time.</p>
+                <h3>6. Limitation of Liability</h3>
+                <p>Cogno Solution is not liable for educational outcomes. The platform is an assistive tool and performance may vary by individual.</p>
+            `;
+
+            const PRIVACY_CONTENT = `
+                <h3>1. Information We Collect</h3>
+                <p>We collect your name, email address, role (parent/doctor/student), and learning activity data including scores and session durations.</p>
+                <h3>2. How We Use Your Information</h3>
+                <p>Your information is used to: personalize your learning experience, track progress, enable doctor-patient communication, and improve our platform.</p>
+                <h3>3. Data Storage</h3>
+                <p>All data is stored using Supabase, a secure cloud database provider. Data is encrypted at rest and in transit.</p>
+                <h3>4. Data Sharing</h3>
+                <p>We do not sell your data. Progress data may be shared with linked doctors/specialists to support your care. We do not share data with advertisers.</p>
+                <h3>5. Cookies</h3>
+                <p>We use session storage to maintain your login session and save form progress. No third-party tracking cookies are used.</p>
+                <h3>6. Your Rights</h3>
+                <p>You have the right to access, correct, or delete your data. Contact support@cognosolution.com to exercise these rights.</p>
+                <h3>7. Children's Data</h3>
+                <p>Data for users under 13 is handled with extra protection under COPPA. Parents/guardians may request full data deletion at any time.</p>
+            `;
+
+            function openModal(type) {
+                if (type === 'terms') {
+                    modalTitle.textContent = 'Terms of Service';
+                    modalBody.innerHTML = TERMS_CONTENT;
+                } else {
+                    modalTitle.textContent = 'Privacy Policy';
+                    modalBody.innerHTML = PRIVACY_CONTENT;
+                }
+                modal.classList.add('show');
+                modalBody.scrollTop = 0;
+            }
+
+            function closeModal() {
+                modal.classList.remove('show');
+            }
+
+            document.getElementById('open-terms')?.addEventListener('click', (e) => {
+                e.preventDefault();
+                openModal('terms');
+            });
+
+            document.getElementById('open-privacy')?.addEventListener('click', (e) => {
+                e.preventDefault();
+                openModal('privacy');
+            });
+
+            modalClose?.addEventListener('click', closeModal);
+            modalCancel?.addEventListener('click', closeModal);
+
+            modalAccept?.addEventListener('click', () => {
+                if (termsCheckbox) {
+                    termsCheckbox.checked = true;
+                    termsCheckbox.dispatchEvent(new Event('change'));
+                }
+                closeModal();
+            });
+
+            // Close on backdrop click
+            modal?.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+        });
+    </script>
+</body>
+</html>
