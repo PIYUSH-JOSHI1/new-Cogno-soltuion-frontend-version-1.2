@@ -13,7 +13,7 @@ const CognoConfig = {
     RENDER_BACKEND_URL: 'https://new-cogno-soltuion-version-1-2.onrender.com',
 
 
-    VERCEL_FRONTEND_URL: 'https://cognosolution.vercel.app',
+    VERCEL_FRONTEND_URL: 'https://cognosolutions.vercel.app',
 
     /**
      * Automatically get the correct backend URL
