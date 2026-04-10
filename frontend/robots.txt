@@ -1,8 +1,37 @@
+# Cogno Solution - robots.txt
+# https://www.cognosolution.online
+
 User-agent: *
 Allow: /
+Allow: /modules/
+Allow: /learn/
+Allow: /learning-hub/
+Allow: /doctors/
+Allow: /auth/login.html
+Allow: /auth/register.html
+Allow: /privacy.html
+Allow: /terms.html
+
+# Block private/authenticated routes from indexing
 Disallow: /dashboard/
 Disallow: /profile/
 Disallow: /settings/
 Disallow: /doctor/
+Disallow: /progress/
+Disallow: /auth/callback.html
+Disallow: /auth/reset-password.html
+Disallow: /auth/forgot-password.html
+Disallow: /auth/verify-email.html
 
-Sitemap: https://cogno-solution.netlify.app/sitemap.xml
+# Googlebot specific
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 2
+
+# Bing
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 5
+
+# Sitemap location
+Sitemap: https://www.cognosolution.online/sitemap.xml
