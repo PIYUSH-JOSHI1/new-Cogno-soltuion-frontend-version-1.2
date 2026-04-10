@@ -28,9 +28,10 @@
       transform: translateY(0);
       pointer-events: all;
     }
-    /* Push up the tab bar if it exists */
-    @media (max-width: 768px) {
-      .tab-bar { bottom: 110px !important; }
+    /* Push up the tab bar when prompt is visible */
+    body.pwa-prompt-active .tab-bar {
+      bottom: 120px !important;
+      transition: bottom 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
     }
     #cogno-pwa-card {
       background: #ffffff;
@@ -320,12 +321,16 @@
 
   function showBanner() {
     if (!bannerEl) bannerEl = buildBanner();
-    requestAnimationFrame(() => bannerEl.classList.add('visible'));
+    requestAnimationFrame(() => {
+      bannerEl.classList.add('visible');
+      document.body.classList.add('pwa-prompt-active');
+    });
   }
 
   function hideBanner() {
     if (bannerEl) {
       bannerEl.classList.remove('visible');
+      document.body.classList.remove('pwa-prompt-active');
       setTimeout(() => {
         bannerEl?.remove();
         bannerEl = null;
@@ -340,12 +345,16 @@
 
   function showIOSTip() {
     if (!iosTipEl) iosTipEl = buildIOSTip();
-    requestAnimationFrame(() => iosTipEl.classList.add('visible'));
+    requestAnimationFrame(() => {
+      iosTipEl.classList.add('visible');
+      document.body.classList.add('pwa-prompt-active');
+    });
   }
 
   function hideIOSTip() {
     if (iosTipEl) {
       iosTipEl.classList.remove('visible');
+      document.body.classList.remove('pwa-prompt-active');
       setTimeout(() => {
         iosTipEl?.remove();
         iosTipEl = null;
