@@ -100,10 +100,27 @@ const CognoI18n = {
         // Save to Supabase profile (if logged in)
         this._saveToProfile(langCode);
 
-        // Update the Google Translate Widget
         const select = document.querySelector('select.goog-te-combo');
+        
+        if (langCode === 'en') {
+            // To reliably return to the base language, we must clear the Google Translate cookies and reload
+            const domain = window.location.hostname;
+            document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain}`;
+            document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            
+            if (select) {
+                select.value = '';
+                select.dispatchEvent(new Event('change'));
+            }
+            
+            // Allow state to save before reload
+            setTimeout(() => window.location.reload(), 100);
+            return;
+        }
+
+        // Update the Google Translate Widget
         if (select) {
-            select.value = langCode === 'en' ? '' : langCode;
+            select.value = langCode;
             select.dispatchEvent(new Event('change'));
         } else {
             // Fallback: set cookie and reload
