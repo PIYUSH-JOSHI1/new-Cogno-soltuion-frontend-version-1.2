@@ -201,6 +201,37 @@
     color: var(--text-muted, #94a3b8) !important;
 }
 
+/* ============================================================
+   RESPONSIVE MOBILE HEADER
+   ============================================================ */
+@media (max-width: 640px) {
+    /* Hide lower-priority header buttons to prevent cramping */
+    .navbar-right #accessibility-btn,
+    .navbar-right a[title="Settings"],
+    .navbar-right a[href*="settings"] {
+        display: none !important;
+    }
+    
+    /* Hide the username and down arrow in the mobile header, keeping just avatar */
+    .user-menu-btn .user-name,
+    .user-menu-btn .fa-chevron-down {
+        display: none !important;
+    }
+    
+    /* Avoid title squeeze */
+    .navbar-brand-sub {
+        display: none !important;
+    }
+
+    .navbar-brand-name {
+        font-size: 1rem !important;
+    }
+    
+    .page-title {
+        font-size: 0.95rem !important;
+    }
+}
+
 /* Notification badge */
 .notification-badge {
     position: absolute !important;
