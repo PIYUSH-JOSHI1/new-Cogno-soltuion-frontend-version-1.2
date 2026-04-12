@@ -178,8 +178,8 @@ const CognoDashboard = {
         const icon = toggle?.querySelector('i');
 
         // Check stored preference
-        const darkMode = localStorage.getItem('cogno_dark_mode') === 'true';
-        if (darkMode) {
+        const savedTheme = localStorage.getItem('cogno-theme');
+        if (savedTheme === 'dark') {
             document.body.classList.add('dark-mode');
             icon?.classList.replace('fa-moon', 'fa-sun');
         }
@@ -187,7 +187,7 @@ const CognoDashboard = {
         toggle?.addEventListener('click', () => {
             document.body.classList.toggle('dark-mode');
             const isDark = document.body.classList.contains('dark-mode');
-            localStorage.setItem('cogno_dark_mode', isDark);
+            localStorage.setItem('cogno-theme', isDark ? 'dark' : 'light');
 
             if (isDark) {
                 icon?.classList.replace('fa-moon', 'fa-sun');
