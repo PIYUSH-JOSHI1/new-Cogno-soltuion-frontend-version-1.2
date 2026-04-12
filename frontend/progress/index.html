@@ -5,26 +5,981 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Progress Tracking - Cogno Solution">
     <title>My Progress - Cogno Solution</title>
-    
+
     <link rel="icon" href="../assets/images/icons/favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/components.css">
     <link rel="stylesheet" href="../css/responsive.css">
     <link rel="stylesheet" href="../css/dark-mode.css">
     <link rel="stylesheet" href="../css/mobile-nav.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
     <link rel="stylesheet" href="../css/dashboard.css">
-    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <style>
+        /* =============================================
+           BASE OVERRIDES
+           ============================================= */
+        *, *::before, *::after { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--color-background, #f1f5f9);
+            color: var(--color-text, #1e293b);
+            margin: 0;
+        }
+
+        .dark-mode body,
+        body.dark-mode {
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
+        /* sidebar hidden on mobile-only layout */
+        .sidebar { display: none !important; }
+        .main-content { margin-left: 0 !important; width: 100% !important; }
+        .navbar { position: sticky; top: 0; z-index: 100; }
+        .navbar .sidebar-toggle { display: none; }
+
+        /* =============================================
+           NAVBAR — PREMIUM, MOBILE-FIRST
+           ============================================= */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1rem;
+            height: 60px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            gap: 0.75rem;
+        }
+
+        .dark-mode .navbar {
+            background: rgba(15,23,42,0.95);
+            border-color: rgba(255,255,255,0.06);
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            min-width: 0;
+            flex-shrink: 0;
+        }
+
+        .navbar-brand-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .navbar-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .navbar-brand-name {
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: #1e293b;
+            letter-spacing: -0.02em;
+        }
+
+        .dark-mode .navbar-brand-name { color: #f1f5f9; }
+
+        .navbar-brand-sub {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            flex-shrink: 0;
+        }
+
+        /* Hide time-range & export on mobile — shown in toolbar below hero */
+        .nav-toolbar-item { display: none; }
+
+        @media (min-width: 640px) {
+            .nav-toolbar-item { display: flex; }
+        }
+
+        .navbar .btn-ghost.btn-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            border: none;
+            background: transparent;
+            color: #64748b;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: background 0.2s, color 0.2s;
+            position: relative;
+        }
+
+        .navbar .btn-ghost.btn-icon:hover {
+            background: #f1f5f9;
+            color: #3b82f6;
+        }
+
+        .dark-mode .navbar .btn-ghost.btn-icon:hover {
+            background: rgba(255,255,255,0.08);
+            color: #60a5fa;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 4px; right: 4px;
+            min-width: 16px; height: 16px;
+            background: #ef4444;
+            color: white;
+            border-radius: 8px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 3px;
+        }
+
+        .user-menu-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.3rem 0.6rem 0.3rem 0.3rem;
+            border-radius: 50px;
+            border: 1px solid rgba(0,0,0,0.08);
+            background: transparent;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .user-menu-btn:hover { background: #f1f5f9; }
+        .dark-mode .user-menu-btn { border-color: rgba(255,255,255,0.1); }
+        .dark-mode .user-menu-btn:hover { background: rgba(255,255,255,0.06); }
+
+        .user-menu-btn .avatar-sm {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .user-menu-btn .avatar-sm img { width: 100%; height: 100%; object-fit: cover; }
+
+        .user-name {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #1e293b;
+            max-width: 80px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .dark-mode .user-name { color: #f1f5f9; }
+
+        .user-menu-btn .fa-chevron-down {
+            font-size: 0.65rem;
+            color: #94a3b8;
+        }
+
+        /* Hide user-name text on very small screens */
+        @media (max-width: 380px) {
+            .user-name { display: none; }
+        }
+
+        /* Dropdown */
+        .dropdown { position: relative; }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0; top: calc(100% + 8px);
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            min-width: 180px;
+            z-index: 200;
+            overflow: hidden;
+            animation: dropIn 0.2s ease;
+        }
+
+        .dark-mode .dropdown-menu {
+            background: #1e293b;
+            border-color: rgba(255,255,255,0.08);
+        }
+
+        .dropdown-menu.show { display: block; }
+
+        @keyframes dropIn {
+            from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            color: #374151;
+            text-decoration: none;
+            background: none;
+            border: none;
+            width: 100%;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .dropdown-item:hover { background: #f8fafc; }
+        .dark-mode .dropdown-item { color: #e2e8f0; }
+        .dark-mode .dropdown-item:hover { background: rgba(255,255,255,0.05); }
+
+        .dropdown-divider {
+            height: 1px;
+            background: #f1f5f9;
+            margin: 0.25rem 0;
+        }
+
+        .dark-mode .dropdown-divider { background: rgba(255,255,255,0.06); }
+
+        /* Time select and export in navbar (desktop) */
+        .time-select {
+            padding: 0.35rem 0.75rem;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 50px;
+            background: white;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            color: #1e293b;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.2s;
+        }
+
+        .time-select:focus { border-color: #3b82f6; }
+
+        .dark-mode .time-select {
+            background: #1e293b;
+            color: #e2e8f0;
+            border-color: rgba(255,255,255,0.1);
+        }
+
+        .btn-export {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.38rem 0.875rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+            white-space: nowrap;
+        }
+
+        .btn-export:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(37,99,235,0.35);
+        }
+
+        /* =============================================
+           PAGE LAYOUT
+           ============================================= */
+        .content-area {
+            padding: 1rem;
+            max-width: 860px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            /* space for fixed bottom nav + safe area */
+            padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px) + 1rem);
+        }
+
+        @media (min-width: 640px) {
+            .content-area { padding: 1.25rem; gap: 1.25rem; }
+        }
+
+        /* =============================================
+           MOBILE TOOLBAR (time range + export on mobile)
+           ============================================= */
+        .mobile-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            padding: 0.625rem 1rem;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .dark-mode .mobile-toolbar {
+            background: rgba(15,23,42,0.8);
+            border-color: rgba(255,255,255,0.05);
+        }
+
+        .mobile-toolbar .time-select { flex: 1; }
+
+        @media (min-width: 640px) {
+            .mobile-toolbar { display: none; }
+        }
+
+        /* =============================================
+           HERO BANNER — Blue only, no purple
+           ============================================= */
+        .progress-hero {
+            background: linear-gradient(135deg, #1e40af 0%, #2563eb 50%, #0ea5e9 100%);
+            border-radius: 18px;
+            padding: 1.25rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-hero::before {
+            content: '';
+            position: absolute;
+            top: -50px; right: -50px;
+            width: 200px; height: 200px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+            pointer-events: none;
+        }
+
+        .progress-hero::after {
+            content: '';
+            position: absolute;
+            bottom: -60px; left: -30px;
+            width: 240px; height: 240px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.04);
+            pointer-events: none;
+        }
+
+        .progress-hero-content {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Circular progress ring */
+        .overall-progress {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.375rem;
+            flex-shrink: 0;
+        }
+
+        .circular-progress {
+            width: 100px;
+            height: 100px;
+            position: relative;
+        }
+
+        @media (min-width: 480px) {
+            .circular-progress { width: 120px; height: 120px; }
+        }
+
+        .circular-progress svg {
+            transform: rotate(-90deg);
+            width: 100%; height: 100%;
+        }
+
+        .circular-progress circle { fill: none; stroke-width: 8; }
+        .circular-progress .bg { stroke: rgba(255,255,255,0.2); }
+        .circular-progress .progress {
+            stroke: white;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1.2s ease;
+        }
+
+        .progress-value {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+        }
+
+        @media (min-width: 480px) { .progress-value { font-size: 1.75rem; } }
+
+        .progress-label {
+            font-size: 0.75rem;
+            opacity: 0.85;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        /* Stats inside hero */
+        .progress-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.625rem;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            padding: 0.75rem;
+            background: rgba(255,255,255,0.12);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.15);
+            backdrop-filter: blur(6px);
+            transition: background 0.2s;
+        }
+
+        .stat-item:hover { background: rgba(255,255,255,0.18); }
+
+        .stat-item i { font-size: 1.1rem; flex-shrink: 0; opacity: 0.9; }
+
+        .stat-value {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.65rem;
+            opacity: 0.8;
+            font-weight: 500;
+            margin-top: 1px;
+        }
+
+        /* Stack hero vertically on small phones */
+        @media (max-width: 440px) {
+            .progress-hero-content { flex-direction: column; align-items: stretch; }
+            .overall-progress { flex-direction: row; justify-content: center; gap: 1.25rem; }
+        }
+
+        /* =============================================
+           SECTION CARDS
+           ============================================= */
+        .pg-card {
+            background: var(--color-surface, #fff);
+            border-radius: 16px;
+            border: 1px solid rgba(0,0,0,0.06);
+            box-shadow: 0 1px 8px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .dark-mode .pg-card {
+            background: #1e293b;
+            border-color: rgba(255,255,255,0.06);
+            box-shadow: none;
+        }
+
+        .pg-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .dark-mode .pg-card-header { border-color: rgba(255,255,255,0.05); }
+
+        .pg-card-title {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            font-size: 0.9375rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0;
+            letter-spacing: -0.01em;
+        }
+
+        .dark-mode .pg-card-title { color: #f1f5f9; }
+
+        .title-icon {
+            width: 32px; height: 32px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            flex-shrink: 0;
+        }
+
+        .pg-card-body { padding: 1.25rem; }
+        .pg-card-body-slim { padding: 0 1.25rem; }
+
+        .card-link {
+            font-size: 0.8rem;
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        /* =============================================
+           CHART
+           ============================================= */
+        .chart-container { height: 220px; position: relative; }
+
+        @media (min-width: 600px) { .chart-container { height: 260px; } }
+
+        .chart-legend {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .chart-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .legend-dot {
+            width: 9px; height: 9px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        /* =============================================
+           MODULE PROGRESS GRID
+           ============================================= */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+
+        @media (min-width: 580px) {
+            .modules-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        .module-progress-card {
+            background: var(--color-surface, #fff);
+            border-radius: 14px;
+            padding: 1rem 0.875rem;
+            text-align: center;
+            border: 1.5px solid rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+        }
+
+        .module-progress-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+
+        .dark-mode .module-progress-card {
+            background: #1e293b;
+            border-color: rgba(255,255,255,0.07);
+        }
+
+        .module-progress-card.dyslexia    { border-color: #3b82f6; }
+        .module-progress-card.dyscalculia { border-color: #10b981; }
+        .module-progress-card.dysgraphia  { border-color: #f59e0b; }
+        .module-progress-card.dyspraxia   { border-color: #0ea5e9; }
+
+        .module-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+        }
+
+        .module-icon {
+            width: 32px; height: 32px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .dyslexia    .module-icon { background: #EFF6FF; color: #3b82f6; }
+        .dyscalculia .module-icon { background: #ECFDF5; color: #10b981; }
+        .dysgraphia  .module-icon { background: #FFFBEB; color: #f59e0b; }
+        .dyspraxia   .module-icon { background: #E0F2FE; color: #0ea5e9; }
+
+        .module-progress-card h3 {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0;
+        }
+
+        .dark-mode .module-progress-card h3 { color: #f1f5f9; }
+
+        /* Ring */
+        .progress-ring {
+            position: relative;
+            width: 68px; height: 68px;
+        }
+
+        .progress-ring svg {
+            transform: rotate(-90deg);
+            width: 100%; height: 100%;
+        }
+
+        .progress-ring circle { fill: none; stroke-width: 7; }
+        .progress-ring .bg { stroke: #e2e8f0; }
+        .dark-mode .progress-ring .bg { stroke: #334155; }
+
+        .dyslexia    .progress-ring .progress { stroke: #3b82f6; }
+        .dyscalculia .progress-ring .progress { stroke: #10b981; }
+        .dysgraphia  .progress-ring .progress { stroke: #f59e0b; }
+        .dyspraxia   .progress-ring .progress { stroke: #0ea5e9; }
+
+        .progress-ring span {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.875rem;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        .dark-mode .progress-ring span { color: #f1f5f9; }
+
+        .module-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+            font-size: 0.675rem;
+            color: #64748b;
+        }
+
+        .module-stats span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+        }
+
+        .module-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.675rem;
+            font-weight: 600;
+            color: #3b82f6;
+            text-decoration: none;
+            padding: 0.25rem 0.6rem;
+            border-radius: 50px;
+            background: #EFF6FF;
+            transition: all 0.2s;
+        }
+
+        .module-link:hover { background: #3b82f6; color: white; }
+        .dark-mode .module-link { background: rgba(59,130,246,0.12); }
+
+        /* =============================================
+           ACTIVITY TIMELINE
+           ============================================= */
+        .activity-timeline {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-start;
+            padding: 0.875rem 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .activity-item:last-child { border-bottom: none; }
+
+        .dark-mode .activity-item { border-color: rgba(255,255,255,0.05); }
+
+        .activity-icon {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 0.875rem;
+        }
+
+        .activity-icon.success { background: #ECFDF5; color: #10b981; }
+        .activity-icon.primary { background: #EFF6FF; color: #3b82f6; }
+        .activity-icon.info    { background: #E0F2FE; color: #0ea5e9; }
+        .activity-icon.warning { background: #FFFBEB; color: #f59e0b; }
+
+        .activity-content { flex: 1; min-width: 0; }
+
+        .activity-content h4 {
+            font-size: 0.8375rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 0.125rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .dark-mode .activity-content h4 { color: #f1f5f9; }
+
+        .activity-content p {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin: 0;
+        }
+
+        .activity-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.25rem;
+            flex-shrink: 0;
+        }
+
+        .score-badge {
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 0.18rem 0.5rem;
+            border-radius: 50px;
+            background: #ECFDF5;
+            color: #10b981;
+        }
+
+        .activity-time {
+            font-size: 0.68rem;
+            color: #94a3b8;
+            white-space: nowrap;
+        }
+
+        /* =============================================
+           ACHIEVEMENTS
+           ============================================= */
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .achievement-badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 1rem 0.5rem 0.75rem;
+            border-radius: 14px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .achievement-badge.earned {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border: 1.5px solid #bfdbfe;
+        }
+
+        .dark-mode .achievement-badge.earned {
+            background: rgba(37,99,235,0.1);
+            border-color: rgba(59,130,246,0.2);
+        }
+
+        .achievement-badge.earned:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(37,99,235,0.15);
+        }
+
+        .achievement-badge.locked {
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            opacity: 0.5;
+        }
+
+        .dark-mode .achievement-badge.locked {
+            background: rgba(255,255,255,0.03);
+            border-color: rgba(255,255,255,0.06);
+        }
+
+        .badge-icon {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2563eb, #0ea5e9);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 12px rgba(37,99,235,0.28);
+        }
+
+        .achievement-badge.locked .badge-icon {
+            background: #e2e8f0;
+            box-shadow: none;
+            color: #94a3b8;
+        }
+
+        .dark-mode .achievement-badge.locked .badge-icon {
+            background: #334155;
+            color: #64748b;
+        }
+
+        .achievement-badge > span {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .dark-mode .achievement-badge > span { color: #e2e8f0; }
+
+        .badge-actions {
+            display: flex;
+            gap: 0.3rem;
+        }
+
+        .badge-action-btn {
+            width: 26px; height: 26px;
+            border-radius: 7px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            transition: all 0.2s;
+        }
+
+        .badge-action-btn.download { background: #EFF6FF; color: #3b82f6; }
+        .badge-action-btn.download:hover { background: #3b82f6; color: white; }
+        .badge-action-btn.whatsapp { background: #DCFCE7; color: #16a34a; }
+        .badge-action-btn.whatsapp:hover { background: #25D366; color: white; }
+
+        /* =============================================
+           BOTTOM NAV — fixed, 6 items, responsive
+           ============================================= */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            height: calc(68px + env(safe-area-inset-bottom, 0px));
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+            background: rgba(255,255,255,0.97);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-top: 1px solid rgba(0,0,0,0.07);
+            display: flex;
+            align-items: center;
+            justify-content: stretch;
+            z-index: 100;
+        }
+
+        .dark-mode .bottom-nav {
+            background: rgba(15,23,42,0.97);
+            border-color: rgba(255,255,255,0.07);
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0.35rem 0.25rem;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #94a3b8;
+            font-size: 0.58rem;
+            font-weight: 600;
+            gap: 0.18rem;
+            position: relative;
+            transition: all 0.22s cubic-bezier(0.34,1.56,0.64,1);
+            -webkit-tap-highlight-color: transparent;
+            margin: 0 2px;
+        }
+
+        .nav-item i { font-size: 1.1rem; }
+
+        .nav-item.active {
+            color: #2563eb;
+            background: rgba(37,99,235,0.08);
+        }
+
+        .nav-item.active i {
+            filter: drop-shadow(0 0 4px rgba(37,99,235,0.4));
+        }
+
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px; left: 50%;
+            transform: translateX(-50%);
+            width: 18px; height: 3px;
+            background: #2563eb;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .nav-item:active { transform: scale(0.9); }
+
+        .dark-mode .nav-item { color: #64748b; }
+        .dark-mode .nav-item.active { color: #60a5fa; background: rgba(96,165,250,0.08); }
+        .dark-mode .nav-item.active { color: #60a5fa; }
+        .dark-mode .nav-item.active::after { background: #60a5fa; }
+        .dark-mode .nav-item.active i { filter: drop-shadow(0 0 4px rgba(96,165,250,0.4)); }
+
+        @media (min-width: 480px) {
+            .nav-item { font-size: 0.625rem; }
+        }
+
+        /* =============================================
+           DARK MODE — card overrides
+           ============================================= */
+        .dark-mode .dyslexia .module-icon    { background: rgba(59,130,246,0.15); }
+        .dark-mode .dyscalculia .module-icon { background: rgba(16,185,129,0.15); }
+        .dark-mode .dysgraphia .module-icon  { background: rgba(245,158,11,0.15); }
+        .dark-mode .dyspraxia .module-icon   { background: rgba(14,165,233,0.15); }
+        .dark-mode .activity-icon.success { background: rgba(16,185,129,0.15); }
+        .dark-mode .activity-icon.primary { background: rgba(59,130,246,0.15); }
+        .dark-mode .activity-icon.info    { background: rgba(14,165,233,0.15); }
+        .dark-mode .activity-icon.warning { background: rgba(245,158,11,0.15); }
+        .dark-mode .score-badge { background: rgba(16,185,129,0.15); color: #4ade80; }
+        .dark-mode .module-link { color: #60a5fa; }
+        .dark-mode .card-link { color: #60a5fa; }
+    </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- Sidebar -->
+        <!-- Sidebar (hidden on mobile) -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <img src="../assets/images/icons/logo.svg" alt="Cogno" class="sidebar-logo">
@@ -33,646 +988,518 @@
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-            
             <nav class="sidebar-nav">
                 <ul class="sidebar-menu">
-                    <li class="sidebar-item">
-                        <a href="../dashboard/child-dashboard.html" class="sidebar-link">
-                            <i class="fa-solid fa-house"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
+                    <li class="sidebar-item"><a href="../dashboard/child-dashboard.html" class="sidebar-link"><i class="fa-solid fa-house"></i><span>Dashboard</span></a></li>
                     <li class="sidebar-section">Learning Modules</li>
-                    <li class="sidebar-item">
-                        <a href="../modules/dyslexia/" class="sidebar-link">
-                            <i class="fa-solid fa-book-open" style="color: var(--color-dyslexia);"></i>
-                            <span>Reading &amp; Words</span>
-                        </a>
-                    </li>
-                    <li class="sidebar-item">
-                        <a href="../modules/dyscalculia/" class="sidebar-link">
-                            <i class="fa-solid fa-calculator" style="color: var(--color-dyscalculia);"></i>
-                            <span>Numbers &amp; Math</span>
-                        </a>
-                    </li>
-                    <li class="sidebar-item">
-                        <a href="../modules/dysgraphia/" class="sidebar-link">
-                            <i class="fa-solid fa-pen" style="color: var(--color-dysgraphia);"></i>
-                            <span>Writing Practice</span>
-                        </a>
-                    </li>
-                    <li class="sidebar-item">
-                        <a href="../modules/dyspraxia/" class="sidebar-link">
-                            <i class="fa-solid fa-person-running" style="color: var(--color-dyspraxia);"></i>
-                            <span>Movement Games</span>
-                        </a>
-                    </li>
+                    <li class="sidebar-item"><a href="../modules/dyslexia/" class="sidebar-link"><i class="fa-solid fa-book-open" style="color:var(--color-dyslexia);"></i><span>Reading &amp; Words</span></a></li>
+                    <li class="sidebar-item"><a href="../modules/dyscalculia/" class="sidebar-link"><i class="fa-solid fa-calculator" style="color:var(--color-dyscalculia);"></i><span>Numbers &amp; Math</span></a></li>
+                    <li class="sidebar-item"><a href="../modules/dysgraphia/" class="sidebar-link"><i class="fa-solid fa-pen" style="color:var(--color-dysgraphia);"></i><span>Writing Practice</span></a></li>
+                    <li class="sidebar-item"><a href="../modules/dyspraxia/" class="sidebar-link"><i class="fa-solid fa-person-running" style="color:var(--color-dyspraxia);"></i><span>Movement Games</span></a></li>
                     <li class="sidebar-section">More</li>
-                    <li class="sidebar-item">
-                        <a href="../learning-hub/" class="sidebar-link">
-                            <i class="fa-solid fa-graduation-cap"></i>
-                            <span>Learning Hub</span>
-                        </a>
-                    </li>
-                    <li class="sidebar-item active">
-                        <a href="../progress/" class="sidebar-link">
-                            <i class="fa-solid fa-chart-line"></i>
-                            <span>My Progress</span>
-                        </a>
-                    </li>
-                    <li class="sidebar-item">
-                        <a href="../profile/" class="sidebar-link">
-                            <i class="fa-solid fa-user"></i>
-                            <span>My Profile</span>
-                        </a>
-                    </li>
-                    <li class="sidebar-item">
-                        <a href="../settings/" class="sidebar-link">
-                            <i class="fa-solid fa-gear"></i>
-                            <span>Settings</span>
-                        </a>
-                    </li>
+                    <li class="sidebar-item"><a href="../learning-hub/" class="sidebar-link"><i class="fa-solid fa-graduation-cap"></i><span>Learning Hub</span></a></li>
+                    <li class="sidebar-item active"><a href="../progress/" class="sidebar-link"><i class="fa-solid fa-chart-line"></i><span>My Progress</span></a></li>
+                    <li class="sidebar-item"><a href="../profile/" class="sidebar-link"><i class="fa-solid fa-user"></i><span>My Profile</span></a></li>
+                    <li class="sidebar-item"><a href="../settings/" class="sidebar-link"><i class="fa-solid fa-gear"></i><span>Settings</span></a></li>
                 </ul>
             </nav>
-            
             <div class="sidebar-footer">
-                <button class="sidebar-link" id="logout-btn">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                    <span>Sign Out</span>
-                </button>
+                <button class="sidebar-link" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i><span>Sign Out</span></button>
             </div>
         </aside>
-        
+
         <!-- Main Content -->
         <main class="main-content">
-            <!-- Top Navigation - Same as Dashboard -->
+
+            <!-- ─── NAVBAR ─── -->
             <header class="navbar">
                 <div class="navbar-left">
-                    <button class="btn btn-ghost btn-icon sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
-                        <i class="fa-solid fa-bars"></i>
-                    </button>
-                    <h1 class="page-title" data-i18n="nav.progress">My Progress</h1>
+                    <img src="../assets/images/icons/logo.svg" alt="Cogno" class="navbar-brand-logo">
+                    <div class="navbar-brand-text">
+                        <span class="navbar-brand-name">Cogno</span>
+                        <span class="navbar-brand-sub">My Progress</span>
+                    </div>
                 </div>
-                
+
                 <div class="navbar-right">
-                    <!-- Download Report Button -->
-                    <button class="btn btn-primary" onclick="window.ProgressTracker.exportReport()" style="display: flex; align-items: center; gap: 0.5rem; padding: 6px 14px; font-size: 0.85rem; border-radius: 20px;">
-                        <i class="fa-solid fa-file-pdf"></i>
-                        <span>Download Report</span>
-                    </button>
-                    <!-- Time Range Selector -->
-                    <select id="time-range" class="time-select" style="padding: 6px 14px; border: 1px solid var(--color-border); border-radius: 20px; background: var(--color-surface); font-size: 0.85rem; cursor: pointer; color: var(--color-text);">
+                    <!-- Time range & export — desktop only -->
+                    <select id="time-range" class="time-select nav-toolbar-item" title="Select time range">
                         <option value="week">This Week</option>
                         <option value="month" selected>This Month</option>
                         <option value="year">This Year</option>
                         <option value="all">All Time</option>
                     </select>
-                    
-                    <!-- Accessibility Toggle -->
-                    <button class="btn btn-ghost btn-icon" id="accessibility-btn" title="Accessibility options">
-                        <i class="fa-solid fa-universal-access"></i>
+
+                    <button class="btn-export nav-toolbar-item"
+                            onclick="window.ProgressTracker && window.ProgressTracker.exportReport()"
+                            title="Download Report">
+                        <i class="fa-solid fa-file-pdf"></i>
+                        Export
                     </button>
-                    
-                    <!-- Settings Quick Link -->
-                    <a href="../settings/" class="btn btn-ghost btn-icon" title="Settings">
-                        <i class="fa-solid fa-gear"></i>
-                    </a>
-                    
-                    <!-- Dark Mode Toggle -->
-                    <button class="btn btn-ghost btn-icon" id="dark-mode-toggle" title="Toggle dark mode">
+
+                    <!-- Dark mode -->
+                    <button class="btn btn-ghost btn-icon" id="dark-mode-toggle"
+                            title="Toggle dark mode" aria-label="Toggle dark mode">
                         <i class="fa-solid fa-moon"></i>
                     </button>
 
                     <!-- Notifications -->
                     <div class="dropdown">
-                        <button class="btn btn-ghost btn-icon notification-btn" id="notification-btn">
+                        <button class="btn btn-ghost btn-icon notification-btn"
+                                id="notification-btn" aria-label="Notifications">
                             <i class="fa-solid fa-bell"></i>
-                            <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+                            <span class="notification-badge" id="notification-badge" style="display:none;">0</span>
                         </button>
                     </div>
-                    
+
                     <!-- User Menu -->
                     <div class="dropdown">
-                        <button class="user-menu-btn" id="user-menu-btn">
-                            <div class="avatar avatar-sm" id="user-avatar">
-                                <img src="../assets/images/avatars/default.svg" alt="User avatar" id="user-avatar-img">
+                        <button class="user-menu-btn" id="user-menu-btn" aria-label="User menu">
+                            <div class="avatar-sm" id="user-avatar">
+                                <img src="../assets/images/avatars/default.svg" alt="User" id="user-avatar-img">
                             </div>
-                            <span class="user-name" id="user-name">Loading...</span>
+                            <span class="user-name" id="user-name">Loading…</span>
                             <i class="fa-solid fa-chevron-down"></i>
                         </button>
                         <div class="dropdown-menu" id="user-dropdown">
-                            <a href="../profile/" class="dropdown-item">
-                                <i class="fa-solid fa-user"></i>
-                                <span>My Profile</span>
-                            </a>
-                            <a href="../settings/" class="dropdown-item">
-                                <i class="fa-solid fa-gear"></i>
-                                <span>Settings</span>
-                            </a>
+                            <a href="../profile/" class="dropdown-item"><i class="fa-solid fa-user"></i><span>My Profile</span></a>
+                            <a href="../settings/" class="dropdown-item"><i class="fa-solid fa-gear"></i><span>Settings</span></a>
                             <div class="dropdown-divider"></div>
                             <button class="dropdown-item" id="dropdown-logout">
-                                <i class="fa-solid fa-right-from-bracket"></i>
-                                <span>Sign Out</span>
+                                <i class="fa-solid fa-right-from-bracket"></i><span>Sign Out</span>
                             </button>
                         </div>
                     </div>
                 </div>
             </header>
-            
+
+            <!-- Mobile toolbar: time-range + export (shown ONLY on mobile) -->
+            <div class="mobile-toolbar">
+                <select class="time-select" id="time-range-mobile" title="Select time range"
+                        onchange="document.getElementById('time-range').value=this.value; document.getElementById('time-range').dispatchEvent(new Event('change'))">
+                    <option value="week">This Week</option>
+                    <option value="month" selected>This Month</option>
+                    <option value="year">This Year</option>
+                    <option value="all">All Time</option>
+                </select>
+                <button class="btn-export"
+                        onclick="window.ProgressTracker && window.ProgressTracker.exportReport()"
+                        style="padding:0.35rem 0.75rem;">
+                    <i class="fa-solid fa-file-pdf"></i>
+                    Export
+                </button>
+            </div>
+
+            <!-- ─── PAGE CONTENT ─── -->
             <div class="content-area">
-                <!-- Overall Progress Summary -->
-                <div class="progress-hero card">
+
+                <!-- ① HERO — Overall Progress -->
+                <div class="progress-hero">
                     <div class="progress-hero-content">
                         <div class="overall-progress">
                             <div class="circular-progress" id="overall-progress-circle">
                                 <svg viewBox="0 0 100 100">
                                     <circle class="bg" cx="50" cy="50" r="45"></circle>
-                                    <circle class="progress" cx="50" cy="50" r="45" stroke-dasharray="283" stroke-dashoffset="79"></circle>
+                                    <circle class="progress" cx="50" cy="50" r="45"
+                                            stroke-dasharray="283" stroke-dashoffset="79"></circle>
                                 </svg>
                                 <div class="progress-value">72%</div>
                             </div>
-                            <div class="progress-label" data-i18n="progress.overall_progress">Overall Progress</div>
+                            <div class="progress-label">Overall Progress</div>
                         </div>
+
                         <div class="progress-stats">
                             <div class="stat-item">
                                 <i class="fa-solid fa-trophy"></i>
                                 <div>
-                                    <span class="stat-value">156</span>
-                                    <span class="stat-label">Activities Completed</span>
+                                    <span class="stat-value" id="total-activities">156</span>
+                                    <span class="stat-label">Activities Done</span>
                                 </div>
                             </div>
                             <div class="stat-item">
                                 <i class="fa-solid fa-clock"></i>
                                 <div>
-                                    <span class="stat-value">24.5h</span>
-                                    <span class="stat-label">Total Learning Time</span>
+                                    <span class="stat-value" id="total-time">24.5h</span>
+                                    <span class="stat-label">Learning Time</span>
                                 </div>
                             </div>
                             <div class="stat-item">
                                 <i class="fa-solid fa-fire"></i>
                                 <div>
-                                    <span class="stat-value">12</span>
-                                    <span class="stat-label">Day Streak</span>
+                                    <span class="stat-value" id="current-streak">12</span>
+                                    <span class="stat-label">Day Streak 🔥</span>
                                 </div>
                             </div>
                             <div class="stat-item">
                                 <i class="fa-solid fa-star"></i>
                                 <div>
-                                    <span class="stat-value">2,450</span>
+                                    <span class="stat-value" id="total-points">2,450</span>
                                     <span class="stat-label">Points Earned</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Progress Chart -->
-                <div class="card chart-card">
-                    <div class="card-header">
-                        <h2><i class="fa-solid fa-chart-area"></i> Progress Over Time</h2>
-                        <div class="chart-legend" id="chart-legend"></div>
+
+                <!-- ② CHART -->
+                <div class="pg-card">
+                    <div class="pg-card-header">
+                        <h2 class="pg-card-title">
+                            <span class="title-icon" style="background:#EFF6FF;color:#2563eb;">
+                                <i class="fa-solid fa-chart-area"></i>
+                            </span>
+                            Progress Over Time
+                        </h2>
+                        <div class="chart-legend" id="chart-legend">
+                            <div class="chart-legend-item">
+                                <span class="legend-dot" style="background:#2563eb;"></span> Score
+                            </div>
+                            <div class="chart-legend-item">
+                                <span class="legend-dot" style="background:#10b981;"></span> Activities
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body">
+                    <div class="pg-card-body">
                         <div class="chart-container">
                             <canvas id="progress-chart"></canvas>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Module Breakdown -->
-                <div class="modules-progress">
-                    <h2><i class="fa-solid fa-puzzle-piece"></i> Module Progress</h2>
-                    <div class="modules-grid">
-                        <div class="module-progress-card dyslexia">
-                            <div class="module-header">
-                                <div class="module-icon">
-                                    <i class="fa-solid fa-book-reader"></i>
+
+                <!-- ③ MODULE PROGRESS -->
+                <div class="pg-card">
+                    <div class="pg-card-header">
+                        <h2 class="pg-card-title">
+                            <span class="title-icon" style="background:#E0F2FE;color:#0ea5e9;">
+                                <i class="fa-solid fa-puzzle-piece"></i>
+                            </span>
+                            Module Progress
+                        </h2>
+                    </div>
+                    <div class="pg-card-body">
+                        <div class="modules-grid">
+                            <div class="module-progress-card dyslexia">
+                                <div class="module-header">
+                                    <div class="module-icon"><i class="fa-solid fa-book-reader"></i></div>
+                                    <h3>Dyslexia</h3>
                                 </div>
-                                <h3>Dyslexia</h3>
-                            </div>
-                            <div class="progress-ring">
-                                <svg viewBox="0 0 80 80">
-                                    <circle class="bg" cx="40" cy="40" r="35"></circle>
-                                    <circle class="progress" cx="40" cy="40" r="35" stroke-dasharray="220" stroke-dashoffset="55"></circle>
-                                </svg>
-                                <span>75%</span>
-                            </div>
-                            <div class="module-stats">
-                                <span><i class="fa-solid fa-check"></i> 45 activities</span>
-                                <span><i class="fa-solid fa-clock"></i> 8.2h</span>
-                            </div>
-                            <a href="../modules/dyslexia/" class="btn btn-sm btn-outline">View Details</a>
-                        </div>
-                        
-                        <div class="module-progress-card dyscalculia">
-                            <div class="module-header">
-                                <div class="module-icon">
-                                    <i class="fa-solid fa-calculator"></i>
+                                <div class="progress-ring">
+                                    <svg viewBox="0 0 80 80">
+                                        <circle class="bg" cx="40" cy="40" r="35"></circle>
+                                        <circle class="progress" cx="40" cy="40" r="35" stroke-dasharray="220" stroke-dashoffset="55"></circle>
+                                    </svg>
+                                    <span>75%</span>
                                 </div>
-                                <h3>Dyscalculia</h3>
-                            </div>
-                            <div class="progress-ring">
-                                <svg viewBox="0 0 80 80">
-                                    <circle class="bg" cx="40" cy="40" r="35"></circle>
-                                    <circle class="progress" cx="40" cy="40" r="35" stroke-dasharray="220" stroke-dashoffset="88"></circle>
-                                </svg>
-                                <span>60%</span>
-                            </div>
-                            <div class="module-stats">
-                                <span><i class="fa-solid fa-check"></i> 38 activities</span>
-                                <span><i class="fa-solid fa-clock"></i> 6.5h</span>
-                            </div>
-                            <a href="../modules/dyscalculia/" class="btn btn-sm btn-outline">View Details</a>
-                        </div>
-                        
-                        <div class="module-progress-card dysgraphia">
-                            <div class="module-header">
-                                <div class="module-icon">
-                                    <i class="fa-solid fa-pen"></i>
+                                <div class="module-stats">
+                                    <span><i class="fa-solid fa-check"></i> 45 activities</span>
+                                    <span><i class="fa-solid fa-clock"></i> 8.2h</span>
                                 </div>
-                                <h3>Dysgraphia</h3>
+                                <a href="../modules/dyslexia/" class="module-link">View <i class="fa-solid fa-arrow-right"></i></a>
                             </div>
-                            <div class="progress-ring">
-                                <svg viewBox="0 0 80 80">
-                                    <circle class="bg" cx="40" cy="40" r="35"></circle>
-                                    <circle class="progress" cx="40" cy="40" r="35" stroke-dasharray="220" stroke-dashoffset="44"></circle>
-                                </svg>
-                                <span>80%</span>
-                            </div>
-                            <div class="module-stats">
-                                <span><i class="fa-solid fa-check"></i> 52 activities</span>
-                                <span><i class="fa-solid fa-clock"></i> 5.8h</span>
-                            </div>
-                            <a href="../modules/dysgraphia/" class="btn btn-sm btn-outline">View Details</a>
-                        </div>
-                        
-                        <div class="module-progress-card dyspraxia">
-                            <div class="module-header">
-                                <div class="module-icon">
-                                    <i class="fa-solid fa-person-walking"></i>
+
+                            <div class="module-progress-card dyscalculia">
+                                <div class="module-header">
+                                    <div class="module-icon"><i class="fa-solid fa-calculator"></i></div>
+                                    <h3>Dyscalculia</h3>
                                 </div>
-                                <h3>Dyspraxia</h3>
+                                <div class="progress-ring">
+                                    <svg viewBox="0 0 80 80">
+                                        <circle class="bg" cx="40" cy="40" r="35"></circle>
+                                        <circle class="progress" cx="40" cy="40" r="35" stroke-dasharray="220" stroke-dashoffset="88"></circle>
+                                    </svg>
+                                    <span>60%</span>
+                                </div>
+                                <div class="module-stats">
+                                    <span><i class="fa-solid fa-check"></i> 38 activities</span>
+                                    <span><i class="fa-solid fa-clock"></i> 6.5h</span>
+                                </div>
+                                <a href="../modules/dyscalculia/" class="module-link">View <i class="fa-solid fa-arrow-right"></i></a>
                             </div>
-                            <div class="progress-ring">
-                                <svg viewBox="0 0 80 80">
-                                    <circle class="bg" cx="40" cy="40" r="35"></circle>
-                                    <circle class="progress" cx="40" cy="40" r="35" stroke-dasharray="220" stroke-dashoffset="66"></circle>
-                                </svg>
-                                <span>70%</span>
+
+                            <div class="module-progress-card dysgraphia">
+                                <div class="module-header">
+                                    <div class="module-icon"><i class="fa-solid fa-pen"></i></div>
+                                    <h3>Dysgraphia</h3>
+                                </div>
+                                <div class="progress-ring">
+                                    <svg viewBox="0 0 80 80">
+                                        <circle class="bg" cx="40" cy="40" r="35"></circle>
+                                        <circle class="progress" cx="40" cy="40" r="35" stroke-dasharray="220" stroke-dashoffset="44"></circle>
+                                    </svg>
+                                    <span>80%</span>
+                                </div>
+                                <div class="module-stats">
+                                    <span><i class="fa-solid fa-check"></i> 52 activities</span>
+                                    <span><i class="fa-solid fa-clock"></i> 5.8h</span>
+                                </div>
+                                <a href="../modules/dysgraphia/" class="module-link">View <i class="fa-solid fa-arrow-right"></i></a>
                             </div>
-                            <div class="module-stats">
-                                <span><i class="fa-solid fa-check"></i> 21 activities</span>
-                                <span><i class="fa-solid fa-clock"></i> 4.0h</span>
+
+                            <div class="module-progress-card dyspraxia">
+                                <div class="module-header">
+                                    <div class="module-icon"><i class="fa-solid fa-person-walking"></i></div>
+                                    <h3>Dyspraxia</h3>
+                                </div>
+                                <div class="progress-ring">
+                                    <svg viewBox="0 0 80 80">
+                                        <circle class="bg" cx="40" cy="40" r="35"></circle>
+                                        <circle class="progress" cx="40" cy="40" r="35" stroke-dasharray="220" stroke-dashoffset="66"></circle>
+                                    </svg>
+                                    <span>70%</span>
+                                </div>
+                                <div class="module-stats">
+                                    <span><i class="fa-solid fa-check"></i> 21 activities</span>
+                                    <span><i class="fa-solid fa-clock"></i> 4.0h</span>
+                                </div>
+                                <a href="../modules/dyspraxia/" class="module-link">View <i class="fa-solid fa-arrow-right"></i></a>
                             </div>
-                            <a href="../modules/dyspraxia/" class="btn btn-sm btn-outline">View Details</a>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Recent Activity -->
-                <div class="card">
-                    <div class="card-header">
-                        <h2><i class="fa-solid fa-history"></i> Recent Activity</h2>
-                        <a href="#" class="btn btn-ghost btn-sm">View All</a>
+
+                <!-- ④ RECENT ACTIVITY -->
+                <div class="pg-card">
+                    <div class="pg-card-header">
+                        <h2 class="pg-card-title">
+                            <span class="title-icon" style="background:#ECFDF5;color:#10b981;">
+                                <i class="fa-solid fa-history"></i>
+                            </span>
+                            Recent Activity
+                        </h2>
+                        <a href="#" class="card-link">View All</a>
                     </div>
-                    <div class="card-body">
+                    <div class="pg-card-body-slim">
                         <div class="activity-timeline" id="activity-timeline">
                             <div class="activity-item">
-                                <div class="activity-icon success">
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
+                                <div class="activity-icon success"><i class="fa-solid fa-check"></i></div>
                                 <div class="activity-content">
-                                    <h4>Completed "Letter Recognition" activity</h4>
-                                    <p>Dyslexia Module • Score: 95%</p>
-                                    <span class="activity-time">2 hours ago</span>
+                                    <h4>Completed "Letter Recognition"</h4>
+                                    <p>Dyslexia Module</p>
+                                </div>
+                                <div class="activity-meta">
+                                    <span class="score-badge">95%</span>
+                                    <span class="activity-time">2h ago</span>
                                 </div>
                             </div>
                             <div class="activity-item">
-                                <div class="activity-icon primary">
-                                    <i class="fa-solid fa-trophy"></i>
-                                </div>
+                                <div class="activity-icon primary"><i class="fa-solid fa-trophy"></i></div>
                                 <div class="activity-content">
                                     <h4>Earned "Quick Learner" badge</h4>
-                                    <p>Completed 5 activities in one day</p>
-                                    <span class="activity-time">5 hours ago</span>
+                                    <p>5 activities in one day</p>
+                                </div>
+                                <div class="activity-meta">
+                                    <span class="activity-time">5h ago</span>
                                 </div>
                             </div>
                             <div class="activity-item">
-                                <div class="activity-icon info">
-                                    <i class="fa-solid fa-play"></i>
-                                </div>
+                                <div class="activity-icon info"><i class="fa-solid fa-play"></i></div>
                                 <div class="activity-content">
-                                    <h4>Started "Number Patterns" activity</h4>
+                                    <h4>Started "Number Patterns"</h4>
                                     <p>Dyscalculia Module</p>
+                                </div>
+                                <div class="activity-meta">
                                     <span class="activity-time">Yesterday</span>
                                 </div>
                             </div>
                             <div class="activity-item">
-                                <div class="activity-icon success">
-                                    <i class="fa-solid fa-star"></i>
-                                </div>
+                                <div class="activity-icon warning"><i class="fa-solid fa-star"></i></div>
                                 <div class="activity-content">
-                                    <h4>Reached Level 5 in Writing exercises</h4>
+                                    <h4>Reached Level 5 in Writing</h4>
                                     <p>Dysgraphia Module</p>
+                                </div>
+                                <div class="activity-meta">
                                     <span class="activity-time">2 days ago</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Achievements -->
-                <div class="card">
-                    <div class="card-header">
-                        <h2><i class="fa-solid fa-medal"></i> Recent Achievements</h2>
+
+                <!-- ⑤ ACHIEVEMENTS -->
+                <div class="pg-card">
+                    <div class="pg-card-header">
+                        <h2 class="pg-card-title">
+                            <span class="title-icon" style="background:#FFFBEB;color:#f59e0b;">
+                                <i class="fa-solid fa-medal"></i>
+                            </span>
+                            Achievements
+                        </h2>
+                        <span style="font-size:0.78rem;color:#64748b;font-weight:600;">3 earned</span>
                     </div>
-                    <div class="card-body">
+                    <div class="pg-card-body">
                         <div class="achievements-grid">
-                            <div class="achievement-badge earned" style="position: relative; display: flex; flex-direction: column; align-items: center; padding-bottom: 3.5rem;">
-                                <div class="badge-icon">
-                                    <i class="fa-solid fa-fire"></i>
-                                </div>
+                            <div class="achievement-badge earned">
+                                <div class="badge-icon"><i class="fa-solid fa-fire"></i></div>
                                 <span>7-Day Streak</span>
-                                <div style="display: flex; gap: 4px; position: absolute; bottom: 4px;">
-                                    <button onclick="downloadBadgeCertificate(event, '7-Day Streak', '🔥')" class="btn btn-primary" style="font-size: 0.6rem; padding: 3px 7px; border-radius: 4px; cursor: pointer;" title="Download Certificate"><i class="fa-solid fa-download"></i></button>
-                                    <button onclick="shareBadgeWhatsApp('7-Day Streak')" class="btn" style="font-size: 0.6rem; padding: 3px 7px; border-radius: 4px; cursor: pointer; background: #25D366; color: white;" title="Share on WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>
+                                <div class="badge-actions">
+                                    <button onclick="downloadBadgeCertificate(event,'7-Day Streak','🔥')"
+                                            class="badge-action-btn download" title="Download Certificate">
+                                        <i class="fa-solid fa-download"></i>
+                                    </button>
+                                    <button onclick="shareBadgeWhatsApp('7-Day Streak')"
+                                            class="badge-action-btn whatsapp" title="Share on WhatsApp">
+                                        <i class="fa-brands fa-whatsapp"></i>
+                                    </button>
                                 </div>
                             </div>
-                            <div class="achievement-badge earned" style="position: relative; display: flex; flex-direction: column; align-items: center; padding-bottom: 3.5rem;">
-                                <div class="badge-icon">
-                                    <i class="fa-solid fa-book"></i>
-                                </div>
+                            <div class="achievement-badge earned">
+                                <div class="badge-icon"><i class="fa-solid fa-book"></i></div>
                                 <span>Bookworm</span>
-                                <div style="display: flex; gap: 4px; position: absolute; bottom: 4px;">
-                                    <button onclick="downloadBadgeCertificate(event, 'Bookworm', '📚')" class="btn btn-primary" style="font-size: 0.6rem; padding: 3px 7px; border-radius: 4px; cursor: pointer;" title="Download Certificate"><i class="fa-solid fa-download"></i></button>
-                                    <button onclick="shareBadgeWhatsApp('Bookworm')" class="btn" style="font-size: 0.6rem; padding: 3px 7px; border-radius: 4px; cursor: pointer; background: #25D366; color: white;" title="Share on WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>
+                                <div class="badge-actions">
+                                    <button onclick="downloadBadgeCertificate(event,'Bookworm','📚')"
+                                            class="badge-action-btn download" title="Download Certificate">
+                                        <i class="fa-solid fa-download"></i>
+                                    </button>
+                                    <button onclick="shareBadgeWhatsApp('Bookworm')"
+                                            class="badge-action-btn whatsapp" title="Share on WhatsApp">
+                                        <i class="fa-brands fa-whatsapp"></i>
+                                    </button>
                                 </div>
                             </div>
-                            <div class="achievement-badge earned" style="position: relative; display: flex; flex-direction: column; align-items: center; padding-bottom: 3.5rem;">
-                                <div class="badge-icon">
-                                    <i class="fa-solid fa-bolt"></i>
-                                </div>
+                            <div class="achievement-badge earned">
+                                <div class="badge-icon"><i class="fa-solid fa-bolt"></i></div>
                                 <span>Quick Learner</span>
-                                <div style="display: flex; gap: 4px; position: absolute; bottom: 4px;">
-                                    <button onclick="downloadBadgeCertificate(event, 'Quick Learner', '⚡')" class="btn btn-primary" style="font-size: 0.6rem; padding: 3px 7px; border-radius: 4px; cursor: pointer;" title="Download Certificate"><i class="fa-solid fa-download"></i></button>
-                                    <button onclick="shareBadgeWhatsApp('Quick Learner')" class="btn" style="font-size: 0.6rem; padding: 3px 7px; border-radius: 4px; cursor: pointer; background: #25D366; color: white;" title="Share on WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>
+                                <div class="badge-actions">
+                                    <button onclick="downloadBadgeCertificate(event,'Quick Learner','⚡')"
+                                            class="badge-action-btn download" title="Download Certificate">
+                                        <i class="fa-solid fa-download"></i>
+                                    </button>
+                                    <button onclick="shareBadgeWhatsApp('Quick Learner')"
+                                            class="badge-action-btn whatsapp" title="Share on WhatsApp">
+                                        <i class="fa-brands fa-whatsapp"></i>
+                                    </button>
                                 </div>
                             </div>
                             <div class="achievement-badge locked">
-                                <div class="badge-icon">
-                                    <i class="fa-solid fa-crown"></i>
-                                </div>
+                                <div class="badge-icon"><i class="fa-solid fa-crown"></i></div>
                                 <span>Master</span>
                             </div>
                             <div class="achievement-badge locked">
-                                <div class="badge-icon">
-                                    <i class="fa-solid fa-gem"></i>
-                                </div>
+                                <div class="badge-icon"><i class="fa-solid fa-gem"></i></div>
                                 <span>Perfectionist</span>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+
+            </div><!-- /content-area -->
         </main>
     </div>
-    
+
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Add jsPDF for certificates -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-    
     <script src="../js/supabase-client.js"></script>
     <script src="../js/utils.js"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/notifications.js"></script>
     <script src="../js/header.js"></script>
     <script src="./progress.js"></script>
+
     <script>
-        // ========== CERTIFICATE GENERATION ==========
+        // ── Certificate helpers ──────────────────────────────────
         async function getFullUserName() {
-            // Try to get from global storage set by header.js
-            if (window._cognoUserName && window._cognoUserName !== 'User') {
-                return window._cognoUserName;
-            }
-            // Try supabase profile
+            if (window._cognoUserName && window._cognoUserName !== 'User') return window._cognoUserName;
             try {
                 const sessionRes = await CognoSupabase.getSession();
-                const user = sessionRes?.session?.user || sessionRes?.user; // fallback just in case
+                const user = sessionRes?.session?.user || sessionRes?.user;
                 if (user) {
-                    const { data } = await CognoSupabase.client
-                        .from('profiles')
-                        .select('full_name, display_name')
-                        .eq('id', user.id)
-                        .single();
+                    const { data } = await CognoSupabase.client.from('profiles')
+                        .select('full_name, display_name').eq('id', user.id).single();
                     const name = data?.full_name || data?.display_name || user.user_metadata?.full_name;
                     if (name) return name;
                     return user.email?.split('@')[0] || 'Learner';
                 }
-            } catch(e) {
-                console.error("Error fetching full user name:", e);
-            }
+            } catch(e) { console.error(e); }
             return window._cognoUserName || 'Learner';
         }
 
         window.downloadBadgeCertificate = async function(event, badgeName, badgeEmoji) {
-            event.preventDefault();
-            event.stopPropagation();
-            
+            event.preventDefault(); event.stopPropagation();
             const btn = event.currentTarget;
-            const originalHTML = btn.innerHTML;
+            const orig = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
             btn.disabled = true;
-
             try {
                 const jsPDFConstructor = window.jspdf?.jsPDF || window.jsPDF;
-                if (!jsPDFConstructor) {
-                    throw new Error('PDF library not loaded');
-                }
-                
+                if (!jsPDFConstructor) throw new Error('PDF library not loaded');
                 const userName = await getFullUserName();
-                const emoji = badgeEmoji || '🏆';
-                const dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-                const doc = new jsPDFConstructor({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-                const W = doc.internal.pageSize.getWidth();
-                const H = doc.internal.pageSize.getHeight();
-
-                // --- PREMIUM LIGHT THEME ---
-                // Clean white background
-                doc.setFillColor(255, 255, 255);
-                doc.rect(0, 0, W, H, 'F');
-
-                // Decorative outer border (Primary Blue)
-                doc.setDrawColor(59, 130, 246);
-                doc.setLineWidth(1.5);
-                doc.roundedRect(8, 8, W - 16, H - 16, 4, 4);
-
-                // Thinner inner border (Indigo)
-                doc.setDrawColor(99, 102, 241);
-                doc.setLineWidth(0.5);
-                doc.roundedRect(10, 10, W - 20, H - 20, 3, 3);
-
-                // Modern corner accents
-                const accentSize = 25;
-                doc.setFillColor(59, 130, 246, 0.1); 
-                doc.triangle(8, 8, 8 + accentSize, 8, 8, 8 + accentSize, 'F');
-                doc.triangle(W - 8, 8, W - 8 - accentSize, 8, W - 8, 8 + accentSize, 'F');
-                doc.triangle(8, H - 8, 8 + accentSize, H - 8, 8, H - 8 - accentSize, 'F');
-                doc.triangle(W - 8, H - 8, W - 8 - accentSize, H - 8, W - 8, H - 8 - accentSize, 'F');
-
-                // --- HEADER: COGNO SOLUTION ---
-                doc.setTextColor(30, 41, 59);
-                doc.setFontSize(14);
-                doc.setFont('helvetica', 'bold');
-                doc.text('COGNO SOLUTION', W / 2, 25, { align: 'center' });
-                
-                // --- MAIN TITLE ---
-                doc.setTextColor(59, 130, 246);
-                doc.setFontSize(42);
-                doc.setFont('helvetica', 'bold');
-                doc.text('CERTIFICATE', W / 2, 48, { align: 'center' });
-                
-                doc.setTextColor(71, 85, 105);
-                doc.setFontSize(18);
-                doc.setFont('helvetica', 'normal');
-                doc.text('OF ACHIEVEMENT', W / 2, 58, { align: 'center' });
-
-                // Divider line
-                doc.setDrawColor(226, 232, 240);
-                doc.setLineWidth(0.8);
-                doc.line(W / 2 - 60, 68, W / 2 + 60, 68);
-
-                // --- BODY ---
-                doc.setTextColor(51, 65, 85);
-                doc.setFontSize(14);
-                doc.text('This is to proudly certify that', W / 2, 82, { align: 'center' });
-
-                // Recipient Name
-                doc.setTextColor(37, 99, 235);
-                doc.setFontSize(32);
-                doc.setFont('helvetica', 'bold');
-                doc.text(userName.toUpperCase(), W / 2, 100, { align: 'center' });
-
-                // Achievement description
-                doc.setTextColor(71, 85, 105);
-                doc.setFontSize(14);
-                doc.setFont('helvetica', 'normal');
-                doc.text('has successfully completed requirements for the', W / 2, 115, { align: 'center' });
-
-                // Badge Name Pill
-                doc.setFillColor(59, 130, 246);
-                doc.roundedRect(W / 2 - 50, 122, 100, 14, 7, 7, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(18);
-                doc.setFont('helvetica', 'bold');
-                doc.text(`${badgeName}`, W / 2, 132, { align: 'center' });
-
-                // Sub-description based on badge
-                doc.setTextColor(148, 163, 184);
-                doc.setFontSize(10);
-                doc.setFont('helvetica', 'italic');
-                const badgeInfo = {
-                    '7-Day Streak': 'awarded for consistent daily learning and extraordinary commitment to educational growth.',
-                    'Bookworm': 'awarded for outstanding engagement with reading activities and literacy modules.',
-                    'Quick Learner': 'awarded for completing multiple activities with high speed and exceptional accuracy.'
-                };
-                const descText = badgeInfo[badgeName] || 'awarded for outstanding performance and continued progress in their learning journey.';
-                const splitDesc = doc.splitTextToSize(descText, 180);
-                doc.text(splitDesc, W / 2, 145, { align: 'center' });
-
-                // --- FOOTER ---
-                doc.setTextColor(71, 85, 105);
-                doc.setFontSize(10);
-                doc.setFont('helvetica', 'normal');
-                doc.text('DATE ISSUED', 45, 168);
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(12);
-                doc.text(dateStr, 45, 175);
-                doc.line(30, 178, 80, 178);
-
-                doc.setFontSize(10);
-                doc.setFont('helvetica', 'normal');
-                doc.text('AUTHORIZED BY', W - 45, 168, { align: 'center' });
-                doc.setFont('times', 'italic');
-                doc.setFontSize(18);
-                doc.text('Cogno Team', W - 45, 175, { align: 'center' });
-                doc.line(W - 80, 178, W - 30, 178);
-                doc.setFontSize(9);
-                doc.setFont('helvetica', 'normal');
-                doc.text('Education Director', W - 45, 184, { align: 'center' });
-
-                // --- DECORATIVE SEAL ---
-                doc.setFillColor(255, 215, 0); 
-                doc.circle(W / 2, 175, 15, 'F');
-                doc.setDrawColor(184, 134, 11);
-                doc.setLineWidth(0.5);
-                doc.circle(W / 2, 175, 15, 'D');
-                
-                for (let i = 0; i < 360; i += 10) {
-                    const angle = (i * Math.PI) / 180;
-                    doc.line(W / 2 + Math.cos(angle) * 15, 175 + Math.sin(angle) * 15, W / 2 + Math.cos(angle) * 17, 175 + Math.sin(angle) * 17);
-                }
-                
-                doc.setTextColor(133, 77, 14);
-                doc.setFontSize(8);
-                doc.setFont('helvetica', 'bold');
-                doc.text('COGNO', W / 2, 173, { align: 'center' });
-                doc.text('CERTIFIED', W / 2, 178, { align: 'center' });
-
-                doc.save(`Cogno_Certificate_${badgeName.replace(/\s+/g, '_')}_${userName.replace(/\s+/g, '_')}.pdf`);
-                
-                if (window.CognoNotifications?.toast) {
-                    CognoNotifications.toast.success('Certificate downloaded! 🎉');
-                }
+                const dateStr = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+                const doc = new jsPDFConstructor({orientation:'landscape',unit:'mm',format:'a4'});
+                const W = doc.internal.pageSize.getWidth(), H = doc.internal.pageSize.getHeight();
+                doc.setFillColor(255,255,255); doc.rect(0,0,W,H,'F');
+                doc.setDrawColor(37,99,235); doc.setLineWidth(1.5); doc.roundedRect(8,8,W-16,H-16,4,4);
+                doc.setDrawColor(14,165,233); doc.setLineWidth(0.5); doc.roundedRect(10,10,W-20,H-20,3,3);
+                doc.setTextColor(30,41,59); doc.setFontSize(14); doc.setFont('helvetica','bold');
+                doc.text('COGNO SOLUTION',W/2,25,{align:'center'});
+                doc.setTextColor(37,99,235); doc.setFontSize(42);
+                doc.text('CERTIFICATE',W/2,48,{align:'center'});
+                doc.setTextColor(71,85,105); doc.setFontSize(18); doc.setFont('helvetica','normal');
+                doc.text('OF ACHIEVEMENT',W/2,58,{align:'center'});
+                doc.setDrawColor(226,232,240); doc.setLineWidth(0.8); doc.line(W/2-60,68,W/2+60,68);
+                doc.setTextColor(51,65,85); doc.setFontSize(14); doc.text('This is to proudly certify that',W/2,82,{align:'center'});
+                doc.setTextColor(37,99,235); doc.setFontSize(32); doc.setFont('helvetica','bold');
+                doc.text(userName.toUpperCase(),W/2,100,{align:'center'});
+                doc.setTextColor(71,85,105); doc.setFontSize(14); doc.setFont('helvetica','normal');
+                doc.text('has successfully completed requirements for the',W/2,115,{align:'center'});
+                doc.setFillColor(37,99,235); doc.roundedRect(W/2-50,122,100,14,7,7,'F');
+                doc.setTextColor(255,255,255); doc.setFontSize(18); doc.setFont('helvetica','bold');
+                doc.text(badgeName,W/2,132,{align:'center'});
+                const badgeInfo={'7-Day Streak':'awarded for consistent daily learning and extraordinary commitment.','Bookworm':'awarded for outstanding engagement with reading activities and literacy modules.','Quick Learner':'awarded for completing multiple activities with high speed and exceptional accuracy.'};
+                doc.setTextColor(148,163,184); doc.setFontSize(10); doc.setFont('helvetica','italic');
+                const splitDesc = doc.splitTextToSize(badgeInfo[badgeName]||'awarded for outstanding performance.',180);
+                doc.text(splitDesc,W/2,145,{align:'center'});
+                doc.setTextColor(71,85,105); doc.setFontSize(10); doc.setFont('helvetica','normal');
+                doc.text('DATE ISSUED',45,168); doc.setFont('helvetica','bold'); doc.setFontSize(12);
+                doc.text(dateStr,45,175); doc.line(30,178,80,178);
+                doc.setFontSize(10); doc.setFont('helvetica','normal');
+                doc.text('AUTHORIZED BY',W-45,168,{align:'center'});
+                doc.setFont('times','italic'); doc.setFontSize(18);
+                doc.text('Cogno Team',W-45,175,{align:'center'}); doc.line(W-80,178,W-30,178);
+                doc.setFontSize(9); doc.setFont('helvetica','normal');
+                doc.text('Education Director',W-45,184,{align:'center'});
+                doc.setFillColor(255,215,0); doc.circle(W/2,175,15,'F');
+                doc.setDrawColor(184,134,11); doc.setLineWidth(0.5); doc.circle(W/2,175,15,'D');
+                for(let i=0;i<360;i+=10){const a=(i*Math.PI)/180;doc.line(W/2+Math.cos(a)*15,175+Math.sin(a)*15,W/2+Math.cos(a)*17,175+Math.sin(a)*17);}
+                doc.setTextColor(133,77,14); doc.setFontSize(8); doc.setFont('helvetica','bold');
+                doc.text('COGNO',W/2,173,{align:'center'}); doc.text('CERTIFIED',W/2,178,{align:'center'});
+                doc.save(`Cogno_Certificate_${badgeName.replace(/\s+/g,'_')}_${userName.replace(/\s+/g,'_')}.pdf`);
+                if(window.CognoNotifications?.toast) CognoNotifications.toast.success('Certificate downloaded! 🎉');
             } catch(e) {
-                console.error('Certificate error:', e);
-                if (window.CognoNotifications?.toast) {
-                    CognoNotifications.toast.error('Could not generate certificate.');
-                }
-            } finally {
-                btn.innerHTML = originalHTML;
-                btn.disabled = false;
-            }
+                console.error(e);
+                if(window.CognoNotifications?.toast) CognoNotifications.toast.error('Could not generate certificate.');
+            } finally { btn.innerHTML = orig; btn.disabled = false; }
         };
 
         window.shareBadgeWhatsApp = async function(badgeName) {
             const userName = await getFullUserName();
-            const text = encodeURIComponent(
-                `🏆 I just earned the "${badgeName}" badge on Cogno Solution! 🎉\n\n` +
-                `My name: ${userName}\n` +
-                `Keep learning every day! 📚\n\n` +
-                `#CognoSolution #LearningAchievement #${badgeName.replace(/ /g, '')}`
-            );
-            window.open(`https://wa.me/?text=${text}`, '_blank');
+            const text = encodeURIComponent(`🏆 I just earned the "${badgeName}" badge on Cogno Solution! 🎉\n\nMy name: ${userName}\nKeep learning every day! 📚\n\n#CognoSolution #LearningAchievement #${badgeName.replace(/ /g,'')}`);
+            window.open(`https://wa.me/?text=${text}`,'_blank');
         };
 
-        // Header interactivity for progress page
+        // ── Page init ──────────────────────────────────────────────
         document.addEventListener('DOMContentLoaded', () => {
-            // Sidebar toggle
-            const sidebar = document.getElementById('sidebar');
-            const sidebarToggle = document.getElementById('sidebar-toggle');
-            const sidebarClose = document.getElementById('sidebar-close');
-            sidebarToggle?.addEventListener('click', () => sidebar?.classList.toggle('open'));
-            sidebarClose?.addEventListener('click', () => sidebar?.classList.remove('open'));
-
             // Dark mode
-            const darkModeToggle = document.getElementById('dark-mode-toggle');
-            if (localStorage.getItem('cogno-theme') === 'dark') {
+            const dmToggle = document.getElementById('dark-mode-toggle');
+            const isDark = localStorage.getItem('cogno-theme') === 'dark' || localStorage.getItem('cogno_dark_mode') === 'true';
+            if (isDark) {
                 document.body.classList.add('dark-mode');
-                if (darkModeToggle) darkModeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
+                if (dmToggle) dmToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
             }
-            darkModeToggle?.addEventListener('click', () => {
+            dmToggle?.addEventListener('click', () => {
                 document.body.classList.toggle('dark-mode');
-                const isDark = document.body.classList.contains('dark-mode');
-                localStorage.setItem('cogno-theme', isDark ? 'dark' : 'light');
-                darkModeToggle.innerHTML = isDark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+                const dark = document.body.classList.contains('dark-mode');
+                localStorage.setItem('cogno-theme', dark ? 'dark' : 'light');
+                localStorage.setItem('cogno_dark_mode', dark);
+                dmToggle.innerHTML = dark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
             });
 
             // User dropdown
-            const userMenuBtn = document.getElementById('user-menu-btn');
-            const userDropdown = document.getElementById('user-dropdown');
-            userMenuBtn?.addEventListener('click', () => userDropdown?.classList.toggle('show'));
-            document.addEventListener('click', (e) => {
+            const userBtn = document.getElementById('user-menu-btn');
+            const userDrop = document.getElementById('user-dropdown');
+            userBtn?.addEventListener('click', e => { e.stopPropagation(); userDrop?.classList.toggle('show'); });
+            document.addEventListener('click', e => {
                 if (!e.target.closest('.dropdown')) {
                     document.querySelectorAll('.dropdown-menu.show').forEach(m => m.classList.remove('show'));
                 }
@@ -687,321 +1514,38 @@
                     }
                 });
             });
+
+            // Sidebar (desktop)
+            const sidebar = document.getElementById('sidebar');
+            document.getElementById('sidebar-close')?.addEventListener('click', () => sidebar?.classList.remove('open'));
         });
     </script>
-    
-    <style>
-        .time-select {
-            padding: var(--space-2) var(--space-3);
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius-md);
-            background: var(--color-surface);
-        }
-        
-        .progress-hero {
-            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-            color: white;
-        }
-        
-        .progress-hero-content {
-            display: flex;
-            align-items: center;
-            gap: var(--space-8);
-            padding: var(--space-6);
-        }
-        
-        .overall-progress {
-            text-align: center;
-        }
-        
-        .circular-progress {
-            width: 150px;
-            height: 150px;
-            position: relative;
-        }
-        
-        .circular-progress svg {
-            transform: rotate(-90deg);
-        }
-        
-        .circular-progress circle {
-            fill: none;
-            stroke-width: 8;
-        }
-        
-        .circular-progress .bg {
-            stroke: rgba(255,255,255,0.2);
-        }
-        
-        .circular-progress .progress {
-            stroke: white;
-            stroke-linecap: round;
-            transition: stroke-dashoffset 0.5s;
-        }
-        
-        .progress-value {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 2rem;
-            font-weight: 700;
-        }
-        
-        .progress-label {
-            margin-top: var(--space-2);
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-        
-        .progress-stats {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: var(--space-4);
-            flex: 1;
-        }
-        
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: var(--space-3);
-            padding: var(--space-4);
-            background: rgba(255,255,255,0.1);
-            border-radius: var(--radius-lg);
-        }
-        
-        .stat-item i {
-            font-size: 1.5rem;
-        }
-        
-        .stat-value {
-            display: block;
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-        
-        .stat-label {
-            font-size: 0.75rem;
-            opacity: 0.8;
-        }
-        
-        .chart-card {
-            margin-top: var(--space-6);
-        }
-        
-        .chart-container {
-            height: 300px;
-        }
-        
-        .modules-progress {
-            margin-top: var(--space-6);
-        }
-        
-        .modules-progress h2 {
-            margin-bottom: var(--space-4);
-        }
-        
-        .modules-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: var(--space-4);
-        }
-        
-        .module-progress-card {
-            background: var(--color-surface);
-            border-radius: var(--radius-lg);
-            padding: var(--space-5);
-            text-align: center;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--color-border);
-        }
-        
-        .module-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--space-3);
-            margin-bottom: var(--space-4);
-        }
-        
-        .module-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: var(--radius-full);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-        }
-        
-        .dyslexia .module-icon { background: var(--color-primary-100); color: var(--color-primary); }
-        .dyscalculia .module-icon { background: var(--color-success-100); color: var(--color-success); }
-        .dysgraphia .module-icon { background: var(--color-warning-100); color: var(--color-warning); }
-        .dyspraxia .module-icon { background: var(--color-info-100); color: var(--color-info); }
-        
-        .progress-ring {
-            position: relative;
-            width: 80px;
-            height: 80px;
-            margin: 0 auto var(--space-4);
-        }
-        
-        .progress-ring svg {
-            transform: rotate(-90deg);
-        }
-        
-        .progress-ring circle {
-            fill: none;
-            stroke-width: 6;
-        }
-        
-        .progress-ring .bg {
-            stroke: var(--color-border);
-        }
-        
-        .dyslexia .progress-ring .progress { stroke: var(--color-primary); }
-        .dyscalculia .progress-ring .progress { stroke: var(--color-success); }
-        .dysgraphia .progress-ring .progress { stroke: var(--color-warning); }
-        .dyspraxia .progress-ring .progress { stroke: var(--color-info); }
-        
-        .progress-ring span {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 1rem;
-            font-weight: 600;
-        }
-        
-        .module-stats {
-            display: flex;
-            justify-content: center;
-            gap: var(--space-4);
-            margin-bottom: var(--space-4);
-            font-size: 0.8rem;
-            color: var(--color-text-secondary);
-        }
-        
-        .activity-timeline {
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-4);
-        }
-        
-        .activity-item {
-            display: flex;
-            gap: var(--space-3);
-        }
-        
-        .activity-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: var(--radius-full);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        
-        .activity-icon.success { background: var(--color-success-100); color: var(--color-success); }
-        .activity-icon.primary { background: var(--color-primary-100); color: var(--color-primary); }
-        .activity-icon.info { background: var(--color-info-100); color: var(--color-info); }
-        
-        .activity-content h4 {
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-        
-        .activity-content p {
-            font-size: 0.8rem;
-            color: var(--color-text-secondary);
-        }
-        
-        .activity-time {
-            font-size: 0.7rem;
-            color: var(--color-text-secondary);
-        }
-        
-        .achievements-grid {
-            display: flex;
-            gap: var(--space-4);
-            flex-wrap: wrap;
-        }
-        
-        .achievement-badge {
-            text-align: center;
-            padding: var(--space-4);
-            border-radius: var(--radius-lg);
-            min-width: 100px;
-        }
-        
-        .achievement-badge.earned {
-            background: var(--color-primary-100);
-        }
-        
-        .achievement-badge.locked {
-            background: var(--color-background);
-            opacity: 0.5;
-        }
-        
-        .badge-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: var(--radius-full);
-            background: var(--color-primary);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto var(--space-2);
-            font-size: 1.25rem;
-        }
-        
-        .achievement-badge.locked .badge-icon {
-            background: var(--color-border);
-        }
-        
-        .achievement-badge span {
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-        
-        @media (max-width: 768px) {
-            .progress-hero-content {
-                flex-direction: column;
-            }
-            
-            .progress-stats {
-                width: 100%;
-            }
-        }
-    </style>
-    
-    <!-- Bottom Navigation (Mobile) -->
-    <nav class="bottom-nav">
-        <a href="../dashboard/child-dashboard.html" class="nav-item">
+
+    <!-- Bottom Navigation — 6 items, all original -->
+    <nav class="bottom-nav" role="navigation" aria-label="Main navigation">
+        <a href="../dashboard/child-dashboard.html" class="nav-item" aria-label="Home">
             <i class="fa-solid fa-house"></i>
-            <span data-i18n="nav.home">Home</span>
+            <span>Home</span>
         </a>
-        <a href="../learn/index.html" class="nav-item">
+        <a href="../learn/index.html" class="nav-item" aria-label="Learn">
             <i class="fa-solid fa-book-open"></i>
-            <span data-i18n="nav.learn">Learn</span>
+            <span>Learn</span>
         </a>
-        <a href="../doctors/index.html" class="nav-item">
+        <a href="../doctors/index.html" class="nav-item" aria-label="Doctors">
             <i class="fa-solid fa-user-doctor"></i>
-            <span data-i18n="nav.doctors">Doctors</span>
+            <span>Doctors</span>
         </a>
-        <a href="../learning-hub/index.html" class="nav-item">
+        <a href="../learning-hub/index.html" class="nav-item" aria-label="Hub">
             <i class="fa-solid fa-graduation-cap"></i>
-            <span data-i18n="nav.hub">Hub</span>
+            <span>Hub</span>
         </a>
-        <a href="index.html" class="nav-item active">
+        <a href="index.html" class="nav-item active" aria-label="Progress" aria-current="page">
             <i class="fa-solid fa-chart-line"></i>
-            <span data-i18n="nav.progress">Progress</span>
+            <span>Progress</span>
         </a>
-        <a href="../profile/index.html" class="nav-item">
+        <a href="../profile/index.html" class="nav-item" aria-label="Profile">
             <i class="fa-solid fa-user"></i>
-            <span data-i18n="nav.profile">Profile</span>
+            <span>Profile</span>
         </a>
     </nav>
 </body>
