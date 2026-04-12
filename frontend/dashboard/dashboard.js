@@ -598,8 +598,22 @@ const CognoDashboard = {
 
     async loadRecentAchievements() {
         const grid = document.getElementById('achievements-grid');
+        const badgesCountEl = document.getElementById('badges-count');
         if (!grid) return;
 
+        // Fetch all achievements for total count
+        const { data: allAchievements } = await CognoSupabase.query(
+            'user_achievements',
+            'id',
+            [{ column: 'user_id', value: this.user.id }]
+        );
+
+        // Update badges count in quick stats card
+        if (badgesCountEl && allAchievements) {
+            badgesCountEl.textContent = allAchievements.length || 0;
+        }
+
+        // Fetch recent 3 for display
         const { data } = await CognoSupabase.query(
             'user_achievements',
             '*',
