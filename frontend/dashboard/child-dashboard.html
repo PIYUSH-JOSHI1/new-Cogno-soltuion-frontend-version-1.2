@@ -54,6 +54,12 @@
         .navbar .sidebar-toggle {
             display: none;
         }
+
+        /* Premium content area max-width */
+        .content-area {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
     </style>
 </head>
 <body class="has-sidebar">
@@ -174,42 +180,39 @@
     
     <!-- Main Content -->
     <main class="main-content">
-        <!-- Top Navigation -->
+        <!-- Top Navigation - Premium Mobile Header -->
         <header class="navbar">
             <div class="navbar-left">
-                <button class="btn btn-ghost btn-icon sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
-                <h1 class="page-title" data-i18n="dashboard.my_dashboard">My Dashboard</h1>
+                <!-- Brand Logo + Name -->
+                <img src="../assets/images/icons/logo.svg" alt="Cogno" class="navbar-brand-logo">
+                <div class="navbar-brand-text">
+                    <span class="navbar-brand-name">Cogno</span>
+                    <span class="navbar-brand-sub">My Dashboard</span>
+                </div>
             </div>
-            
+
             <div class="navbar-right">
                 <!-- Accessibility Toggle -->
-                <button class="btn btn-ghost btn-icon" id="accessibility-btn" title="Accessibility options">
+                <button class="btn btn-ghost btn-icon" id="accessibility-btn" title="Accessibility options" aria-label="Accessibility options">
                     <i class="fa-solid fa-universal-access"></i>
                 </button>
-                
-                <!-- Settings Quick Link -->
-                <a href="../settings/" class="btn btn-ghost btn-icon" title="Settings">
-                    <i class="fa-solid fa-gear"></i>
-                </a>
-                
+
                 <!-- Dark Mode Toggle -->
-                <button class="btn btn-ghost btn-icon" id="dark-mode-toggle" title="Toggle dark mode">
+                <button class="btn btn-ghost btn-icon" id="dark-mode-toggle" title="Toggle dark mode" aria-label="Toggle dark mode">
                     <i class="fa-solid fa-moon"></i>
                 </button>
-                
+
                 <!-- Notifications -->
                 <div class="dropdown">
-                    <button class="btn btn-ghost btn-icon notification-btn" id="notification-btn">
+                    <button class="btn btn-ghost btn-icon notification-btn" id="notification-btn" aria-label="Notifications">
                         <i class="fa-solid fa-bell"></i>
                         <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
                     </button>
                 </div>
-                
+
                 <!-- User Menu -->
                 <div class="dropdown">
-                    <button class="user-menu-btn" id="user-menu-btn">
+                    <button class="user-menu-btn" id="user-menu-btn" aria-label="User menu">
                         <div class="avatar avatar-sm" id="user-avatar">
                             <img src="../assets/images/avatars/default.svg" alt="User avatar" id="user-avatar-img">
                         </div>
@@ -234,18 +237,25 @@
                 </div>
             </div>
         </header>
-        
+
         <!-- Dashboard Content -->
         <div class="content-area">
-            <!-- Welcome Section -->
+
+            <!-- ═══════════════════════════════════════════
+                 HERO WELCOME BANNER
+                 ═══════════════════════════════════════════ -->
             <section class="welcome-section">
-                <div class="welcome-content text-center-mobile">
+                <div class="welcome-content">
+                    <div class="welcome-badge">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>Cogno Dashboard</span>
+                    </div>
                     <h2 class="welcome-title">
                         Welcome back, <span id="welcome-name">Friend</span>! 👋
                     </h2>
                     <p class="welcome-subtitle">Ready for another day of learning? Let's keep going!</p>
                 </div>
-                
+
                 <!-- Streak & Points -->
                 <div class="stats-quick flex-center-mobile">
                     <div class="streak-counter" id="streak-counter">
@@ -257,7 +267,7 @@
                             <span class="streak-label" data-i18n="dashboard.streak">Day Streak</span>
                         </div>
                     </div>
-                    
+
                     <div class="points-display" id="points-display">
                         <div class="points-icon">
                             <i class="fa-solid fa-star"></i>
@@ -269,34 +279,77 @@
                     </div>
                 </div>
             </section>
-            
-            <!-- Assigned Assessments from Doctor -->
+
+            <!-- ═══════════════════════════════════════════
+                 QUICK STATS GRID
+                 ═══════════════════════════════════════════ -->
+            <div class="quick-stats-grid">
+                <div class="quick-stat-card stat-blue">
+                    <div class="quick-stat-icon">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <div class="quick-stat-value" id="activities-this-week">0</div>
+                    <div class="quick-stat-label">Activities This Week</div>
+                    <div class="quick-stat-change neutral"><i class="fa-solid fa-minus"></i> Real-time</div>
+                </div>
+                <div class="quick-stat-card stat-green">
+                    <div class="quick-stat-icon">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+                    <div class="quick-stat-value" id="hours-learned">0h</div>
+                    <div class="quick-stat-label">Time Spent</div>
+                    <div class="quick-stat-change neutral"><i class="fa-solid fa-minus"></i> Real-time</div>
+                </div>
+                <div class="quick-stat-card stat-orange">
+                    <div class="quick-stat-icon">
+                        <i class="fa-solid fa-chart-simple"></i>
+                    </div>
+                    <div class="quick-stat-value" id="avg-score">0%</div>
+                    <div class="quick-stat-label">Avg. Score</div>
+                    <div class="quick-stat-change neutral"><i class="fa-solid fa-minus"></i> Real-time</div>
+                </div>
+                <div class="quick-stat-card stat-purple">
+                    <div class="quick-stat-icon">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <div class="quick-stat-value" id="badges-count">0</div>
+                    <div class="quick-stat-label">Badges Earned</div>
+                    <div class="quick-stat-change neutral"><i class="fa-solid fa-minus"></i> Real-time</div>
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════
+                 ASSIGNED ASSESSMENTS FROM DOCTOR
+                 ═══════════════════════════════════════════ -->
             <section class="section" id="assessments-section" style="display: none;">
                 <div class="section-header">
                     <h3 class="section-title">
-                        <i class="fa-solid fa-clipboard-check" style="color: var(--color-warning);"></i>
-                        Assignments from Doctor
+                        <span class="section-icon" style="background:#FFF7ED; color:#F59E0B;">
+                            <i class="fa-solid fa-clipboard-check"></i>
+                        </span>
+                        Doctor Assignments
                     </h3>
                     <span class="badge badge-warning" id="assessments-count">0</span>
                 </div>
-                
-                <div id="assessments-list" class="activity-feed" style="background: var(--color-surface); border-radius: 16px; border: 1px solid var(--color-border); overflow: hidden; gap: 0;">
+                <div id="assessments-list" class="activity-feed" style="background: var(--color-surface); border-radius: 14px; border: 1px solid var(--color-border); overflow: hidden; gap: 0;">
                     <!-- Populated by JS -->
                 </div>
             </section>
-            
 
-
-            <!-- Today's Goals -->
+            <!-- ═══════════════════════════════════════════
+                 TODAY'S GOALS
+                 ═══════════════════════════════════════════ -->
             <section class="section">
                 <div class="section-header">
                     <h3 class="section-title">
-                        <i class="fa-solid fa-bullseye"></i>
+                        <span class="section-icon" style="background:#EFF6FF; color:#3B82F6;">
+                            <i class="fa-solid fa-bullseye"></i>
+                        </span>
                         Today's Goals
                     </h3>
-                    <span class="progress-text" id="goals-progress">0 of 3 completed</span>
+                    <span class="progress-text" id="goals-progress" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary);">0 of 3 completed</span>
                 </div>
-                
+
                 <div class="goals-list" id="goals-list">
                     <div class="goal-item">
                         <div class="goal-checkbox">
@@ -305,7 +358,7 @@
                         </div>
                         <div class="goal-content">
                             <span class="goal-text">Complete 1 reading activity</span>
-                            <span class="goal-points">+10 points</span>
+                            <span class="goal-points">+10 pts</span>
                         </div>
                     </div>
                     <div class="goal-item">
@@ -315,7 +368,7 @@
                         </div>
                         <div class="goal-content">
                             <span class="goal-text">Practice math for 10 minutes</span>
-                            <span class="goal-points">+10 points</span>
+                            <span class="goal-points">+10 pts</span>
                         </div>
                     </div>
                     <div class="goal-item">
@@ -325,44 +378,59 @@
                         </div>
                         <div class="goal-content">
                             <span class="goal-text">Try a new activity</span>
-                            <span class="goal-points">+15 points</span>
+                            <span class="goal-points">+15 pts</span>
                         </div>
                     </div>
                 </div>
+
+                <!-- Goals completion progress bar -->
+                <div class="goals-progress-bar" style="margin-top:1rem;">
+                    <div class="goals-progress-fill" id="goals-progress-fill" style="width: 0%;"></div>
+                </div>
             </section>
 
-            <!-- Upcoming Appointments -->
+            <!-- ═══════════════════════════════════════════
+                 UPCOMING CONSULTATIONS
+                 ═══════════════════════════════════════════ -->
             <section class="section" id="upcoming-appointments-section" style="display: none;">
                 <div class="section-header">
                     <h3 class="section-title">
-                        <i class="fa-solid fa-calendar-check" style="color: var(--color-success);"></i>
-                        Next Consultations
+                        <span class="section-icon" style="background:#ECFDF5; color:#10B981;">
+                            <i class="fa-solid fa-calendar-check"></i>
+                        </span>
+                        Upcoming Consultations
                     </h3>
                     <a href="../consultations/my-appointments.html" class="btn btn-ghost btn-sm">View All</a>
                 </div>
-                <div id="upcoming-appointments-list" class="appointments-grid" style="display: grid; gap: var(--space-4);">
+                <div id="upcoming-appointments-list" class="appointments-grid" style="display: grid; gap: 0.875rem;">
                     <!-- Populated by JS -->
                 </div>
             </section>
-            
-            <!-- Learning Modules -->
+
+            <!-- ═══════════════════════════════════════════
+                 LEARNING MODULES
+                 ═══════════════════════════════════════════ -->
             <section class="section">
                 <div class="section-header">
                     <h3 class="section-title">
-                        <i class="fa-solid fa-rocket"></i>
+                        <span class="section-icon" style="background:#EEF2FF; color:#6366F1;">
+                            <i class="fa-solid fa-rocket"></i>
+                        </span>
                         <span data-i18n="learn.learning_modules">Learning Modules</span>
                     </h3>
-                    <a href="../learning-hub/" class="btn btn-ghost btn-sm" data-i18n="common.view_all">View All</a>
+                    <a href="../learning-hub/" class="btn btn-ghost btn-sm" data-i18n="common.view_all">
+                        View All <i class="fa-solid fa-arrow-right" style="font-size:0.7rem;"></i>
+                    </a>
                 </div>
-                
+
                 <div class="module-cards">
-                    <!-- Dyslexia Module -->
+                    <!-- Dyslexia -->
                     <a href="../modules/dyslexia/" class="module-card module-dyslexia">
                         <div class="module-icon">
                             <i class="fa-solid fa-book-open"></i>
                         </div>
                         <div class="module-content">
-                            <h4 class="module-title">Reading & Words</h4>
+                            <h4 class="module-title">Reading &amp; Words</h4>
                             <p class="module-description">Practice reading, letters, and word games</p>
                             <div class="module-progress">
                                 <div class="progress-bar">
@@ -371,18 +439,16 @@
                                 <span class="progress-text" id="dyslexia-progress-text">0%</span>
                             </div>
                         </div>
-                        <div class="module-arrow">
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </div>
+                        <div class="module-arrow"><i class="fa-solid fa-chevron-right"></i></div>
                     </a>
-                    
-                    <!-- Dyscalculia Module -->
+
+                    <!-- Dyscalculia -->
                     <a href="../modules/dyscalculia/" class="module-card module-dyscalculia">
                         <div class="module-icon">
                             <i class="fa-solid fa-calculator"></i>
                         </div>
                         <div class="module-content">
-                            <h4 class="module-title">Numbers & Math</h4>
+                            <h4 class="module-title">Numbers &amp; Math</h4>
                             <p class="module-description">Fun math games and number practice</p>
                             <div class="module-progress">
                                 <div class="progress-bar">
@@ -391,12 +457,10 @@
                                 <span class="progress-text" id="dyscalculia-progress-text">0%</span>
                             </div>
                         </div>
-                        <div class="module-arrow">
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </div>
+                        <div class="module-arrow"><i class="fa-solid fa-chevron-right"></i></div>
                     </a>
-                    
-                    <!-- Dysgraphia Module -->
+
+                    <!-- Dysgraphia -->
                     <a href="../modules/dysgraphia/" class="module-card module-dysgraphia">
                         <div class="module-icon">
                             <i class="fa-solid fa-pen"></i>
@@ -411,12 +475,10 @@
                                 <span class="progress-text" id="dysgraphia-progress-text">0%</span>
                             </div>
                         </div>
-                        <div class="module-arrow">
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </div>
+                        <div class="module-arrow"><i class="fa-solid fa-chevron-right"></i></div>
                     </a>
-                    
-                    <!-- Dyspraxia Module -->
+
+                    <!-- Dyspraxia -->
                     <a href="../modules/dyspraxia/" class="module-card module-dyspraxia">
                         <div class="module-icon">
                             <i class="fa-solid fa-person-running"></i>
@@ -431,33 +493,38 @@
                                 <span class="progress-text" id="dyspraxia-progress-text">0%</span>
                             </div>
                         </div>
-                        <div class="module-arrow">
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </div>
+                        <div class="module-arrow"><i class="fa-solid fa-chevron-right"></i></div>
                     </a>
                 </div>
             </section>
-            
-            <!-- Stats Row -->
+
+            <!-- ═══════════════════════════════════════════
+                 STATS ROW: Chart + Achievements
+                 ═══════════════════════════════════════════ -->
             <div class="stats-row">
                 <!-- Weekly Progress Chart -->
                 <section class="section section-chart">
                     <div class="section-header">
                         <h3 class="section-title">
-                            <i class="fa-solid fa-chart-line"></i>
+                            <span class="section-icon" style="background:#EFF6FF; color:#3B82F6;">
+                                <i class="fa-solid fa-chart-line"></i>
+                            </span>
                             This Week
                         </h3>
+                        <a href="../progress/" class="btn btn-ghost btn-sm">Full Report</a>
                     </div>
                     <div class="chart-container">
                         <canvas id="weekly-chart"></canvas>
                     </div>
                 </section>
-                
+
                 <!-- Recent Achievements -->
                 <section class="section section-achievements">
                     <div class="section-header">
                         <h3 class="section-title">
-                            <i class="fa-solid fa-trophy"></i>
+                            <span class="section-icon" style="background:#FFFBEB; color:#F59E0B;">
+                                <i class="fa-solid fa-trophy"></i>
+                            </span>
                             Recent Badges
                         </h3>
                         <a href="../profile/certificates.html" class="btn btn-ghost btn-sm">
@@ -473,42 +540,27 @@
                     </div>
                 </section>
             </div>
-            
-            <!-- All Activity Section -->
+
+            <!-- ═══════════════════════════════════════════
+                 ACTIVITY FEED
+                 ═══════════════════════════════════════════ -->
             <section class="section all-activity-section">
                 <div class="section-header">
                     <div class="header-left">
                         <h3 class="section-title">
-                            <i class="fa-solid fa-clock-rotate-left"></i>
-                            All Activity Feed
+                            <span class="section-icon" style="background:#EEF2FF; color:#6366F1;">
+                                <i class="fa-solid fa-clock-rotate-left"></i>
+                            </span>
+                            Activity Feed
                         </h3>
-                        <p class="section-subtitle">Track your learning journey and achievements</p>
+                        <p class="section-subtitle">Your real-time learning journey</p>
                     </div>
                     <div class="header-actions">
-                        <a href="../progress/" class="btn btn-ghost btn-sm">
-                            <i class="fa-solid fa-chart-line"></i> Full Progress
-                        </a>
-                        <a href="../profile/?tab=activity" class="btn btn-secondary btn-sm">View All History</a>
+                        <a href="../profile/?tab=activity" class="btn btn-ghost btn-sm">View All History</a>
                     </div>
                 </div>
-                
-                <div class="activity-container">
-                    <!-- Activity Stats Summary (Mobile Friendly) -->
-                    <div class="activity-highlights">
-                        <div class="highlight-item">
-                            <span class="highlight-value" id="activities-this-week">0</span>
-                            <span class="highlight-label">Items This Week</span>
-                        </div>
-                        <div class="highlight-item">
-                            <span class="highlight-value" id="hours-learned">0h</span>
-                            <span class="highlight-label">Time Spent</span>
-                        </div>
-                        <div class="highlight-item">
-                            <span class="highlight-value" id="avg-score">0%</span>
-                            <span class="highlight-label">Avg. Score</span>
-                        </div>
-                    </div>
 
+                <div class="activity-container">
                     <div class="activity-feed" id="activity-feed">
                         <!-- Populated by JS -->
                         <div class="activity-empty">
@@ -517,27 +569,33 @@
                             <a href="../learning-hub/" class="btn btn-primary">Start Learning</a>
                         </div>
                     </div>
-                    
+
                     <div class="feed-footer">
                         <button class="btn btn-ghost btn-block" id="load-more-activity" style="display: none;">
-                            Load More Activities <i class="fa-solid fa-chevron-down"></i>
+                            Load More <i class="fa-solid fa-chevron-down"></i>
                         </button>
                     </div>
                 </div>
             </section>
-            <!-- Recent Reports -->
+
+            <!-- ═══════════════════════════════════════════
+                 RECENT MEDICAL REPORTS
+                 ═══════════════════════════════════════════ -->
             <section class="section" id="recent-reports-section" style="display: none;">
                 <div class="section-header">
                     <h3 class="section-title">
-                        <i class="fa-solid fa-file-medical"></i>
+                        <span class="section-icon" style="background:#ECFDF5; color:#10B981;">
+                            <i class="fa-solid fa-file-medical"></i>
+                        </span>
                         Recent Medical Reports
                     </h3>
                     <a href="../consultations/my-reports.html" class="btn btn-ghost btn-sm">View All</a>
                 </div>
-                <div id="recent-reports-list" class="reports-grid" style="display: grid; gap: var(--space-3);">
+                <div id="recent-reports-list" class="reports-grid" style="display: grid; gap: 0.875rem;">
                     <!-- Populated by JS -->
                 </div>
             </section>
+
         </div>
     </main>
 
@@ -602,33 +660,7 @@
         </button>
     </div>
     
-    <!-- Bottom Navigation (Mobile) -->
-    <nav class="bottom-nav">
-        <a href="child-dashboard.html" class="nav-item active">
-            <i class="fa-solid fa-house"></i>
-            <span data-i18n="nav.home">Home</span>
-        </a>
-        <a href="../learn/index.html" class="nav-item">
-            <i class="fa-solid fa-book-open"></i>
-            <span data-i18n="nav.learn">Learn</span>
-        </a>
-        <a href="../doctors/index.html" class="nav-item">
-            <i class="fa-solid fa-user-doctor"></i>
-            <span data-i18n="nav.doctors">Doctors</span>
-        </a>
-        <a href="../learning-hub/index.html" class="nav-item">
-            <i class="fa-solid fa-graduation-cap"></i>
-            <span data-i18n="nav.hub">Hub</span>
-        </a>
-        <a href="../progress/index.html" class="nav-item">
-            <i class="fa-solid fa-chart-line"></i>
-            <span data-i18n="nav.progress">Progress</span>
-        </a>
-        <a href="../profile/index.html" class="nav-item">
-            <i class="fa-solid fa-user"></i>
-            <span data-i18n="nav.profile">Profile</span>
-        </a>
-    </nav>
+
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -916,10 +948,11 @@
             CognoSupabase?.client?.removeAllChannels?.();
         });
         
-        // Load unread messages count for sidebar badge
+        // Load unread messages count for sidebar badge + bottom nav badge
         async function loadUnreadMessagesCount() {
             const badge = document.getElementById('unread-messages-badge');
-            if (!badge || !CognoSupabase?.client) return;
+            const navBadge = document.getElementById('nav-messages-badge');
+            if (!CognoSupabase?.client) return;
             
             try {
                 const { data: { user } } = await CognoSupabase.client.auth.getUser();
@@ -934,11 +967,26 @@
                 
                 if (!error && data !== null) {
                     const count = data.length || 0;
-                    if (count > 0) {
-                        badge.textContent = count > 99 ? '99+' : count;
-                        badge.style.display = 'flex';
-                    } else {
-                        badge.style.display = 'none';
+                    const displayCount = count > 99 ? '99+' : count;
+                    
+                    // Update sidebar badge
+                    if (badge) {
+                        if (count > 0) {
+                            badge.textContent = displayCount;
+                            badge.style.display = 'flex';
+                        } else {
+                            badge.style.display = 'none';
+                        }
+                    }
+                    
+                    // Update bottom nav badge
+                    if (navBadge) {
+                        if (count > 0) {
+                            navBadge.textContent = displayCount;
+                            navBadge.style.display = 'flex';
+                        } else {
+                            navBadge.style.display = 'none';
+                        }
                     }
                 }
             } catch (error) {
@@ -992,28 +1040,28 @@
     </script>
     
     <!-- Bottom Navigation -->
-    <nav class="bottom-nav">
-        <a href="child-dashboard.html" class="nav-item active">
+    <nav class="bottom-nav" role="navigation" aria-label="Main navigation">
+        <a href="child-dashboard.html" class="nav-item active" aria-label="Home" aria-current="page">
             <i class="fa-solid fa-house"></i>
             <span data-i18n="nav.home">Home</span>
         </a>
-        <a href="../learn/index.html" class="nav-item">
+        <a href="../learn/index.html" class="nav-item" aria-label="Learn">
             <i class="fa-solid fa-book-open"></i>
             <span data-i18n="nav.learn">Learn</span>
         </a>
-        <a href="../doctors/index.html" class="nav-item">
+        <a href="../doctors/index.html" class="nav-item" aria-label="Doctors">
             <i class="fa-solid fa-user-doctor"></i>
             <span data-i18n="nav.doctors">Doctors</span>
         </a>
-        <a href="../learning-hub/index.html" class="nav-item">
+        <a href="../learning-hub/index.html" class="nav-item" aria-label="Hub">
             <i class="fa-solid fa-graduation-cap"></i>
             <span data-i18n="nav.hub">Hub</span>
         </a>
-        <a href="../progress/index.html" class="nav-item">
+        <a href="../progress/index.html" class="nav-item" aria-label="Progress">
             <i class="fa-solid fa-chart-line"></i>
             <span data-i18n="nav.progress">Progress</span>
         </a>
-        <a href="../profile/index.html" class="nav-item">
+        <a href="../profile/index.html" class="nav-item" aria-label="Profile">
             <i class="fa-solid fa-user"></i>
             <span data-i18n="nav.profile">Profile</span>
         </a>
